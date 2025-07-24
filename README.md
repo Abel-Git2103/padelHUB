@@ -1,13 +1,175 @@
-# PadelHUB - Plataforma de Gestión de Pádel
+# PadelHUB - Sistema de Gestión de Torneos de Padel
 
-## 🎯 Descripción
+PadelHUB es una plataforma completa para la gestión de torneos, partidos y rankings de padel, desarrollada con un stack moderno TypeScript.
 
-**PadelHUB** es una alternativa moderna a Playtomic, enfocada en competición por méritos con sistema de grupos A-E y modelo de monetización sin comisiones.
+## �️ Arquitectura del Proyecto (Monorepo)
 
-## 🚀 Inicio Rápido
+```
+padelHUB/
+├── frontend/          # Angular 20 + TypeScript
+├── backend/           # NestJS + TypeScript
+├── shared/            # Tipos y utilidades compartidas
+└── docs/              # Documentación del proyecto
+```
 
+## 🚀 Stack Tecnológico
+
+### Frontend
+- **Angular 20** - Framework principal
+- **TypeScript** - Lenguaje de desarrollo
+- **RxJS** - Manejo de streams reactivos
+
+### Backend
+- **NestJS** - Framework Node.js
+- **TypeScript** - Lenguaje de desarrollo
+- **MongoDB + Mongoose** - Base de datos
+- **Socket.io** - Comunicación en tiempo real
+- **JWT + Passport** - Autenticación
+- **Swagger** - Documentación API
+
+### Compartido
+- **TypeScript** - Tipos e interfaces compartidas
+- **Validaciones** - Utilidades comunes
+- **Constantes** - Configuración del dominio
+
+## 🛠️ Instalación y Configuración
+
+### Prerrequisitos
+- Node.js >= 18.0.0
+- npm >= 9.0.0
+- MongoDB >= 6.0.0 (local o Atlas)
+
+### Instalación
 ```bash
-# Instalar dependencias
+# Instalar dependencias de todos los proyectos
+npm run install:all
+
+# Configurar variables de entorno
+cp backend/.env.example backend/.env
+```
+
+## 🏃‍♂️ Desarrollo
+
+### Ejecutar todo en modo desarrollo
+```bash
+npm run dev
+```
+
+### Ejecutar proyectos individualmente
+```bash
+# Solo frontend (Angular)
+npm run dev:frontend
+
+# Solo backend (NestJS)
+npm run dev:backend
+```
+
+### URLs de desarrollo
+- **Frontend**: http://localhost:4200
+- **Backend API**: http://localhost:3000/api
+- **Documentación API**: http://localhost:3000/api/docs
+
+## 📋 Funcionalidades Principales
+
+### ✅ Gestión de Usuarios
+- Registro y autenticación
+- Perfiles de jugador
+- Sistema de grupos (A, B, C, D, E)
+- Vinculación a clubes
+
+### 🚧 Sistema de Partidos
+- Partidos simples
+- Partidos interclubes
+- Registro de resultados
+
+### 🚧 Gestión de Torneos
+- Torneos internos del club
+- Torneos interclubes
+- Sistema de inscripciones
+- Premios y ascensos
+
+### 🚧 Rankings
+- Ranking interno por club
+- Ranking global de clubes
+- Estadísticas por temporada
+
+### 🚧 Monedero Virtual
+- Saldo virtual para inscripciones
+- Premios en torneos
+- Recarga con tarjeta
+
+### 🚧 Tiempo Real
+- Chat entre jugadores
+- Notificaciones instantáneas
+- Actualizaciones de rankings
+
+## 📁 Estructura del Monorepo
+
+### Frontend (`/frontend`)
+```
+src/
+├── app/
+│   ├── auth/           # Autenticación
+│   ├── dashboard/      # Panel principal
+│   ├── usuarios/       # Gestión usuarios
+│   ├── partidos/       # Sistema partidos
+│   ├── torneos/        # Sistema torneos
+│   └── shared/         # Componentes compartidos
+└── assets/             # Recursos y documentación
+```
+
+### Backend (`/backend`)
+```
+src/
+├── auth/               # Autenticación JWT
+├── usuarios/           # Gestión usuarios
+├── clubes/             # Gestión clubes
+├── partidos/           # API partidos
+├── torneos/            # API torneos
+├── rankings/           # Cálculo rankings
+├── monedero/           # Sistema pagos
+└── common/             # Middleware y utils
+```
+
+### Shared (`/shared`)
+```
+src/
+├── types.ts            # Interfaces TypeScript
+├── constants.ts        # Constantes del dominio
+├── utils.ts            # Utilidades compartidas
+└── index.ts            # Punto de entrada
+```
+
+## 🎯 Roadmap de Desarrollo
+
+### Fase 1 - MVP ✅
+- [x] Configuración inicial del proyecto
+- [x] Estructura monorepo
+- [x] Tipos compartidos básicos
+- [ ] Autenticación básica
+- [ ] CRUD usuarios y clubes
+
+### Fase 2 - Core Features
+- [ ] Sistema de partidos
+- [ ] Gestión de torneos
+- [ ] Rankings básicos
+- [ ] API REST completa
+
+### Fase 3 - Advanced Features
+- [ ] Monedero virtual
+- [ ] Sistema de chat
+- [ ] Notificaciones tiempo real
+
+## 👤 Autor
+
+**Abel-Git2103**
+- GitHub: [@Abel-Git2103](https://github.com/Abel-Git2103)
+
+---
+
+**Estado del Proyecto**: 🚧 En Desarrollo Activo
+
+Para más información consulta `/frontend/src/assets/doc/`
 npm install
 
 # Ejecutar en desarrollo
