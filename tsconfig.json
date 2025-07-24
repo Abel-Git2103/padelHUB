@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["shared/src/*"],
+      "@backend/*": ["backend/src/*"],
+      "@frontend/*": ["frontend/src/*"]
+    }
+  },
+  "references": [
+    { "path": "./frontend" },
+    { "path": "./backend" },
+    { "path": "./shared" }
+  ]
+}

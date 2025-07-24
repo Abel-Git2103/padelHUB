@@ -2,12 +2,24 @@
 
 # Compiled output
 /dist
+*/dist/
 /tmp
 /out-tsc
 /bazel-out
 
 # Node
 /node_modules
+*/node_modules/
+
+# Angular specific
+frontend/.angular/
+frontend/dist/
+
+# NestJS specific
+backend/dist/
+
+# Shared build
+shared/dist/
 npm-debug.log
 yarn-error.log
 
