@@ -1,0 +1,207 @@
+
+
+
+
+
+
+
+
+
+
+
+DEFINICIÓN DE REQUERIMIENTOS DE SOFTWARE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Contenido
+1. Introducción	1
+1.1 Propósito	1
+1.2 Alcance	1
+1.3 Definiciones, Acrónimos y Abreviaturas	1
+1.4 Referencias	1
+2. Descripción General	2
+2.1 Perspectiva del Producto	2
+2.2 Funciones del Producto	2
+2.3 Características de los Usuarios	3
+2.4 Limitaciones	3
+3. Requisitos Funcionales	4
+3.1 Registro de Usuarios	4
+3.2 Gestión de Torneos	4
+3.3 Monedero Virtual	4
+3.4 Clasificación por Grupos	4
+3.5 Historial de partidos	4
+4. Requisitos No Funcionales	5
+4.1 Rendimiento	5
+4.2 Escalabilidad	5
+4.3 Seguridad	5
+4.4 Usabilidad	5
+5. Interfaz de Usuario	6
+5.1 Panel del Jugador	6
+5.2 Panel del Club	6
+5.3 Panel del Administrador	6
+6. Restricciones y Normativas	6
+7. Plan de Mantenimiento	6
+
+
+
+
+
+1. Introducción
+1.1 Propósito
+Este documento define los requisitos del sistema para la aplicación de gestión de reservas de deportes de raqueta. La aplicación permitirá a los jugadores y clubes gestionar partidos, torneos, clasificaciones por niveles y grupos, y proporcionar un espacio de interacción para eventos, competencias y clínicas. Servirá como referencia para los desarrolladores, partes interesadas y equipos de prueba.
+
+1.2 Alcance
+El software será utilizado por clubes y jugadores para gestionar reservas de partidos, organización de torneos y clínicas. Los jugadores podrán participar en partidos abiertos por otros jugadores y torneos organizados tanto por sus propios clubes, por otros clubes y los organizados por la plataforma. El sistema gestionará inscripciones, clasificaciones por grupos (A, B, C, D, E), y torneos, algunos con premios que incluyen saldo en monedero, con ascensos de grupo. 
+
+1.3 Definiciones, Acrónimos y Abreviaturas
+- Plataforma: Hace referencia a los administradores del software, a la aplicación.
+- Torneo de ascenso interno: Competencia entre jugadores de un mismo club y grupo, organizada por clubes o plataforma, con un mínimo de victorias en cada grupo para inscripción.
+- Torneo de ascenso interclubes: Competencia entre una pareja de jugadores de diferente club, pero mismo grupo, organizado por cualquier club o plataforma.
+- Grupo: Categoría o nivel de habilidad asignada a jugadores.
+- Monedero: Saldo virtual que los jugadores pueden ganar en torneos o añadir mediante recarga con tarjeta.
+- Club: Organización que gestiona jugadores y organiza eventos.
+- CNAE: Clasificación Nacional de Actividades Económicas (para el registro de la empresa en España).
+  
+1.4 Referencias
+- Normativas locales de pádel.
+- Regulaciones de la ley española sobre protección de datos y gestión financiera.
+  
+
+
+
+
+2. Descripción General
+2.1 Perspectiva del Producto
+La aplicación de pádel tiene como objetivo conectar clubes y jugadores, proporcionando una plataforma que gestiona reservas de partidos, organiza torneos, gestiona las clasificaciones de los jugadores y otorga premios. Cada jugador estará vinculado a un club durante la temporada (septiembre a mayo). Los torneos pueden ser abiertos por los clubes, y el sistema rastreará las victorias acumuladas por temporada para permitir el acceso a los mismos y de esa forma permitir el ascenso de grupo mediante victoria del torneo.
+
+2.2 Funciones del Producto
+- Gestión de usuarios: Registro y autenticación de jugadores y clubes.
+- Creación de partidos: Los jugadores podrán abrir partidos en cualquier club y podrán escoger la modalidad del mismo.
+- Partido simple: Se puede apuntar cualquier jugador de cualquier club y mismo grupo de nivel, y puntuará de forma individual a cada jugador en el ranking de su club, pero no de forma global.
+- Partido interclubes: Cada equipo ha de estar formado por dos jugadores de un mismo club y grupo de nivel, de modo que se puntúa tanto a nivel individual en el ránking de su club como a nivel global en el ránking de clubes.
+- Creación de torneos: Los clubes podrán organizar torneos de ascenso internos o interclubes y establecer las reglas de participación, con unos mínimos establecidos por la plataforma para fomentar la igualdad entre clubes.
+- Grupos de niveles: Los jugadores se clasifican en grupos de nivel (A, B, C, D, E) basados inicialmente en auto valoración personal, con unos baremos que facilitará la plataforma, los cuales pueden ascender de grupo participando en torneos de ascenso internos o interclubes y proclamándose campeones.
+- Ránking de clubes: Clasificación de puntos de cada club inscrito en la plataforma que se compone de grupos de nivel (A-E) la cual se ve modificada en función del historial de partidos de cada miembro de un club en partidos interclubes o torneos de ascenso interclubes (cada equipo tiene dos jugadores de un mismo club).
+- Ránking interno del club: Clasificación de puntos de cada miembro de un club que se compone por grupos de nivel (A-E), la cual se ve modificada en función del historial de partidos de cada miembro de un club en cualquier tipo de partido o torneo.
+- Monedero virtual: Los jugadores de torneos de ascenso organizados por la plataforma ganan saldo y lo usan para futuras inscripciones. Los clubes deciden si otorgan el mismo premio.
+- Torneo de ascenso interno: Lo organizan los clubes. Jugadores del mismo club y grupo pueden participar en él, obteniendo puntos por victoria, empate o derrota a nivel individual en el ránking interno del club. Los ganadores del torneo pueden obtener algún premio por parte del club, como saldo en monedero, y la posibilidad de ascender de grupo.
+
+- Torneos de ascenso interclubes organizado por un club: Lo organizan los clubes. Jugadores del mismo grupo, pero diferente club, pueden participar en él, obteniendo puntos por victoria, empate o derrota a nivel individual en el ránking interno del club como en equipo en el ránking de clubes. 
+Puede participar cualquier jugador del ránking interno del club del grupo que sea el torneo. 
+Los ganadores del torneo pueden obtener algún premio por parte del club, como saldo en monedero, y la posibilidad de ascender de grupo.
+- Torneos de ascenso interclubes organizado por la plataforma: Lo organizan la plataforma una vez a final de cada mes en un club de su elección o varios clubes. Jugadores del mismo grupo, pero diferente club, pueden participar en él, obteniendo puntos por victoria, empate o derrota a nivel individual en el ránking interno del club como en equipo en el ránking de clubes.
+El torneo se compondrá de los 16 o 32 mejores clubes del ranking global los cuales tendrán que escoger dos jugadores que se encuentren entre los 20 primeros del ránking interno del club del grupo que sea el torneo.
+Los ganadores del torneo obtendrán X saldo para el monedero por parte de la plataforma y la posibilidad de ascender de grupo dentro de su club.
+- Historial de partidos: Seguimiento de las victorias, empates o derrotas de cada jugador durante la temporada.
+- Soporte para cambio de club: Durante la temporada, los jugadores solo podrán cambiar de club con autorización especial realizada a la plataforma, acreditando el motivo de cambio de club.
+
+2.3 Características de los Usuarios
+- Administrador de la plataforma: Control total sobre el sistema, capaz de manejar suscripciones, torneos y estadísticas globales.
+- Clubes: Pueden organizar torneos, gestionar inscripciones, y acceder a los ránkings de sus grupos de nivel y al ránking de clubes.
+- Jugadores: Se inscriben en partidos y torneos, ganan puntos en función del partido, puntos y saldo en función del torneo, y pueden ascender de grupo al proclamarse campeones en alguno de los torneos de su grupo de nivel ya sea interno del club o interclubes.
+
+2.4 Limitaciones
+- El cambio de club por parte de los jugadores estará restringido durante la temporada a menos que sea aprobado por el soporte.
+- Las victorias, empates o derrotas acumuladas solo serán contadas entre septiembre y mayo, luego se hará un reset de las estadísticas de la temporada, pero se mantendrán las estadísticas globales.
+
+3. Requisitos Funcionales
+3.1 Registro de Usuarios
+- El sistema permitirá el registro de jugadores y clubes.
+- Los jugadores deben vincularse a un club durante la inscripción.
+
+3.2 Gestión de Torneos
+- Los clubes podrán crear torneos, establecer reglas (mínimo de victorias, premios, fecha de inscripción).
+- Los torneos podrán ser internos (del club) o interclubes (entre clubes).
+- El sistema permitirá a los jugadores inscribirse a torneos de su grupo y gestionar su participación.
+
+3.3 Monedero Virtual
+- Los jugadores recibirán saldo virtual como premio en torneos interclubes organizados por la plataforma. También pueden incrementar el saldo mediante recarga con tarjeta.
+- El saldo podrá ser utilizado para inscribirse en futuros torneos o clínicas.
+
+3.4 Clasificación por Grupos
+- El sistema clasificará a los jugadores en grupos (A, B, C, D, E) según auto valoración en el registro.
+- Los jugadores podrán ascender de grupo participando en mini torneos de ascenso, siempre y cuando cumplan con el mínimo de victorias requerido.
+
+3.5 Historial de partidos
+- El sistema contabilizará las victorias, empates o derrotas de cada jugador durante la temporada (septiembre a mayo).
+- El número de victorias en una temporada le permitirá acceder a los torneos de ascenso de su grupo de nivel.
+
+
+
+
+
+
+4. Requisitos No Funcionales
+4.1 Rendimiento
+- El sistema debe soportar hasta 10,000 jugadores simultáneos sin disminuir el rendimiento.
+
+4.2 Escalabilidad
+- El sistema debe ser capaz de gestionar el crecimiento a nivel de usuarios y clubes, adaptándose para incluir más eventos y jugadores sin afectar el rendimiento.
+
+4.3 Seguridad
+- Todos los datos personales y financieros de los usuarios deben protegerse con encriptación.
+- Los jugadores solo podrán cambiar de club durante la temporada previa solicitud a soporte.
+
+4.4 Usabilidad
+- La interfaz debe ser intuitiva y sencilla de usar para jugadores de todos los niveles.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+5. Interfaz de Usuario
+5.1 Panel del Jugador
+- Información sobre el grupo actual, saldo disponible, torneos activos, historial de partidos en temporada y global, acceso a ránking de su grupo y ranking de clubes.
+Desglose detallado del panel jugador:
+- Registro de victorias, empates y derrotas de la temporada actual
+- Histórico de victorias, empates y derrotas acumulado temporada a temporada.
+- Grupo de nivel al que pertenece
+- Imagen del jugador
+- Nombre del jugador
+- 
+
+5.2 Panel del Club
+- Creación y gestión de reservas en torneos y partidos, administración de jugadores, y acceso a los rankings de grupos de nivel y ranking de clubes.
+
+5.3 Panel del Administrador
+- Vista global de la plataforma, gestión de suscripciones, apertura de torneos interclubes, gestión de reservas de partidos y torneos y estadísticas de uso.
+
+
+6. Restricciones y Normativas
+- Cumplimiento de la **Ley de Protección de Datos** (GDPR) en España.
+- Restricciones en cuanto al cambio de club durante la temporada.
+
+
+7. Plan de Mantenimiento
+- Actualizaciones trimestrales para nuevas características y corrección de errores.
+- Mantenimiento de servidores y soporte técnico disponible 24/7.
+DEFINICIÓN DE REQUERIMIENTOS DE SOFTWARE2
+
+DEFINICIÓN DE REQUERIMIENTOS DE SOFTWARE2
+

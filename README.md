@@ -1,4 +1,75 @@
-# PadelHUB
+# PadelHUB - Plataforma de Gestión de Pádel
+
+## 🎯 Descripción
+
+**PadelHUB** es una alternativa moderna a Playtomic, enfocada en competición por méritos con sistema de grupos A-E y modelo de monetización sin comisiones.
+
+## 🚀 Inicio Rápido
+
+```bash
+# Instalar dependencias
+npm install
+
+# Ejecutar en desarrollo
+ng serve
+
+# Ejecutar tests
+ng test
+```
+
+## 📚 Documentación Completa
+
+Toda la documentación del proyecto se encuentra en:
+**[📁 /src/assets/doc/](./src/assets/doc/README.md)**
+
+### 📋 Documentos Principales:
+- **[Índice de Documentación](./src/assets/doc/README.md)** - Punto de entrada principal
+- **[Wireframes Completos](./src/assets/doc/wireframes/README.md)** - Diseño de interfaces
+- **[Sistema de Niveles](./src/assets/doc/wireframes/00-sistema-niveles.md)** - Competición A-E
+- **[Análisis Técnico](./src/assets/doc/WIREFRAMES_ANALYSIS.md)** - Arquitectura y componentes
+- **[Actualizaciones](./src/assets/doc/ACTUALIZACIONES.md)** - Roadmap de desarrollo
+
+## 🎯 Características Principales
+
+### 🏷️ Sistema de Grupos
+- **A (6.0-7.0)**: Élite - Solo invitación
+- **B (4.0-5.9)**: Avanzado - 28 pts mínimos
+- **C (2.0-3.9)**: Intermedio - 18 pts mínimos  
+- **D (1.0-1.9)**: Amateur - 10 pts mínimos
+- **E (0-0.9)**: Principiante - 5 pts mínimos
+
+### 💰 Monetización Sin Comisiones
+- **Club**: 200€/mes (gestión completa)
+- **Jugador**: 8€/mes opcional (premium)
+- **0% comisión** en torneos y eventos
+
+### ⚔️ Tipos de Partido
+- **🎯 Igualado**: Mismo grupo - siempre puntúa
+- **🔀 No Igualado**: Mixto - puntúa según validación
+- **🤝 Amistoso**: Sin puntuación
+
+## 🛠️ Stack Técnico
+
+- **Frontend**: Angular 20 + SCSS
+- **Responsive**: Mobile-first design
+- **Estado**: Listo para desarrollo
+
+## 📊 Estado del Proyecto
+
+- ✅ **Documentación**: Completa (16 archivos)
+- ✅ **Wireframes**: 11 pantallas diseñadas
+- ✅ **Arquitectura**: 45+ componentes identificados  
+- ⏳ **Desarrollo**: Pendiente de implementación
+
+## 🤝 Contribuir
+
+1. Revisa la [documentación completa](./src/assets/doc/README.md)
+2. Consulta los [wireframes](./src/assets/doc/wireframes/)
+3. Sigue el [roadmap de desarrollo](./src/assets/doc/ACTUALIZACIONES.md)
+
+---
+
+## 🔧 Angular CLI Reference
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.1.
 
