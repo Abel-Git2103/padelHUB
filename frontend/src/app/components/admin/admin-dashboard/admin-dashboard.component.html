@@ -1,0 +1,192 @@
+<div class="admin-dashboard">
+  <div class="dashboard-header">
+    <h1>Panel de Administración</h1>
+    <p>Bienvenido, {{ usuario()?.nombre }}. Aquí tienes un resumen de la actividad de PadelHUB.</p>
+  </div>
+
+  <!-- Tarjetas de estadísticas -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon users">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <h3>{{ estadisticas().totalUsuarios }}</h3>
+        <p>Total de usuarios</p>
+        <span class="stat-change positive">+12% este mes</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon clubs">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <h3>{{ estadisticas().totalClubes }}</h3>
+        <p>Clubes registrados</p>
+        <span class="stat-change positive">+3 este mes</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon matches">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 6v6l4 2"></path>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <h3>{{ estadisticas().partidosHoy }}</h3>
+        <p>Partidos hoy</p>
+        <span class="stat-change neutral">Tiempo real</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon active">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"></path>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <h3>{{ estadisticas().usuariosActivos }}</h3>
+        <p>Usuarios activos</p>
+        <span class="stat-change positive">Conectados ahora</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Acciones rápidas para admin -->
+  <div class="quick-actions">
+    <h2>Acciones rápidas</h2>
+    <div class="actions-grid">
+      <div class="action-card" (click)="navegarA('/admin/usuarios')">
+        <div class="action-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <h3>Gestionar Usuarios</h3>
+        <p>Administrar cuentas de usuario y permisos</p>
+      </div>
+
+      <div class="action-card" (click)="navegarA('/admin/clubes')">
+        <div class="action-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <h3>Administrar Clubes</h3>
+        <p>Gestionar clubes y sus configuraciones</p>
+      </div>
+
+      <div class="action-card" (click)="navegarA('/admin/rankings')">
+        <div class="action-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
+          </svg>
+        </div>
+        <h3>Gestionar Rankings</h3>
+        <p>Administrar sistemas de clasificación</p>
+      </div>
+
+      <div class="action-card" (click)="navegarA('/admin/partidos')">
+        <div class="action-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 6v6l4 2"></path>
+          </svg>
+        </div>
+        <h3>Supervisar Partidos</h3>
+        <p>Monitorear y gestionar partidos</p>
+      </div>
+
+      <div class="action-card" (click)="navegarA('/admin/configuracion')">
+        <div class="action-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </div>
+        <h3>Configuración</h3>
+        <p>Ajustes del sistema y aplicación</p>
+      </div>
+
+      <div class="action-card coming-soon">
+        <div class="action-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+        <h3>Reportes</h3>
+        <p>Análisis y estadísticas detalladas</p>
+        <span class="coming-soon-badge">Próximamente</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actividad reciente -->
+  <div class="recent-activity">
+    <h2>Actividad reciente</h2>
+    <div class="activity-list">
+      <div class="activity-item">
+        <div class="activity-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <div class="activity-content">
+          <p><strong>Nuevo usuario registrado:</strong> María González</p>
+          <span class="activity-time">Hace 5 minutos</span>
+        </div>
+      </div>
+
+      <div class="activity-item">
+        <div class="activity-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <div class="activity-content">
+          <p><strong>Club actualizado:</strong> Club Deportivo Raqueta</p>
+          <span class="activity-time">Hace 15 minutos</span>
+        </div>
+      </div>
+
+      <div class="activity-item">
+        <div class="activity-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF9800" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 6v6l4 2"></path>
+          </svg>
+        </div>
+        <div class="activity-content">
+          <p><strong>Partido finalizado:</strong> Juan vs Pedro - Club Central</p>
+          <span class="activity-time">Hace 1 hora</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

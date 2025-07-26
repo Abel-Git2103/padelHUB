@@ -5,7 +5,7 @@ export interface Usuario {
   nombre: string;
   apellidos: string;
   rangoActual: 'PLATINO' | 'ORO' | 'PLATA' | 'BRONCE' | 'COBRE';
-  rol: string;
+  rol: 'admin' | 'user' | 'jugador';
   imagenPerfil?: string;
   idClub?: string;
   estaActivo: boolean;

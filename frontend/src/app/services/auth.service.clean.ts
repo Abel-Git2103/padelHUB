@@ -1,20 +1,17 @@
-import { Injectable, signal, OnDestroy } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject, throwError, Subject } from 'rxjs';
-import { tap, catchError, takeUntil } from 'rxjs/operators';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 import { Usuario, RespuestaAutenticacion, SolicitudLogin, SolicitudRegistro } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ServicioAutenticacion implements OnDestroy {
+export class ServicioAutenticacion {
   private readonly URL_API = 'http://localhost:3000/api';
   private sujetoUsuarioActual = new BehaviorSubject<Usuario | null>(null);
   public usuarioActual$ = this.sujetoUsuarioActual.asObservable();
-  
-  // Subject para manejar la destrucción de suscripciones
-  private destroy$ = new Subject<void>();
   
   // Signals para el estado de autenticación
   public estaAutenticado = signal(false);
@@ -32,20 +29,9 @@ export class ServicioAutenticacion implements OnDestroy {
     const token = localStorage.getItem('token_acceso');
     const datosUsuario = localStorage.getItem('datos_usuario');
     
-    console.log('🔍 Cargando estado desde localStorage:', {
-      token: token ? 'Existe' : 'No existe',
-      datosUsuario: datosUsuario
-    });
-    
     if (token && datosUsuario) {
       try {
         const usuario = JSON.parse(datosUsuario);
-        console.log('🔍 Usuario parseado del localStorage:', {
-          email: usuario.email,
-          rol: usuario.rol,
-          rolTipo: typeof usuario.rol
-        });
-        
         this.actualizarEstadoUsuario(usuario, true);
         console.log('✅ Estado de autenticación restaurado:', usuario.rol);
       } catch (error) {
@@ -56,15 +42,6 @@ export class ServicioAutenticacion implements OnDestroy {
   }
 
   private actualizarEstadoUsuario(usuario: Usuario | null, estaAutenticado: boolean): void {
-    console.log('🔄 Actualizando estado usuario:', {
-      usuario: usuario ? {
-        email: usuario.email,
-        rol: usuario.rol,
-        nombre: usuario.nombre
-      } : null,
-      estaAutenticado
-    });
-    
     this.usuarioActual.set(usuario);
     this.sujetoUsuarioActual.next(usuario);
     this.estaAutenticado.set(estaAutenticado);
@@ -76,7 +53,7 @@ export class ServicioAutenticacion implements OnDestroy {
     this.actualizarEstadoUsuario(null, false);
   }
 
-  iniciarSesion(credenciales: SolicitudLogin, autoNavigate: boolean = true): Observable<RespuestaAutenticacion> {
+  iniciarSesion(credenciales: SolicitudLogin): Observable<RespuestaAutenticacion> {
     return this.http.post<RespuestaAutenticacion>(`${this.URL_API}/auth/login`, credenciales)
       .pipe(
         tap(respuesta => {
@@ -88,17 +65,6 @@ export class ServicioAutenticacion implements OnDestroy {
           this.actualizarEstadoUsuario(respuesta.user, true);
           
           console.log('✅ Login exitoso. Usuario autenticado:', respuesta.user.rol);
-          
-          // Navegar según el rol del usuario solo si autoNavigate es true
-          if (autoNavigate) {
-            setTimeout(() => {
-              if (respuesta.user.rol === 'admin') {
-                this.enrutador.navigate(['/admin/dashboard'], { replaceUrl: true });
-              } else {
-                this.enrutador.navigate(['/jugador/tablero'], { replaceUrl: true });
-              }
-            }, 0);
-          }
         }),
         catchError((error: any) => {
           console.error('❌ Error en login:', error);
@@ -129,49 +95,27 @@ export class ServicioAutenticacion implements OnDestroy {
 
   // Método de prueba para simular login (solo para desarrollo)
   loginPrueba(esAdmin: boolean = false): void {
-    // Probar diferentes ordenes de propiedades
-    const usuarioPrueba: any = {};
-    usuarioPrueba.id = '1';
-    usuarioPrueba.email = esAdmin ? 'admin@test.com' : 'user@test.com';
-    usuarioPrueba.nombre = esAdmin ? 'Admin' : 'Usuario';
-    usuarioPrueba.nombreCompleto = esAdmin ? 'Administrador Test' : 'Usuario Test';
-    usuarioPrueba.apellidos = 'Test';
-    usuarioPrueba.rol = esAdmin ? 'admin' : 'user'; // Establecer ROL ANTES que rangoActual
-    usuarioPrueba.rangoActual = 'BRONCE';
-    usuarioPrueba.imagenPerfil = undefined;
-    usuarioPrueba.idClub = undefined;
-    usuarioPrueba.estaActivo = true;
-    usuarioPrueba.emailVerificado = true;
-    usuarioPrueba.fechaCreacion = new Date().toISOString();
-    usuarioPrueba.ultimaActividad = new Date().toISOString();
-
-    console.log('🧪 ANTES DE GUARDAR - Usuario paso a paso:');
-    console.log('- ID:', usuarioPrueba.id);
-    console.log('- Email:', usuarioPrueba.email);
-    console.log('- ROL:', usuarioPrueba.rol, '(tipo:', typeof usuarioPrueba.rol, ')');
-    console.log('- RangoActual:', usuarioPrueba.rangoActual, '(tipo:', typeof usuarioPrueba.rangoActual, ')');
-    console.log('- Nombre:', usuarioPrueba.nombre);
-
-    console.log('🔍 Object.keys():', Object.keys(usuarioPrueba));
-    console.log('🔍 Object.values():', Object.values(usuarioPrueba));
-
-    const jsonString = JSON.stringify(usuarioPrueba);
-    console.log('🔍 JSON.stringify():', jsonString);
+    const usuarioPrueba: Usuario = {
+      id: '1',
+      email: esAdmin ? 'admin@test.com' : 'user@test.com',
+      nombre: esAdmin ? 'Admin' : 'Usuario',
+      nombreCompleto: esAdmin ? 'Administrador Test' : 'Usuario Test',
+      apellidos: 'Test',
+      rol: esAdmin ? 'admin' : 'user',
+      rangoActual: 'BRONCE',
+      imagenPerfil: undefined,
+      idClub: undefined,
+      estaActivo: true,
+      emailVerificado: true,
+      fechaCreacion: new Date().toISOString(),
+      ultimaActividad: new Date().toISOString()
+    };
 
     localStorage.setItem('token_acceso', 'fake-jwt-token-for-testing');
-    localStorage.setItem('datos_usuario', jsonString);
-    
-    const readBack = localStorage.getItem('datos_usuario');
-    console.log('🔍 LEYENDO de localStorage:', readBack);
-    
-    const parsed = JSON.parse(readBack || '{}');
-    console.log('🔍 Usuario parseado:');
-    console.log('- ROL parseado:', parsed.rol, '(tipo:', typeof parsed.rol, ')');
-    console.log('- RangoActual parseado:', parsed.rangoActual, '(tipo:', typeof parsed.rangoActual, ')');
-    
+    localStorage.setItem('datos_usuario', JSON.stringify(usuarioPrueba));
     this.actualizarEstadoUsuario(usuarioPrueba, true);
     
-    console.log('✅ Login de prueba exitoso - ROL FINAL:', usuarioPrueba.rol);
+    console.log('✅ Login de prueba exitoso:', usuarioPrueba.rol);
   }
 
   // Métodos de utilidad
@@ -197,16 +141,5 @@ export class ServicioAutenticacion implements OnDestroy {
     localStorage.clear();
     this.actualizarEstadoUsuario(null, false);
     console.log('🧹 Estado completamente limpiado');
-  }
-
-  ngOnDestroy(): void {
-    // Completar el subject para cerrar todas las suscripciones
-    this.destroy$.next();
-    this.destroy$.complete();
-    
-    // Cerrar el BehaviorSubject
-    this.sujetoUsuarioActual.complete();
-    
-    console.log('🔄 ServicioAutenticacion destruido - suscripciones cerradas');
   }
 }
