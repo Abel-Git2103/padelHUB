@@ -1,0 +1,116 @@
+<div class="contenedor-tablero">
+  <!-- Barra de navegación -->
+  <nav class="barra-navegacion">
+    <div class="logo">
+      <h2>🏓 PadelHUB</h2>
+    </div>
+    <div class="menu-navegacion">
+      <button class="boton-nav activo" (click)="navegarA('/tablero')">
+        🏠 Inicio
+      </button>
+      <button class="boton-nav" (click)="navegarA('/perfil')">
+        👤 Perfil
+      </button>
+      <button class="boton-nav" (click)="navegarA('/clubes')">
+        🏟️ Clubes
+      </button>
+      <button class="boton-nav" (click)="navegarA('/rankings')">
+        🏆 Rankings
+      </button>
+      <button class="boton-nav boton-salir" (click)="cerrarSesion()">
+        🚪 Salir
+      </button>
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <main class="contenido-principal">
+    <div class="encabezado-tablero">
+      <h1>¡Bienvenido de vuelta, {{ usuario()?.nombre }}! 👋</h1>
+      <p class="subtitulo">Tu centro de control para el pádel</p>
+    </div>
+
+    <!-- Tarjeta de información del usuario -->
+    <div class="tarjeta-usuario" *ngIf="usuario()">
+      <div class="info-basica">
+        <div class="avatar">
+          {{ obtenerIniciales() }}
+        </div>
+        <div class="detalles">
+          <h3>{{ usuario()?.nombre }}</h3>
+          <p>{{ usuario()?.email }}</p>
+          <div class="rango">
+            <span class="etiqueta-rango" [style.background-color]="obtenerInfoRango(usuario()!.rango).color">
+              {{ obtenerInfoRango(usuario()!.rango).icono }} {{ obtenerInfoRango(usuario()!.rango).nombre }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarjetas de acceso rápido -->
+    <div class="tarjetas-acceso">
+      <div class="tarjeta-accion" (click)="navegarA('/perfil')">
+        <div class="icono">👤</div>
+        <h3>Mi Perfil</h3>
+        <p>Gestiona tu información personal y preferencias</p>
+      </div>
+
+      <div class="tarjeta-accion" (click)="navegarA('/clubes')">
+        <div class="icono">🏟️</div>
+        <h3>Clubes</h3>
+        <p>Explora y únete a clubes de pádel</p>
+      </div>
+
+      <div class="tarjeta-accion" (click)="navegarA('/rankings')">
+        <div class="icono">🏆</div>
+        <h3>Rankings</h3>
+        <p>Consulta las clasificaciones y estadísticas</p>
+      </div>
+
+      <div class="tarjeta-accion proximamente">
+        <div class="icono">⚽</div>
+        <h3>Partidos</h3>
+        <p>Programa y gestiona tus partidos</p>
+        <span class="etiqueta-proximamente">Próximamente</span>
+      </div>
+
+      <div class="tarjeta-accion proximamente">
+        <div class="icono">🏅</div>
+        <h3>Torneos</h3>
+        <p>Participa en torneos y competiciones</p>
+        <span class="etiqueta-proximamente">Próximamente</span>
+      </div>
+
+      <div class="tarjeta-accion proximamente">
+        <div class="icono">💰</div>
+        <h3>Monedero</h3>
+        <p>Gestiona tu saldo virtual</p>
+        <span class="etiqueta-proximamente">Próximamente</span>
+      </div>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="estadisticas-rapidas">
+      <h2>Tu actividad</h2>
+      <div class="grid-estadisticas">
+        <div class="stat-card">
+          <div class="stat-numero">0</div>
+          <div class="stat-label">Partidos jugados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-numero">0</div>
+          <div class="stat-label">Torneos participados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-numero">{{ obtenerInfoRango(usuario()?.rango || 'COBRE').nombre }}</div>
+          <div class="stat-label">Rango actual</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-numero">{{ usuario()?.club ? '1' : '0' }}</div>
+          <div class="stat-label">Clubes unidos</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

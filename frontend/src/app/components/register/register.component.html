@@ -1,0 +1,108 @@
+<div class="contenedor-registro">
+  <div class="tarjeta-registro">
+    <div class="encabezado">
+      <h1>🏓 PadelHUB</h1>
+      <p>Crea tu cuenta nueva</p>
+    </div>
+
+    <form [formGroup]="formularioRegistro" (ngSubmit)="registrarse()" class="formulario">
+      <div class="grupo-campo">
+        <label for="nombre">Nombre completo</label>
+        <input
+          id="nombre"
+          type="text"
+          formControlName="nombre"
+          placeholder="Tu nombre completo"
+          [class.error]="formularioRegistro.get('nombre')?.invalid && formularioRegistro.get('nombre')?.touched"
+        />
+        <div class="mensaje-error" *ngIf="formularioRegistro.get('nombre')?.invalid && formularioRegistro.get('nombre')?.touched">
+          El nombre es requerido
+        </div>
+      </div>
+
+      <div class="grupo-campo">
+        <label for="email">Correo electrónico</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="tu@email.com"
+          [class.error]="formularioRegistro.get('email')?.invalid && formularioRegistro.get('email')?.touched"
+        />
+        <div class="mensaje-error" *ngIf="formularioRegistro.get('email')?.invalid && formularioRegistro.get('email')?.touched">
+          El correo electrónico es requerido y debe ser válido
+        </div>
+      </div>
+
+      <div class="grupo-campo">
+        <label for="contrasena">Contraseña</label>
+        <input
+          id="contrasena"
+          type="password"
+          formControlName="contrasena"
+          placeholder="••••••••"
+          [class.error]="formularioRegistro.get('contrasena')?.invalid && formularioRegistro.get('contrasena')?.touched"
+        />
+        <div class="mensaje-error" *ngIf="formularioRegistro.get('contrasena')?.invalid && formularioRegistro.get('contrasena')?.touched">
+          La contraseña debe tener al menos 6 caracteres
+        </div>
+      </div>
+
+      <div class="grupo-campo">
+        <label for="telefono">Teléfono (opcional)</label>
+        <input
+          id="telefono"
+          type="tel"
+          formControlName="telefono"
+          placeholder="+34 600 000 000"
+        />
+      </div>
+
+      <div class="grupo-campo">
+        <label for="rango">Rango de juego</label>
+        <select
+          id="rango"
+          formControlName="rango"
+          [class.error]="formularioRegistro.get('rango')?.invalid && formularioRegistro.get('rango')?.touched"
+        >
+          <option value="">Selecciona tu nivel</option>
+          <option *ngFor="let rango of rangosDisponibles" [value]="rango.tipo">
+            {{ rango.icono }} {{ rango.nombre }} - {{ rango.descripcion }}
+          </option>
+        </select>
+        <div class="mensaje-error" *ngIf="formularioRegistro.get('rango')?.invalid && formularioRegistro.get('rango')?.touched">
+          Debes seleccionar un rango
+        </div>
+      </div>
+
+      <div class="grupo-campo">
+        <label for="club">Club (opcional)</label>
+        <select id="club" formControlName="club">
+          <option value="">Sin club</option>
+          <option *ngFor="let club of clubes()" [value]="club._id">
+            {{ club.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <button 
+        type="submit" 
+        class="boton-primario"
+        [disabled]="formularioRegistro.invalid || cargando()"
+      >
+        <span *ngIf="!cargando()">Registrarse</span>
+        <span *ngIf="cargando()" class="cargando">Registrando...</span>
+      </button>
+
+      <div class="mensaje-error" *ngIf="error()">
+        {{ error() }}
+      </div>
+    </form>
+
+    <div class="pie">
+      <p>¿Ya tienes cuenta? 
+        <a (click)="irALogin()" class="enlace">Inicia sesión aquí</a>
+      </p>
+    </div>
+  </div>
+</div>

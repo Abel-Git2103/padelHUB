@@ -1,0 +1,253 @@
+.contenedor-tablero {
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+.barra-navegacion {
+  background: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo h2 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.menu-navegacion {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.boton-nav {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.boton-nav:hover {
+  background: #f1f3f4;
+}
+
+.boton-nav.activo {
+  background: #667eea;
+  color: white;
+}
+
+.boton-salir {
+  color: #e74c3c;
+}
+
+.boton-salir:hover {
+  background: #fee;
+}
+
+.contenido-principal {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.encabezado-tablero {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.encabezado-tablero h1 {
+  color: #333;
+  margin: 0 0 0.5rem 0;
+  font-size: 2.5rem;
+}
+
+.subtitulo {
+  color: #666;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.tarjeta-usuario {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.info-basica {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.detalles h3 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.detalles p {
+  margin: 0 0 1rem 0;
+  color: #666;
+}
+
+.etiqueta-rango {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.tarjetas-acceso {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.tarjeta-accion {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.tarjeta-accion:hover:not(.proximamente) {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.tarjeta-accion.proximamente {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tarjeta-accion .icono {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.tarjeta-accion h3 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 1.25rem;
+}
+
+.tarjeta-accion p {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.etiqueta-proximamente {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #ffd700;
+  color: #333;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.estadisticas-rapidas {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.estadisticas-rapidas h2 {
+  margin: 0 0 1.5rem 0;
+  color: #333;
+  text-align: center;
+}
+
+.grid-estadisticas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.stat-numero {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #667eea;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .barra-navegacion {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .menu-navegacion {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .contenido-principal {
+    padding: 1rem;
+  }
+
+  .encabezado-tablero h1 {
+    font-size: 2rem;
+  }
+
+  .info-basica {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .tarjetas-acceso {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-estadisticas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

@@ -1,0 +1,211 @@
+<div class="contenedor-clubes">
+  <!-- Barra de navegación -->
+  <nav class="barra-navegacion">
+    <div class="logo">
+      <h2>🏓 PadelHUB</h2>
+    </div>
+    <div class="menu-navegacion">
+      <button class="boton-nav" (click)="navegarA('/tablero')">
+        🏠 Inicio
+      </button>
+      <button class="boton-nav" (click)="navegarA('/perfil')">
+        👤 Perfil
+      </button>
+      <button class="boton-nav activo">
+        🏟️ Clubes
+      </button>
+      <button class="boton-nav" (click)="navegarA('/rankings')">
+        🏆 Rankings
+      </button>
+      <button class="boton-nav boton-salir" (click)="cerrarSesion()">
+        🚪 Salir
+      </button>
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <main class="contenido-principal">
+    <div class="encabezado-clubes">
+      <h1>Clubes de Pádel</h1>
+      <p class="subtitulo">Descubre los mejores clubes cerca de ti</p>
+    </div>
+
+    <!-- Filtros de búsqueda -->
+    <div class="seccion-filtros">
+      <div class="filtros-container">
+        <div class="filtro-busqueda">
+          <input 
+            type="text" 
+            placeholder="🔍 Buscar clubes..." 
+            class="campo-busqueda"
+            [(ngModel)]="filtroBusqueda"
+            (input)="filtrarClubes()">
+        </div>
+        
+        <div class="filtros-extras">
+          <select class="filtro-select" [(ngModel)]="filtroUbicacion" (change)="filtrarClubes()">
+            <option value="">📍 Todas las ubicaciones</option>
+            <option value="madrid">Madrid</option>
+            <option value="barcelona">Barcelona</option>
+            <option value="valencia">Valencia</option>
+            <option value="sevilla">Sevilla</option>
+          </select>
+
+          <select class="filtro-select" [(ngModel)]="filtroCalificacion" (change)="filtrarClubes()">
+            <option value="">⭐ Todas las calificaciones</option>
+            <option value="5">5 estrellas</option>
+            <option value="4">4+ estrellas</option>
+            <option value="3">3+ estrellas</option>
+          </select>
+
+          <button class="boton-limpiar" (click)="limpiarFiltros()">
+            🗑️ Limpiar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de clubes -->
+    <div class="seccion-clubes">
+      <!-- Estado de carga -->
+      <div *ngIf="cargando()" class="estado-carga">
+        <div class="spinner"></div>
+        <p>Cargando clubes...</p>
+      </div>
+
+      <!-- Mensaje de error -->
+      <div *ngIf="error()" class="mensaje-error">
+        <div class="icono-error">❌</div>
+        <h3>Error al cargar clubes</h3>
+        <p>{{ error() }}</p>
+        <button class="boton-reintentar" (click)="cargarClubes()">
+          🔄 Reintentar
+        </button>
+      </div>
+
+      <!-- Lista de clubes filtrados -->
+      <div *ngIf="!cargando() && !error() && clubesFiltrados().length > 0" class="grid-clubes">
+        <div *ngFor="let club of clubesFiltrados()" class="tarjeta-club">
+          <!-- Imagen del club -->
+          <div class="imagen-club">
+            <img [src]="club.imagen || '/assets/images/club-default.jpg'" 
+                 [alt]="club.nombre"
+                 (error)="$event.target.src='/assets/images/club-default.jpg'">
+            <div class="overlay-imagen">
+              <button class="boton-ver-mas" (click)="verDetallesClub(club)">
+                👁️ Ver más
+              </button>
+            </div>
+          </div>
+
+          <!-- Información del club -->
+          <div class="info-club">
+            <div class="cabecera-club">
+              <h3>{{ club.nombre }}</h3>
+              <div class="calificacion">
+                <span class="estrellas">{{ obtenerEstrellas(club.calificacion) }}</span>
+                <span class="numero-calificacion">{{ club.calificacion }}/5</span>
+              </div>
+            </div>
+
+            <div class="detalles-club">
+              <div class="detalle-item">
+                <span class="icono">📍</span>
+                <span class="texto">{{ club.direccion }}</span>
+              </div>
+              
+              <div class="detalle-item">
+                <span class="icono">📞</span>
+                <span class="texto">{{ club.telefono }}</span>
+              </div>
+
+              <div class="detalle-item">
+                <span class="icono">🏟️</span>
+                <span class="texto">{{ club.numeroPistas || 'N/A' }} pistas</span>
+              </div>
+
+              <div class="detalle-item">
+                <span class="icono">💰</span>
+                <span class="texto">Desde {{ club.precioHora || 'N/A' }}€/hora</span>
+              </div>
+            </div>
+
+            <!-- Servicios disponibles -->
+            <div class="servicios" *ngIf="club.servicios && club.servicios.length > 0">
+              <h4>Servicios:</h4>
+              <div class="lista-servicios">
+                <span *ngFor="let servicio of club.servicios.slice(0, 3)" 
+                      class="etiqueta-servicio">
+                  {{ servicio }}
+                </span>
+                <span *ngIf="club.servicios.length > 3" 
+                      class="mas-servicios">
+                  +{{ club.servicios.length - 3 }} más
+                </span>
+              </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="acciones-club">
+              <button class="boton-contactar" (click)="contactarClub(club)">
+                📞 Contactar
+              </button>
+              <button class="boton-favorito" 
+                      [class.activo]="esFavorito(club._id)"
+                      (click)="toggleFavorito(club._id)">
+                {{ esFavorito(club._id) ? '❤️' : '🤍' }}
+              </button>
+              <button class="boton-ubicacion" (click)="verUbicacion(club)">
+                🗺️ Ubicación
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensaje cuando no hay clubes -->
+      <div *ngIf="!cargando() && !error() && clubesFiltrados().length === 0" class="sin-resultados">
+        <div class="icono-sin-resultados">🏟️</div>
+        <h3>No se encontraron clubes</h3>
+        <p *ngIf="hayFiltrosActivos()">
+          No hay clubes que coincidan con tus filtros de búsqueda.
+        </p>
+        <p *ngIf="!hayFiltrosActivos()">
+          Actualmente no hay clubes disponibles en nuestra base de datos.
+        </p>
+        <button *ngIf="hayFiltrosActivos()" class="boton-limpiar-filtros" (click)="limpiarFiltros()">
+          🗑️ Limpiar filtros
+        </button>
+      </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="seccion-info-adicional">
+      <div class="tarjeta-info">
+        <h3>¿Eres propietario de un club?</h3>
+        <p>¡Registra tu club en PadelHUB y llega a más jugadores!</p>
+        <button class="boton-registrar-club" (click)="registrarClub()">
+          ➕ Registrar mi club
+        </button>
+      </div>
+
+      <div class="tarjeta-info">
+        <h3>Estadísticas de clubes</h3>
+        <div class="stats-clubes">
+          <div class="stat-item">
+            <span class="numero">{{ clubes().length }}</span>
+            <span class="label">Clubes registrados</span>
+          </div>
+          <div class="stat-item">
+            <span class="numero">{{ calcularPistasTotales() }}</span>
+            <span class="label">Pistas disponibles</span>
+          </div>
+          <div class="stat-item">
+            <span class="numero">{{ calcularCalificacionPromedio() }}</span>
+            <span class="label">Calificación promedio</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

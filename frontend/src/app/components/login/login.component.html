@@ -1,0 +1,57 @@
+<div class="contenedor-login">
+  <div class="tarjeta-login">
+    <div class="encabezado">
+      <h1>🏓 PadelHUB</h1>
+      <p>Inicia sesión en tu cuenta</p>
+    </div>
+
+    <form [formGroup]="formularioLogin" (ngSubmit)="iniciarSesion()" class="formulario">
+      <div class="grupo-campo">
+        <label for="email">Correo electrónico</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="tu@email.com"
+          [class.error]="formularioLogin.get('email')?.invalid && formularioLogin.get('email')?.touched"
+        />
+        <div class="mensaje-error" *ngIf="formularioLogin.get('email')?.invalid && formularioLogin.get('email')?.touched">
+          El correo electrónico es requerido y debe ser válido
+        </div>
+      </div>
+
+      <div class="grupo-campo">
+        <label for="contrasena">Contraseña</label>
+        <input
+          id="contrasena"
+          type="password"
+          formControlName="contrasena"
+          placeholder="••••••••"
+          [class.error]="formularioLogin.get('contrasena')?.invalid && formularioLogin.get('contrasena')?.touched"
+        />
+        <div class="mensaje-error" *ngIf="formularioLogin.get('contrasena')?.invalid && formularioLogin.get('contrasena')?.touched">
+          La contraseña es requerida
+        </div>
+      </div>
+
+      <button 
+        type="submit" 
+        class="boton-primario"
+        [disabled]="formularioLogin.invalid || cargando()"
+      >
+        <span *ngIf="!cargando()">Iniciar Sesión</span>
+        <span *ngIf="cargando()" class="cargando">Iniciando...</span>
+      </button>
+
+      <div class="mensaje-error" *ngIf="error()">
+        {{ error() }}
+      </div>
+    </form>
+
+    <div class="pie">
+      <p>¿No tienes cuenta? 
+        <a (click)="irARegistro()" class="enlace">Regístrate aquí</a>
+      </p>
+    </div>
+  </div>
+</div>

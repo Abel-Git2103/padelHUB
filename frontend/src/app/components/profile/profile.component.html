@@ -1,0 +1,300 @@
+<div class="contenedor-perfil">
+  <!-- Barra de navegación -->
+  <nav class="barra-navegacion">
+    <div class="logo">
+      <h2>🏓 PadelHUB</h2>
+    </div>
+    <div class="menu-navegacion">
+      <button class="boton-nav" (click)="navegarA('/tablero')">
+        🏠 Inicio
+      </button>
+      <button class="boton-nav activo">
+        👤 Perfil
+      </button>
+      <button class="boton-nav" (click)="navegarA('/clubes')">
+        🏟️ Clubes
+      </button>
+      <button class="boton-nav" (click)="navegarA('/rankings')">
+        🏆 Rankings
+      </button>
+      <button class="boton-nav boton-salir" (click)="cerrarSesion()">
+        🚪 Salir
+      </button>
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <main class="contenido-principal">
+    <div class="encabezado-perfil">
+      <h1>Mi Perfil</h1>
+      <p class="subtitulo">Gestiona tu información personal y configuraciones</p>
+    </div>
+
+    <div class="contenedor-tabs" *ngIf="usuario()">
+      <!-- Pestañas -->
+      <div class="pestanas">
+        <button 
+          class="pestana" 
+          [class.activa]="pestanaActiva() === 'informacion'"
+          (click)="cambiarPestana('informacion')">
+          📋 Información Personal
+        </button>
+        <button 
+          class="pestana" 
+          [class.activa]="pestanaActiva() === 'estadisticas'"
+          (click)="cambiarPestana('estadisticas')">
+          📊 Estadísticas
+        </button>
+        <button 
+          class="pestana" 
+          [class.activa]="pestanaActiva() === 'configuracion'"
+          (click)="cambiarPestana('configuracion')">
+          ⚙️ Configuración
+        </button>
+      </div>
+
+      <!-- Contenido de las pestañas -->
+      <div class="contenido-pestana">
+        <!-- Pestaña Información Personal -->
+        <div *ngIf="pestanaActiva() === 'informacion'" class="pestaña-informacion">
+          <div class="tarjeta-info-personal">
+            <div class="cabecera-tarjeta">
+              <div class="avatar-grande">
+                {{ obtenerIniciales() }}
+              </div>
+              <div class="info-usuario">
+                <h2>{{ usuario()!.nombre }} {{ usuario()!.apellido }}</h2>
+                <p class="email">{{ usuario()!.email }}</p>
+                <span class="etiqueta-rango" [style.background-color]="obtenerInfoRango(usuario()!.rango).color">
+                  {{ obtenerInfoRango(usuario()!.rango).nombre }}
+                </span>
+              </div>
+              <button class="boton-editar" (click)="toggleModoEdicion()">
+                {{ modoEdicion() ? '❌ Cancelar' : '✏️ Editar' }}
+              </button>
+            </div>
+
+            <!-- Formulario de edición -->
+            <div *ngIf="modoEdicion()" class="formulario-edicion">
+              <form [formGroup]="formularioPerfil" (ngSubmit)="guardarCambios()">
+                <div class="fila-campos">
+                  <div class="grupo-campo">
+                    <label for="nombre">Nombre</label>
+                    <input 
+                      id="nombre"
+                      type="text" 
+                      formControlName="nombre" 
+                      class="campo-entrada"
+                      placeholder="Tu nombre">
+                    <div *ngIf="formularioPerfil.get('nombre')?.errors && formularioPerfil.get('nombre')?.touched" 
+                         class="error-campo">
+                      El nombre es requerido
+                    </div>
+                  </div>
+
+                  <div class="grupo-campo">
+                    <label for="apellido">Apellido</label>
+                    <input 
+                      id="apellido"
+                      type="text" 
+                      formControlName="apellido" 
+                      class="campo-entrada"
+                      placeholder="Tu apellido">
+                    <div *ngIf="formularioPerfil.get('apellido')?.errors && formularioPerfil.get('apellido')?.touched" 
+                         class="error-campo">
+                      El apellido es requerido
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grupo-campo">
+                  <label for="email">Email</label>
+                  <input 
+                    id="email"
+                    type="email" 
+                    formControlName="email" 
+                    class="campo-entrada"
+                    placeholder="tu@email.com">
+                  <div *ngIf="formularioPerfil.get('email')?.errors && formularioPerfil.get('email')?.touched" 
+                       class="error-campo">
+                    <span *ngIf="formularioPerfil.get('email')?.errors?.['required']">El email es requerido</span>
+                    <span *ngIf="formularioPerfil.get('email')?.errors?.['email']">Formato de email inválido</span>
+                  </div>
+                </div>
+
+                <div class="grupo-campo">
+                  <label for="ciudad">Ciudad</label>
+                  <input 
+                    id="ciudad"
+                    type="text" 
+                    formControlName="ciudad" 
+                    class="campo-entrada"
+                    placeholder="Tu ciudad">
+                </div>
+
+                <div class="botones-formulario">
+                  <button type="button" class="boton-cancelar" (click)="cancelarEdicion()">
+                    Cancelar
+                  </button>
+                  <button type="submit" class="boton-guardar" [disabled]="formularioPerfil.invalid || guardando()">
+                    {{ guardando() ? 'Guardando...' : 'Guardar Cambios' }}
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Vista de solo lectura -->
+            <div *ngIf="!modoEdicion()" class="vista-solo-lectura">
+              <div class="campos-info">
+                <div class="campo-info">
+                  <label>Nombre completo:</label>
+                  <span>{{ usuario()!.nombre }} {{ usuario()!.apellido }}</span>
+                </div>
+                <div class="campo-info">
+                  <label>Email:</label>
+                  <span>{{ usuario()!.email }}</span>
+                </div>
+                <div class="campo-info">
+                  <label>Ciudad:</label>
+                  <span>{{ usuario()!.ciudad || 'No especificada' }}</span>
+                </div>
+                <div class="campo-info">
+                  <label>Fecha de registro:</label>
+                  <span>{{ usuario()!.fechaRegistro | date:'dd/MM/yyyy' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña Estadísticas -->
+        <div *ngIf="pestanaActiva() === 'estadisticas'" class="pestaña-estadisticas">
+          <div class="tarjeta-rango">
+            <h3>Tu Rango Actual</h3>
+            <div class="info-rango">
+              <div class="emblema-rango" [style.background]="obtenerInfoRango(usuario()!.rango).color">
+                {{ obtenerInfoRango(usuario()!.rango).emblema }}
+              </div>
+              <div class="detalles-rango">
+                <h4>{{ obtenerInfoRango(usuario()!.rango).nombre }}</h4>
+                <p>{{ obtenerInfoRango(usuario()!.rango).descripcion }}</p>
+                <div class="puntos-rango">
+                  <span>{{ usuario()!.puntos || 0 }} puntos</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-estadisticas">
+            <div class="tarjeta-estadistica">
+              <div class="icono-stat">🎾</div>
+              <div class="numero-stat">{{ usuario()!.partidosJugados || 0 }}</div>
+              <div class="label-stat">Partidos Jugados</div>
+            </div>
+
+            <div class="tarjeta-estadistica">
+              <div class="icono-stat">🏆</div>
+              <div class="numero-stat">{{ usuario()!.partidosGanados || 0 }}</div>
+              <div class="label-stat">Partidos Ganados</div>
+            </div>
+
+            <div class="tarjeta-estadistica">
+              <div class="icono-stat">📈</div>
+              <div class="numero-stat">{{ calcularPorcentajeVictoria() }}%</div>
+              <div class="label-stat">% Victorias</div>
+            </div>
+
+            <div class="tarjeta-estadistica">
+              <div class="icono-stat">⭐</div>
+              <div class="numero-stat">{{ usuario()!.puntos || 0 }}</div>
+              <div class="label-stat">Puntos Totales</div>
+            </div>
+          </div>
+
+          <div class="progreso-rangos">
+            <h3>Progreso de Rangos</h3>
+            <div class="lista-rangos">
+              <div *ngFor="let rango of obtenerListaRangos()" 
+                   class="item-rango"
+                   [class.actual]="rango.id === usuario()!.rango"
+                   [class.completado]="esRangoCompletado(rango.id)">
+                <div class="emblema-mini" [style.background]="rango.color">
+                  {{ rango.emblema }}
+                </div>
+                <div class="info-rango-mini">
+                  <span class="nombre-rango">{{ rango.nombre }}</span>
+                  <span class="puntos-requeridos">{{ rango.puntosMinimos }} pts</span>
+                </div>
+                <div class="estado-rango">
+                  <span *ngIf="rango.id === usuario()!.rango" class="actual-badge">Actual</span>
+                  <span *ngIf="esRangoCompletado(rango.id) && rango.id !== usuario()!.rango" class="completado-badge">✓</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña Configuración -->
+        <div *ngIf="pestanaActiva() === 'configuracion'" class="pestaña-configuracion">
+          <div class="tarjeta-configuracion">
+            <h3>Configuración de la Cuenta</h3>
+            
+            <div class="opciones-configuracion">
+              <div class="opcion-config">
+                <div class="info-opcion">
+                  <h4>Notificaciones por email</h4>
+                  <p>Recibe notificaciones sobre partidos y torneos</p>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" [(ngModel)]="configuracion.notificacionesEmail">
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="opcion-config">
+                <div class="info-opcion">
+                  <h4>Perfil público</h4>
+                  <p>Permite que otros usuarios vean tu perfil</p>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" [(ngModel)]="configuracion.perfilPublico">
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="opcion-config">
+                <div class="info-opcion">
+                  <h4>Mostrar estadísticas</h4>
+                  <p>Mostrar tus estadísticas en tu perfil público</p>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" [(ngModel)]="configuracion.mostrarEstadisticas">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="zona-peligro">
+              <h4>🚨 Zona de Peligro</h4>
+              <p>Estas acciones son irreversibles</p>
+              
+              <button class="boton-cambiar-password" (click)="cambiarPassword()">
+                🔐 Cambiar Contraseña
+              </button>
+              
+              <button class="boton-eliminar-cuenta" (click)="eliminarCuenta()">
+                🗑️ Eliminar Cuenta
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado de carga -->
+    <div *ngIf="!usuario()" class="cargando">
+      <div class="spinner"></div>
+      <p>Cargando perfil...</p>
+    </div>
+  </main>
+</div>
