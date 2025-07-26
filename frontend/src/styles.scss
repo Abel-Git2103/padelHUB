@@ -1,1 +1,292 @@
-/* You can add global styles to this file, and also import other style files */
+/* Estilos globales para PadelHUB */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Variables globales basadas en los wireframes */
+:root {
+  /* Colores principales - temática pádel */
+  --primary-color: #2E7D32;        /* Verde pádel principal */
+  --primary-dark: #1B5E20;         /* Verde pádel oscuro */
+  --primary-light: #E8F5E8;        /* Verde muy claro */
+  --secondary-color: #FF6D00;      /* Naranja pádel */
+  --accent-color: #FFC107;         /* Amarillo dorado */
+  
+  /* Colores de fondo */
+  --background-primary: #ffffff;    /* Fondo blanco */
+  --background-secondary: #f8f9fa;  /* Gris muy claro */
+  --background-tertiary: #E8F5E8;   /* Verde muy claro */
+  
+  /* Colores de texto */
+  --text-primary: #212121;          /* Negro principal */
+  --text-secondary: #666666;        /* Gris medio */
+  --text-disabled: #999999;         /* Gris claro */
+  --text-on-primary: #ffffff;       /* Blanco sobre verde */
+  
+  /* Colores de estado */
+  --success-color: #4CAF50;         /* Verde éxito */
+  --warning-color: #FF9800;         /* Naranja advertencia */
+  --error-color: #F44336;           /* Rojo error */
+  
+  /* Bordes y separadores */
+  --border-color: #E0E0E0;
+  --border-color-hover: #2E7D32;
+  --divider-color: #F0F0F0;
+  
+  /* Sombras con tono verde sutil */
+  --shadow-1: 0 1px 2px 0 rgba(46, 125, 50, 0.15), 0 1px 3px 1px rgba(0, 0, 0, 0.1);
+  --shadow-2: 0 1px 2px 0 rgba(46, 125, 50, 0.2), 0 2px 6px 2px rgba(0, 0, 0, 0.1);
+  --shadow-3: 0 4px 8px 3px rgba(46, 125, 50, 0.15), 0 1px 3px rgba(0, 0, 0, 0.2);
+  
+  /* Espaciado */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+  
+  /* Tipografía */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-size-xs: 11px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 22px;
+  --font-size-3xl: 28px;
+  
+  /* Bordes redondeados */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-full: 50%;
+}
+
+/* Reset y estilos base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  color: var(--text-primary);
+  background-color: var(--background-secondary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Estilos de scrollbar para WebKit */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-secondary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-color-hover);
+}
+
+/* Clases utilitarias */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: var(--spacing-xs); }
+.mb-2 { margin-bottom: var(--spacing-sm); }
+.mb-3 { margin-bottom: var(--spacing-md); }
+.mb-4 { margin-bottom: var(--spacing-lg); }
+.mb-5 { margin-bottom: var(--spacing-xl); }
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: var(--spacing-xs); }
+.mt-2 { margin-top: var(--spacing-sm); }
+.mt-3 { margin-top: var(--spacing-md); }
+.mt-4 { margin-top: var(--spacing-lg); }
+.mt-5 { margin-top: var(--spacing-xl); }
+
+.p-0 { padding: 0; }
+.p-1 { padding: var(--spacing-xs); }
+.p-2 { padding: var(--spacing-sm); }
+.p-3 { padding: var(--spacing-md); }
+.p-4 { padding: var(--spacing-lg); }
+.p-5 { padding: var(--spacing-xl); }
+
+/* Estilos para formularios globales */
+.form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px var(--spacing-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+}
+
+.form-control.error {
+  border-color: var(--error-color);
+}
+
+.form-control.error:focus {
+  box-shadow: 0 0 0 3px rgba(234, 67, 53, 0.1);
+}
+
+.error-message {
+  display: block;
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  color: var(--error-color);
+}
+
+/* Botones globales */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: 10px var(--spacing-md);
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  font-family: var(--font-family);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  min-height: 40px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: var(--text-on-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-dark);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--background-secondary);
+  border-color: var(--border-color-hover);
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  color: var(--text-on-primary);
+}
+
+.btn-danger {
+  background-color: var(--error-color);
+  color: var(--text-on-primary);
+}
+
+.btn-lg {
+  padding: 14px var(--spacing-lg);
+  font-size: var(--font-size-lg);
+  min-height: 48px;
+}
+
+.btn-sm {
+  padding: 6px var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  min-height: 32px;
+}
+
+/* Tarjetas */
+.card {
+  background-color: var(--background-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--divider-color);
+  background-color: var(--background-secondary);
+}
+
+.card-body {
+  padding: var(--spacing-lg);
+}
+
+.card-footer {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--divider-color);
+  background-color: var(--background-secondary);
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+  
+  .btn {
+    width: 100%;
+  }
+  
+  .card-body {
+    padding: var(--spacing-md);
+  }
+}

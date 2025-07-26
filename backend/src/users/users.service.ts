@@ -24,7 +24,7 @@ export class UsersService {
 
     // Hash de la contraseña
     const saltRounds = 12;
-    const contraseñaHasheada = await bcrypt.hash(crearUsuarioDto.contraseña, saltRounds);
+    const contraseñaHasheada = await bcrypt.hash(crearUsuarioDto.password, saltRounds);
 
     // Crear usuario con estadísticas iniciales
     const datosUsuario = {

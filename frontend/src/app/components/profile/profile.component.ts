@@ -48,9 +48,9 @@ export class ComponentePerfil implements OnInit {
     if (usuarioActual) {
       this.formularioPerfil.patchValue({
         nombre: usuarioActual.nombre,
-        apellido: usuarioActual.apellido || '',
+        apellido: usuarioActual.apellidos || '',
         email: usuarioActual.email,
-        ciudad: usuarioActual.ciudad || ''
+        ciudad: '' // Campo no disponible en la nueva interfaz
       });
     }
 
@@ -60,9 +60,9 @@ export class ComponentePerfil implements OnInit {
       if (usuario) {
         this.formularioPerfil.patchValue({
           nombre: usuario.nombre,
-          apellido: usuario.apellido || '',
+          apellido: usuario.apellidos || '',
           email: usuario.email,
-          ciudad: usuario.ciudad || ''
+          ciudad: '' // Campo no disponible en la nueva interfaz
         });
       }
     });
@@ -81,9 +81,9 @@ export class ComponentePerfil implements OnInit {
       if (usuario) {
         this.formularioPerfil.patchValue({
           nombre: usuario.nombre,
-          apellido: usuario.apellido || '',
+          apellido: usuario.apellidos || '',
           email: usuario.email,
-          ciudad: usuario.ciudad || ''
+          ciudad: '' // Campo no disponible en la nueva interfaz
         });
       }
     }
@@ -95,19 +95,18 @@ export class ComponentePerfil implements OnInit {
     const usuario = this.usuario();
     if (!usuario) return 'U';
     
-    const apellido = usuario.apellido || usuario.nombre.split(' ')[1] || '';
+    const apellido = usuario.apellidos || usuario.nombre.split(' ')[1] || '';
     return `${usuario.nombre.charAt(0)}${apellido.charAt(0) || usuario.nombre.charAt(1)}`.toUpperCase();
   }
 
   calcularPorcentajeVictoria(): number {
     const usuario = this.usuario();
-    if (!usuario || !usuario.partidosJugados || usuario.partidosJugados === 0) {
+    if (!usuario) {
       return 0;
     }
     
-    const partidosGanados = usuario.partidosGanados || 0;
-    const porcentaje = (partidosGanados / usuario.partidosJugados) * 100;
-    return Math.round(porcentaje);
+    // TODO: Implementar estadísticas reales cuando estén disponibles
+    return 0;
   }
 
   obtenerListaRangos() {
@@ -124,7 +123,7 @@ export class ComponentePerfil implements OnInit {
     const usuario = this.usuario();
     if (!usuario) return false;
     
-    const rangoActual = usuario.rango;
+    const rangoActual = usuario.rangoActual;
     const rangosOrden = ['COBRE', 'BRONCE', 'PLATA', 'ORO', 'PLATINO'];
     const indiceRangoActual = rangosOrden.indexOf(rangoActual);
     const indiceRangoComparar = rangosOrden.indexOf(rango);
@@ -150,7 +149,6 @@ export class ComponentePerfil implements OnInit {
           };
           
           // Aquí normalmente actualizarías el usuario en el servicio
-          console.log('Perfil actualizado:', usuarioActualizado);
         }
         
         this.modoEdicion.set(false);
@@ -171,16 +169,15 @@ export class ComponentePerfil implements OnInit {
     if (usuario) {
       this.formularioPerfil.patchValue({
         nombre: usuario.nombre,
-        apellido: usuario.apellido || '',
+        apellido: usuario.apellidos || '',
         email: usuario.email,
-        ciudad: usuario.ciudad || ''
+        ciudad: '' // Campo no disponible en la nueva interfaz
       });
     }
   }
 
   cambiarPassword() {
     // Aquí implementarías la lógica para cambiar contraseña
-    console.log('Cambiar contraseña');
     alert('Funcionalidad de cambio de contraseña próximamente');
   }
 
@@ -188,7 +185,6 @@ export class ComponentePerfil implements OnInit {
     // Aquí implementarías la lógica para eliminar cuenta
     const confirmacion = confirm('¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.');
     if (confirmacion) {
-      console.log('Eliminar cuenta');
       alert('Funcionalidad de eliminación de cuenta próximamente');
     }
   }

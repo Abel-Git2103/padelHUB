@@ -28,20 +28,21 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    // Verificar contraseña
-    const isPasswordValid = await bcrypt.compare(password, user.contraseña);
+    // Verificar contraseña - usar 'password' si existe, si no 'contraseña'
+    const passwordToCheck = user.password || user.contraseña;
+    if (!passwordToCheck) {
+      throw new UnauthorizedException('Credenciales inválidas');
+    }
+    
+    const isPasswordValid = await bcrypt.compare(password, passwordToCheck);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
     // Verificar que el usuario esté activo
-    if (!user.estaActivo) {
+    if (!user.estaActivo && !user.activo) {
       throw new UnauthorizedException('Usuario desactivado');
     }
-
-    // Actualizar última actividad
-    user.ultimaActividad = new Date();
-    await user.save();
 
     // Generar tokens
     const tokens = await this.generateTokens(user);

@@ -19,7 +19,7 @@ export class CrearUsuarioDto {
   })
   @IsString()
   @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
-  contraseña: string;
+  password: string;
 
   @ApiProperty({ 
     description: 'Nombre del usuario',

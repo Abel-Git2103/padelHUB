@@ -76,8 +76,12 @@ export class Usuario {
   @Prop({ required: true })
   email: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   contraseña: string;
+
+  // Campo alternativo para compatibilidad
+  @Prop({ required: false })
+  password?: string;
 
   @Prop({ required: true })
   nombre: string;
@@ -128,6 +132,10 @@ export class Usuario {
   // Estado del usuario
   @Prop({ default: true })
   estaActivo: boolean;
+
+  // Campo alternativo para compatibilidad
+  @Prop({ default: true })
+  activo?: boolean;
 
   @Prop({ default: false })
   emailVerificado: boolean;

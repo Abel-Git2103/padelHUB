@@ -36,27 +36,27 @@ export class DashboardComponent implements OnInit {
     const usuario = this.usuario();
     if (!usuario) return 'U';
     
-    const apellido = usuario.apellido || usuario.nombre.split(' ')[1] || '';
+    const apellido = usuario.apellidos || usuario.nombre.split(' ')[1] || '';
     return `${usuario.nombre.charAt(0)}${apellido.charAt(0) || usuario.nombre.charAt(1)}`.toUpperCase();
   }
 
   obtenerColorRango(): string {
     const usuario = this.usuario();
-    if (!usuario?.rango) return '#666';
+    if (!usuario?.rangoActual) return '#666';
     
-    const infoRango = obtenerInfoRango(usuario.rango);
+    const infoRango = obtenerInfoRango(usuario.rangoActual);
     return infoRango.color;
   }
 
   calcularPorcentajeVictoria(): number {
     const usuario = this.usuario();
-    if (!usuario || !usuario.partidosJugados || usuario.partidosJugados === 0) {
+    if (!usuario) {
       return 0;
     }
     
-    const partidosGanados = usuario.partidosGanados || 0;
-    const porcentaje = (partidosGanados / usuario.partidosJugados) * 100;
-    return Math.round(porcentaje);
+    // TODO: Implementar estadísticas reales cuando estén disponibles en el backend
+    // Por ahora retornamos un valor por defecto
+    return 0;
   }
 
   navegarA(ruta: string) {

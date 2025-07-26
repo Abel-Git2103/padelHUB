@@ -16,6 +16,7 @@ export class ComponenteLogin {
   formularioLogin: FormGroup;
   cargando = signal(false);
   error = signal('');
+  mostrarContrasena = signal(false);
 
   constructor(
     private fb: FormBuilder,
@@ -24,7 +25,8 @@ export class ComponenteLogin {
   ) {
     this.formularioLogin = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      contrasena: ['', [Validators.required]]
+      password: ['', [Validators.required]],
+      recordarme: [false]
     });
   }
 
@@ -33,15 +35,17 @@ export class ComponenteLogin {
       this.cargando.set(true);
       this.error.set('');
 
-      const credenciales: SolicitudLogin = this.formularioLogin.value;
+      // Extraer solo los campos que necesita el backend
+      const credenciales: SolicitudLogin = {
+        email: this.formularioLogin.value.email,
+        password: this.formularioLogin.value.password
+      };
 
       this.servicioAuth.iniciarSesion(credenciales).subscribe({
         next: (respuesta) => {
-          console.log('Inicio de sesión exitoso', respuesta);
           this.enrutador.navigate(['/tablero']);
         },
         error: (err) => {
-          console.error('Error en inicio de sesión', err);
           this.error.set('Credenciales incorrectas. Por favor, intenta de nuevo.');
           this.cargando.set(false);
         },
@@ -49,10 +53,29 @@ export class ComponenteLogin {
           this.cargando.set(false);
         }
       });
+    } else {
+      // Formulario inválido
+      this.error.set('Por favor, complete todos los campos correctamente.');
     }
   }
 
   irARegistro() {
     this.enrutador.navigate(['/registrarse']);
+  }
+
+  alternarMostrarContrasena() {
+    this.mostrarContrasena.set(!this.mostrarContrasena());
+  }
+
+  iniciarSesionConGoogle() {
+    // TODO: Implementar autenticación con Google
+  }
+
+  iniciarSesionConApple() {
+    // TODO: Implementar autenticación con Apple
+  }
+
+  irAOlvidoContrasena() {
+    // TODO: Navegar a la página de recuperación de contraseña
   }
 }

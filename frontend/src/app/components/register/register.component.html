@@ -1,108 +1,153 @@
-<div class="contenedor-registro">
-  <div class="tarjeta-registro">
-    <div class="encabezado">
-      <h1>🏓 PadelHUB</h1>
-      <p>Crea tu cuenta nueva</p>
+<div class="register-container">
+  <div class="register-card">
+    <!-- Logo y encabezado -->
+    <div class="register-header">
+      <div class="logo-section">
+        <div class="logo-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="4" width="18" height="16" rx="2" fill="#2E7D32" stroke="white" stroke-width="1"/>
+            <circle cx="7" cy="12" r="1.5" fill="white"/>
+            <circle cx="17" cy="12" r="1.5" fill="white"/>
+            <path d="M12 8V12L12 16" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <path d="M8 12H16" stroke="white" stroke-width="1" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h1 class="logo-text">
+          <span class="padel-text">Padel</span><span class="hub-text">HUB</span>
+        </h1>
+      </div>
+      <p class="register-subtitle">Únete a la comunidad de pádel más grande</p>
     </div>
 
-    <form [formGroup]="formularioRegistro" (ngSubmit)="registrarse()" class="formulario">
-      <div class="grupo-campo">
-        <label for="nombre">Nombre completo</label>
+    <!-- Formulario de registro -->
+    <form [formGroup]="formularioRegistro" (ngSubmit)="registrarse()" class="register-form">
+      <div class="form-group">
+        <label for="nombre" class="form-label">Nombre completo</label>
         <input
           id="nombre"
           type="text"
           formControlName="nombre"
-          placeholder="Tu nombre completo"
+          class="form-control"
           [class.error]="formularioRegistro.get('nombre')?.invalid && formularioRegistro.get('nombre')?.touched"
+          placeholder="Tu nombre completo"
         />
-        <div class="mensaje-error" *ngIf="formularioRegistro.get('nombre')?.invalid && formularioRegistro.get('nombre')?.touched">
-          El nombre es requerido
-        </div>
+        <span class="error-message" *ngIf="formularioRegistro.get('nombre')?.invalid && formularioRegistro.get('nombre')?.touched">
+          El nombre es obligatorio
+        </span>
       </div>
 
-      <div class="grupo-campo">
-        <label for="email">Correo electrónico</label>
+      <div class="form-group">
+        <label for="email" class="form-label">Correo electrónico</label>
         <input
           id="email"
           type="email"
           formControlName="email"
-          placeholder="tu@email.com"
+          class="form-control"
           [class.error]="formularioRegistro.get('email')?.invalid && formularioRegistro.get('email')?.touched"
+          placeholder="tucorreo@ejemplo.com"
         />
-        <div class="mensaje-error" *ngIf="formularioRegistro.get('email')?.invalid && formularioRegistro.get('email')?.touched">
-          El correo electrónico es requerido y debe ser válido
-        </div>
+        <span class="error-message" *ngIf="formularioRegistro.get('email')?.invalid && formularioRegistro.get('email')?.touched">
+          Introduce un correo electrónico válido
+        </span>
       </div>
 
-      <div class="grupo-campo">
-        <label for="contrasena">Contraseña</label>
-        <input
-          id="contrasena"
-          type="password"
-          formControlName="contrasena"
-          placeholder="••••••••"
-          [class.error]="formularioRegistro.get('contrasena')?.invalid && formularioRegistro.get('contrasena')?.touched"
-        />
-        <div class="mensaje-error" *ngIf="formularioRegistro.get('contrasena')?.invalid && formularioRegistro.get('contrasena')?.touched">
+      <div class="form-group">
+        <label for="contrasena" class="form-label">Contraseña</label>
+        <div class="password-input-wrapper">
+          <input
+            id="contrasena"
+            type="password"
+            formControlName="contrasena"
+            class="form-control"
+            [class.error]="formularioRegistro.get('contrasena')?.invalid && formularioRegistro.get('contrasena')?.touched"
+            placeholder="Mínimo 6 caracteres"
+          />
+        </div>
+        <span class="error-message" *ngIf="formularioRegistro.get('contrasena')?.invalid && formularioRegistro.get('contrasena')?.touched">
           La contraseña debe tener al menos 6 caracteres
-        </div>
+        </span>
       </div>
 
-      <div class="grupo-campo">
-        <label for="telefono">Teléfono (opcional)</label>
+      <div class="form-group">
+        <label for="telefono" class="form-label">Teléfono (opcional)</label>
         <input
           id="telefono"
           type="tel"
           formControlName="telefono"
+          class="form-control"
           placeholder="+34 600 000 000"
         />
       </div>
 
-      <div class="grupo-campo">
-        <label for="rango">Rango de juego</label>
-        <select
-          id="rango"
-          formControlName="rango"
-          [class.error]="formularioRegistro.get('rango')?.invalid && formularioRegistro.get('rango')?.touched"
-        >
-          <option value="">Selecciona tu nivel</option>
-          <option *ngFor="let rango of rangosDisponibles" [value]="rango.tipo">
-            {{ rango.icono }} {{ rango.nombre }} - {{ rango.descripcion }}
-          </option>
-        </select>
-        <div class="mensaje-error" *ngIf="formularioRegistro.get('rango')?.invalid && formularioRegistro.get('rango')?.touched">
-          Debes seleccionar un rango
+      <div class="form-group">
+        <label for="rango" class="form-label">Nivel de juego</label>
+        <div class="select-wrapper">
+          <select
+            id="rango"
+            formControlName="rango"
+            class="form-control select-control"
+            [class.error]="formularioRegistro.get('rango')?.invalid && formularioRegistro.get('rango')?.touched"
+          >
+            <option value="">Selecciona tu nivel</option>
+            <option *ngFor="let rango of rangosDisponibles" [value]="rango.tipo">
+              {{ rango.icono }} {{ rango.nombre }} - {{ rango.descripcion }}
+            </option>
+          </select>
+          <svg class="select-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6,9 12,15 18,9"></polyline>
+          </svg>
         </div>
+        <span class="error-message" *ngIf="formularioRegistro.get('rango')?.invalid && formularioRegistro.get('rango')?.touched">
+          Selecciona tu nivel de juego
+        </span>
       </div>
 
-      <div class="grupo-campo">
-        <label for="club">Club (opcional)</label>
-        <select id="club" formControlName="club">
-          <option value="">Sin club</option>
-          <option *ngFor="let club of clubes()" [value]="club._id">
-            {{ club.nombre }}
-          </option>
-        </select>
+      <div class="form-group">
+        <label for="club" class="form-label">Club (opcional)</label>
+        <div class="select-wrapper">
+          <select id="club" formControlName="club" class="form-control select-control">
+            <option value="">Sin club</option>
+            <option *ngFor="let club of clubes()" [value]="club._id">
+              {{ club.nombre }}
+            </option>
+          </select>
+          <svg class="select-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6,9 12,15 18,9"></polyline>
+          </svg>
+        </div>
       </div>
 
       <button 
         type="submit" 
-        class="boton-primario"
+        class="btn btn-primary btn-lg register-submit-btn"
         [disabled]="formularioRegistro.invalid || cargando()"
       >
-        <span *ngIf="!cargando()">Registrarse</span>
-        <span *ngIf="cargando()" class="cargando">Registrando...</span>
+        <svg *ngIf="cargando()" class="loading-spinner" width="20" height="20" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="31.416" stroke-dashoffset="31.416">
+            <animate attributeName="stroke-dasharray" dur="2s" values="0 31.416;15.708 15.708;0 31.416" repeatCount="indefinite"/>
+            <animate attributeName="stroke-dashoffset" dur="2s" values="0;-15.708;-31.416" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+        <span *ngIf="!cargando()">Crear cuenta</span>
+        <span *ngIf="cargando()">Creando cuenta...</span>
       </button>
 
-      <div class="mensaje-error" *ngIf="error()">
-        {{ error() }}
+      <div class="error-alert" *ngIf="error()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="15" y1="9" x2="9" y2="15"></line>
+          <line x1="9" y1="9" x2="15" y2="15"></line>
+        </svg>
+        <span>{{ error() }}</span>
       </div>
     </form>
 
-    <div class="pie">
-      <p>¿Ya tienes cuenta? 
-        <a (click)="irALogin()" class="enlace">Inicia sesión aquí</a>
-      </p>
+    <!-- Enlace de login -->
+    <div class="login-section">
+      <p class="login-text">¿Ya tienes cuenta?</p>
+      <button type="button" class="login-link" (click)="irALogin()">
+        Iniciar sesión
+      </button>
     </div>
   </div>
 </div>

@@ -1,36 +1,38 @@
 export interface Usuario {
-  _id?: string;
-  nombre: string;
-  apellido?: string;
+  id: string;
   email: string;
-  telefono?: string;
-  ciudad?: string;
-  fechaNacimiento?: Date;
-  rango: 'PLATINO' | 'ORO' | 'PLATA' | 'BRONCE' | 'COBRE';
-  club?: string;
-  activo: boolean;
-  fechaRegistro?: Date;
-  puntos?: number;
-  partidosJugados?: number;
-  partidosGanados?: number;
+  nombreCompleto: string;
+  nombre: string;
+  apellidos: string;
+  rangoActual: 'PLATINO' | 'ORO' | 'PLATA' | 'BRONCE' | 'COBRE';
+  rol: string;
+  imagenPerfil?: string;
+  idClub?: string;
+  estaActivo: boolean;
+  emailVerificado: boolean;
+  fechaCreacion: string;
+  ultimaActividad: string;
 }
 
 export interface RespuestaAutenticacion {
-  token_acceso: string;
-  usuario: Usuario;
+  accessToken: string;
+  refreshToken: string;
+  user: Usuario;
+  expiresIn: number;
 }
 
 export interface SolicitudLogin {
   email: string;
-  contrasena: string;
+  password: string;
 }
 
 export interface SolicitudRegistro {
-  nombre: string;
   email: string;
-  contrasena: string;
+  password: string;
+  nombre: string;
+  apellidos: string;
   telefono?: string;
-  fechaNacimiento?: Date;
-  rango: 'PLATINO' | 'ORO' | 'PLATA' | 'BRONCE' | 'COBRE';
-  club?: string;
+  fechaNacimiento?: string;
+  rangoActual?: 'PLATINO' | 'ORO' | 'PLATA' | 'BRONCE' | 'COBRE';
+  idClub?: string;
 }

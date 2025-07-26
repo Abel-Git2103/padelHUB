@@ -1,8 +1,8 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 import { Usuario, RespuestaAutenticacion, SolicitudLogin, SolicitudRegistro } from '../models/user.model';
 
 @Injectable({
@@ -46,11 +46,14 @@ export class ServicioAutenticacion {
     return this.http.post<RespuestaAutenticacion>(`${this.URL_API}/auth/login`, credenciales)
       .pipe(
         tap(respuesta => {
-          localStorage.setItem('token_acceso', respuesta.token_acceso);
-          localStorage.setItem('datos_usuario', JSON.stringify(respuesta.usuario));
-          this.usuarioActual.set(respuesta.usuario);
-          this.sujetoUsuarioActual.next(respuesta.usuario);
+          localStorage.setItem('token_acceso', respuesta.accessToken);
+          localStorage.setItem('datos_usuario', JSON.stringify(respuesta.user));
+          this.usuarioActual.set(respuesta.user);
+          this.sujetoUsuarioActual.next(respuesta.user);
           this.estaAutenticado.set(true);
+        }),
+        catchError((error: any) => {
+          return throwError(error);
         })
       );
   }
@@ -59,10 +62,10 @@ export class ServicioAutenticacion {
     return this.http.post<RespuestaAutenticacion>(`${this.URL_API}/auth/register`, datosUsuario)
       .pipe(
         tap(respuesta => {
-          localStorage.setItem('token_acceso', respuesta.token_acceso);
-          localStorage.setItem('datos_usuario', JSON.stringify(respuesta.usuario));
-          this.usuarioActual.set(respuesta.usuario);
-          this.sujetoUsuarioActual.next(respuesta.usuario);
+          localStorage.setItem('token_acceso', respuesta.accessToken);
+          localStorage.setItem('datos_usuario', JSON.stringify(respuesta.user));
+          this.usuarioActual.set(respuesta.user);
+          this.sujetoUsuarioActual.next(respuesta.user);
           this.estaAutenticado.set(true);
         })
       );

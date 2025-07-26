@@ -82,8 +82,8 @@ import { obtenerInfoRango } from '../../models/rango.model';
               <div class="detalles">
                 <h3>{{ usuario()?.nombre }}</h3>
                 <div class="rango">
-                  <span class="etiqueta-rango" [style.background-color]="obtenerInfoRango(usuario()!.rango).color">
-                    {{ obtenerInfoRango(usuario()!.rango).icono }} {{ obtenerInfoRango(usuario()!.rango).nombre }}
+                  <span class="etiqueta-rango" [style.background-color]="obtenerInfoRango(usuario()!.rangoActual).color">
+                    {{ obtenerInfoRango(usuario()!.rangoActual).icono }} {{ obtenerInfoRango(usuario()!.rangoActual).nombre }}
                   </span>
                 </div>
               </div>

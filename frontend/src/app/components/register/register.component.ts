@@ -29,11 +29,12 @@ export class ComponenteRegistro implements OnInit {
   ) {
     this.formularioRegistro = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(2)]],
+      apellidos: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
-      contrasena: ['', [Validators.required, Validators.minLength(6)]],
-      confirmarContrasena: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmarPassword: ['', [Validators.required]],
       telefono: [''],
-      rango: ['COBRE', [Validators.required]]
+      rangoActual: ['COBRE', [Validators.required]]
     }, {
       validators: this.validadorContrasenas
     });
@@ -48,13 +49,13 @@ export class ComponenteRegistro implements OnInit {
   }
 
   private validadorContrasenas(grupo: FormGroup) {
-    const contrasena = grupo.get('contrasena')?.value;
-    const confirmarContrasena = grupo.get('confirmarContrasena')?.value;
+    const password = grupo.get('password')?.value;
+    const confirmarPassword = grupo.get('confirmarPassword')?.value;
     
-    if (contrasena !== confirmarContrasena) {
-      grupo.get('confirmarContrasena')?.setErrors({ noCoinciden: true });
+    if (password !== confirmarPassword) {
+      grupo.get('confirmarPassword')?.setErrors({ noCoinciden: true });
     } else {
-      grupo.get('confirmarContrasena')?.setErrors(null);
+      grupo.get('confirmarPassword')?.setErrors(null);
     }
     
     return null;
@@ -68,10 +69,11 @@ export class ComponenteRegistro implements OnInit {
       try {
         const datosRegistro = {
           nombre: this.formularioRegistro.value.nombre,
+          apellidos: this.formularioRegistro.value.apellidos,
           email: this.formularioRegistro.value.email,
-          contrasena: this.formularioRegistro.value.contrasena,
+          password: this.formularioRegistro.value.password,
           telefono: this.formularioRegistro.value.telefono,
-          rango: this.formularioRegistro.value.rango
+          rangoActual: this.formularioRegistro.value.rangoActual
         };
 
         await this.servicioAuth.registrarse(datosRegistro).toPromise();
