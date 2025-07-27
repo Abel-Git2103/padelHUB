@@ -79,7 +79,7 @@ export class ComponenteLogin implements OnInit, OnDestroy {
           let rutaDestino = '';
           if (respuesta.user.rol === ROLES.ADMIN_SISTEMA || respuesta.user.rol === ROLES.ADMIN_CLUB) {
             rutaDestino = '/admin';
-            console.log('   🎯 Destino: /admin (AdminRedirectGuard se encargará del resto)');
+            console.log('   🎯 Destino: /admin (RoleGuard se encargará de la redirección correcta)');
           } else {
             rutaDestino = '/jugador/tablero';
             console.log('   🎯 Destino: Dashboard Jugador');
