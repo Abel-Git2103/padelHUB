@@ -3,49 +3,60 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, throwError, Subject } from 'rxjs';
 import { tap, catchError, takeUntil } from 'rxjs/operators';
-import { Usuario, RespuestaAutenticacion, SolicitudLogin, SolicitudRegistro } from '../models/user.model';
+import {
+  Usuario,
+  RespuestaAutenticacion,
+  SolicitudLogin,
+  SolicitudRegistro,
+} from '../models/user.model';
+import { ROLES } from '../models/roles.constants';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ServicioAutenticacion implements OnDestroy {
   private readonly URL_API = 'http://localhost:3000/api';
   private sujetoUsuarioActual = new BehaviorSubject<Usuario | null>(null);
   public usuarioActual$ = this.sujetoUsuarioActual.asObservable();
-  
+
   // Subject para manejar la destrucción de suscripciones
   private destroy$ = new Subject<void>();
-  
+
   // Signals para el estado de autenticación
   public estaAutenticado = signal(false);
   public usuarioActual = signal<Usuario | null>(null);
 
   constructor(
     private http: HttpClient,
-    private enrutador: Router
+    private enrutador: Router,
   ) {
     // Restaurar estado de autenticación al inicializar
     this.cargarEstadoAlmacenado();
   }
 
   private cargarEstadoAlmacenado(): void {
-    const token = localStorage.getItem('token_acceso');
-    const datosUsuario = localStorage.getItem('datos_usuario');
+    // Verificar primero localStorage, luego sessionStorage
+    let token = localStorage.getItem('token_acceso') || sessionStorage.getItem('token_acceso');
+    let datosUsuario = localStorage.getItem('datos_usuario') || sessionStorage.getItem('datos_usuario');
     
-    console.log('🔍 Cargando estado desde localStorage:', {
+    const storageUsado = localStorage.getItem('token_acceso') ? 'localStorage' : 'sessionStorage';
+
+    console.log('🔍 Cargando estado desde storage:', {
       token: token ? 'Existe' : 'No existe',
-      datosUsuario: datosUsuario
+      datosUsuario: datosUsuario ? 'Existe' : 'No existe',
+      storageUsado: storageUsado
     });
-    
+
     if (token && datosUsuario) {
       try {
         const usuario = JSON.parse(datosUsuario);
-        console.log('🔍 Usuario parseado del localStorage:', {
+        console.log('🔍 Usuario parseado del storage:', {
           email: usuario.email,
           rol: usuario.rol,
-          rolTipo: typeof usuario.rol
+          rolTipo: typeof usuario.rol,
+          storage: storageUsado
         });
-        
+
         this.actualizarEstadoUsuario(usuario, true);
         console.log('✅ Estado de autenticación restaurado:', usuario.rol);
       } catch (error) {
@@ -55,47 +66,82 @@ export class ServicioAutenticacion implements OnDestroy {
     }
   }
 
-  private actualizarEstadoUsuario(usuario: Usuario | null, estaAutenticado: boolean): void {
+  private actualizarEstadoUsuario(
+    usuario: Usuario | null,
+    estaAutenticado: boolean,
+  ): void {
     console.log('🔄 Actualizando estado usuario:', {
-      usuario: usuario ? {
-        email: usuario.email,
-        rol: usuario.rol,
-        nombre: usuario.nombre
-      } : null,
-      estaAutenticado
+      usuario: usuario
+        ? {
+            email: usuario.email,
+            rol: usuario.rol,
+            nombre: usuario.nombre,
+          }
+        : null,
+      estaAutenticado,
     });
-    
+
     this.usuarioActual.set(usuario);
     this.sujetoUsuarioActual.next(usuario);
     this.estaAutenticado.set(estaAutenticado);
   }
 
   private limpiarEstado(): void {
+    // Limpiar ambos storages
     localStorage.removeItem('token_acceso');
     localStorage.removeItem('datos_usuario');
+    sessionStorage.removeItem('token_acceso');
+    sessionStorage.removeItem('datos_usuario');
     this.actualizarEstadoUsuario(null, false);
+    console.log('🧹 Estado de autenticación limpiado de ambos storages');
   }
 
-  iniciarSesion(credenciales: SolicitudLogin, autoNavigate: boolean = true): Observable<RespuestaAutenticacion> {
-    return this.http.post<RespuestaAutenticacion>(`${this.URL_API}/auth/login`, credenciales)
+  iniciarSesion(
+    credenciales: SolicitudLogin & { recordarme?: boolean },
+    autoNavigate: boolean = true,
+  ): Observable<RespuestaAutenticacion> {
+    return this.http
+      .post<RespuestaAutenticacion>(`${this.URL_API}/auth/login`, {
+        email: credenciales.email,
+        password: credenciales.password
+      })
       .pipe(
-        tap(respuesta => {
-          // Almacenar datos
-          localStorage.setItem('token_acceso', respuesta.accessToken);
-          localStorage.setItem('datos_usuario', JSON.stringify(respuesta.user));
+        tap((respuesta) => {
+          // Usar localStorage o sessionStorage según "recordarme"
+          const storage = credenciales.recordarme ? localStorage : sessionStorage;
           
+          console.log(`💾 Almacenando datos en ${credenciales.recordarme ? 'localStorage' : 'sessionStorage'}`);
+          console.log(`   📝 Recordarme: ${credenciales.recordarme ? 'SÍ' : 'NO'}`);
+          
+          // Limpiar ambos storages antes de guardar
+          localStorage.removeItem('token_acceso');
+          localStorage.removeItem('datos_usuario');
+          sessionStorage.removeItem('token_acceso'); 
+          sessionStorage.removeItem('datos_usuario');
+          
+          // Guardar en el storage correspondiente
+          storage.setItem('token_acceso', respuesta.accessToken);
+          storage.setItem('datos_usuario', JSON.stringify(respuesta.user));
+
           // Actualizar estado
           this.actualizarEstadoUsuario(respuesta.user, true);
-          
-          console.log('✅ Login exitoso. Usuario autenticado:', respuesta.user.rol);
-          
+
+          console.log(
+            '✅ Login exitoso. Usuario autenticado:',
+            respuesta.user.rol,
+          );
+
           // Navegar según el rol del usuario solo si autoNavigate es true
           if (autoNavigate) {
             setTimeout(() => {
-              if (respuesta.user.rol === 'admin') {
-                this.enrutador.navigate(['/admin/dashboard'], { replaceUrl: true });
+              if (respuesta.user.rol === ROLES.ADMIN_SISTEMA || respuesta.user.rol === ROLES.ADMIN_CLUB) {
+                this.enrutador.navigate(['/admin'], {
+                  replaceUrl: true,
+                });
               } else {
-                this.enrutador.navigate(['/jugador/tablero'], { replaceUrl: true });
+                this.enrutador.navigate(['/jugador/tablero'], {
+                  replaceUrl: true,
+                });
               }
             }, 0);
           }
@@ -103,21 +149,27 @@ export class ServicioAutenticacion implements OnDestroy {
         catchError((error: any) => {
           console.error('❌ Error en login:', error);
           return throwError(error);
-        })
+        }),
       );
   }
 
-  registrarse(datosUsuario: SolicitudRegistro): Observable<RespuestaAutenticacion> {
-    return this.http.post<RespuestaAutenticacion>(`${this.URL_API}/auth/register`, datosUsuario)
+  registrarse(
+    datosUsuario: SolicitudRegistro,
+  ): Observable<RespuestaAutenticacion> {
+    return this.http
+      .post<RespuestaAutenticacion>(
+        `${this.URL_API}/auth/register`,
+        datosUsuario,
+      )
       .pipe(
-        tap(respuesta => {
+        tap((respuesta) => {
           localStorage.setItem('token_acceso', respuesta.accessToken);
           localStorage.setItem('datos_usuario', JSON.stringify(respuesta.user));
           this.actualizarEstadoUsuario(respuesta.user, true);
         }),
         catchError((error: any) => {
           return throwError(error);
-        })
+        }),
       );
   }
 
@@ -127,56 +179,9 @@ export class ServicioAutenticacion implements OnDestroy {
     console.log('✅ Sesión cerrada');
   }
 
-  // Método de prueba para simular login (solo para desarrollo)
-  loginPrueba(esAdmin: boolean = false): void {
-    // Probar diferentes ordenes de propiedades
-    const usuarioPrueba: any = {};
-    usuarioPrueba.id = '1';
-    usuarioPrueba.email = esAdmin ? 'admin@test.com' : 'user@test.com';
-    usuarioPrueba.nombre = esAdmin ? 'Admin' : 'Usuario';
-    usuarioPrueba.nombreCompleto = esAdmin ? 'Administrador Test' : 'Usuario Test';
-    usuarioPrueba.apellidos = 'Test';
-    usuarioPrueba.rol = esAdmin ? 'admin' : 'user'; // Establecer ROL ANTES que rangoActual
-    usuarioPrueba.rangoActual = 'BRONCE';
-    usuarioPrueba.imagenPerfil = undefined;
-    usuarioPrueba.idClub = undefined;
-    usuarioPrueba.estaActivo = true;
-    usuarioPrueba.emailVerificado = true;
-    usuarioPrueba.fechaCreacion = new Date().toISOString();
-    usuarioPrueba.ultimaActividad = new Date().toISOString();
-
-    console.log('🧪 ANTES DE GUARDAR - Usuario paso a paso:');
-    console.log('- ID:', usuarioPrueba.id);
-    console.log('- Email:', usuarioPrueba.email);
-    console.log('- ROL:', usuarioPrueba.rol, '(tipo:', typeof usuarioPrueba.rol, ')');
-    console.log('- RangoActual:', usuarioPrueba.rangoActual, '(tipo:', typeof usuarioPrueba.rangoActual, ')');
-    console.log('- Nombre:', usuarioPrueba.nombre);
-
-    console.log('🔍 Object.keys():', Object.keys(usuarioPrueba));
-    console.log('🔍 Object.values():', Object.values(usuarioPrueba));
-
-    const jsonString = JSON.stringify(usuarioPrueba);
-    console.log('🔍 JSON.stringify():', jsonString);
-
-    localStorage.setItem('token_acceso', 'fake-jwt-token-for-testing');
-    localStorage.setItem('datos_usuario', jsonString);
-    
-    const readBack = localStorage.getItem('datos_usuario');
-    console.log('🔍 LEYENDO de localStorage:', readBack);
-    
-    const parsed = JSON.parse(readBack || '{}');
-    console.log('🔍 Usuario parseado:');
-    console.log('- ROL parseado:', parsed.rol, '(tipo:', typeof parsed.rol, ')');
-    console.log('- RangoActual parseado:', parsed.rangoActual, '(tipo:', typeof parsed.rangoActual, ')');
-    
-    this.actualizarEstadoUsuario(usuarioPrueba, true);
-    
-    console.log('✅ Login de prueba exitoso - ROL FINAL:', usuarioPrueba.rol);
-  }
-
   // Métodos de utilidad
   obtenerToken(): string | null {
-    return localStorage.getItem('token_acceso');
+    return localStorage.getItem('token_acceso') || sessionStorage.getItem('token_acceso');
   }
 
   obtenerPerfilUsuario(): Observable<Usuario> {
@@ -185,12 +190,22 @@ export class ServicioAutenticacion implements OnDestroy {
 
   esAdmin(): boolean {
     const usuario = this.usuarioActual();
-    return usuario?.rol === 'admin';
+    return usuario?.rol === ROLES.ADMIN_SISTEMA || usuario?.rol === ROLES.ADMIN_CLUB;
+  }
+
+  esAdminSistema(): boolean {
+    const usuario = this.usuarioActual();
+    return usuario?.rol === ROLES.ADMIN_SISTEMA;
+  }
+
+  esAdminClub(): boolean {
+    const usuario = this.usuarioActual();
+    return usuario?.rol === ROLES.ADMIN_CLUB;
   }
 
   esJugador(): boolean {
     const usuario = this.usuarioActual();
-    return usuario?.rol === 'user' || usuario?.rol === 'jugador';
+    return usuario?.rol === ROLES.JUGADOR;
   }
 
   limpiarEstadoCompleto(): void {
@@ -203,10 +218,10 @@ export class ServicioAutenticacion implements OnDestroy {
     // Completar el subject para cerrar todas las suscripciones
     this.destroy$.next();
     this.destroy$.complete();
-    
+
     // Cerrar el BehaviorSubject
     this.sujetoUsuarioActual.complete();
-    
+
     console.log('🔄 ServicioAutenticacion destruido - suscripciones cerradas');
   }
 }

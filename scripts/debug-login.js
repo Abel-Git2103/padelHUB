@@ -14,7 +14,6 @@ const UsuarioSchema = new mongoose.Schema({
   nombre: String,
   apellidos: String,
   rol: String,
-  estaActivo: Boolean,
   activo: Boolean
 }, { collection: 'usuarios' });
 
@@ -35,7 +34,6 @@ async function debugLogin() {
     console.log('   🔐 Campo contraseña:', usuario.contraseña ? 'existe' : 'no existe');
     console.log('   🔐 Campo password:', usuario.password ? 'existe' : 'no existe');
     console.log('   👤 Rol:', usuario.rol);
-    console.log('   ✅ estaActivo:', usuario.estaActivo);
     console.log('   ✅ activo:', usuario.activo);
     
     // Probar verificación de contraseña
@@ -53,7 +51,7 @@ async function debugLogin() {
     
     // Verificar estado del usuario
     console.log('\n📊 VERIFICANDO ESTADO:');
-    const isActive = !usuario.estaActivo && !usuario.activo;
+    const isActive = !usuario.activo;
     console.log('   Estado activo:', !isActive);
     
   } catch (error) {

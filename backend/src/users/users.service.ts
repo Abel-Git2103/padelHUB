@@ -47,7 +47,7 @@ export class UsersService {
    * Buscar usuario por email
    */
   async buscarPorEmail(email: string): Promise<DocumentoUsuario | null> {
-    return this.userModel.findOne({ email, estaActivo: true }).populate('idClub');
+    return this.userModel.findOne({ email, activo: true }).populate('idClub');
   }
 
   /**
@@ -55,7 +55,7 @@ export class UsersService {
    */
   async buscarPorId(id: string): Promise<RespuestaUsuarioDto> {
     const usuario = await this.userModel.findById(id).populate('idClub');
-    if (!usuario || !usuario.estaActivo) {
+    if (!usuario || !usuario.activo) {
       throw new NotFoundException('Usuario no encontrado');
     }
 
@@ -71,7 +71,7 @@ export class UsersService {
     rango?: RangoUsuario,
     idClub?: string
   ): Promise<{ usuarios: RespuestaUsuarioDto[]; total: number; totalPaginas: number }> {
-    const consulta: any = { estaActivo: true };
+    const consulta: any = { activo: true };
     
     if (rango) consulta.rangoActual = rango;
     if (idClub) consulta.idClub = idClub;
@@ -101,7 +101,7 @@ export class UsersService {
    */
   async actualizar(id: string, actualizarUsuarioDto: ActualizarUsuarioDto): Promise<RespuestaUsuarioDto> {
     const usuario = await this.userModel.findById(id);
-    if (!usuario || !usuario.estaActivo) {
+    if (!usuario || !usuario.activo) {
       throw new NotFoundException('Usuario no encontrado');
     }
 
@@ -116,7 +116,7 @@ export class UsersService {
    */
   async actualizarConfiguracionPrivacidad(id: string, privacidadDto: ActualizarConfiguracionPrivacidadDto): Promise<RespuestaUsuarioDto> {
     const usuario = await this.userModel.findById(id);
-    if (!usuario || !usuario.estaActivo) {
+    if (!usuario || !usuario.activo) {
       throw new NotFoundException('Usuario no encontrado');
     }
 
@@ -131,7 +131,7 @@ export class UsersService {
    */
   async actualizarRango(id: string, nuevoRango: RangoUsuario): Promise<RespuestaUsuarioDto> {
     const usuario = await this.userModel.findById(id);
-    if (!usuario || !usuario.estaActivo) {
+    if (!usuario || !usuario.activo) {
       throw new NotFoundException('Usuario no encontrado');
     }
 
@@ -146,7 +146,7 @@ export class UsersService {
    */
   async unirseAClub(idUsuario: string, idClub: string): Promise<RespuestaUsuarioDto> {
     const usuario = await this.userModel.findById(idUsuario);
-    if (!usuario || !usuario.estaActivo) {
+    if (!usuario || !usuario.activo) {
       throw new NotFoundException('Usuario no encontrado');
     }
 
@@ -165,7 +165,7 @@ export class UsersService {
    */
   async salirDeClub(idUsuario: string): Promise<RespuestaUsuarioDto> {
     const usuario = await this.userModel.findById(idUsuario);
-    if (!usuario || !usuario.estaActivo) {
+    if (!usuario || !usuario.activo) {
       throw new NotFoundException('Usuario no encontrado');
     }
 
@@ -180,7 +180,7 @@ export class UsersService {
    */
   async actualizarPuntos(idUsuario: string, cambioPuntos: number): Promise<void> {
     const usuario = await this.userModel.findById(idUsuario);
-    if (!usuario || !usuario.estaActivo) {
+    if (!usuario || !usuario.activo) {
       throw new NotFoundException('Usuario no encontrado');
     }
 
@@ -202,7 +202,7 @@ export class UsersService {
   async desactivar(id: string): Promise<void> {
     const resultado = await this.userModel.updateOne(
       { _id: id },
-      { estaActivo: false }
+      { activo: false }
     );
 
     if (resultado.matchedCount === 0) {
@@ -240,7 +240,7 @@ export class UsersService {
       rol: usuario.rol,
       imagenPerfil: usuario.imagenPerfil,
       idClub: usuario.idClub?.toString(),
-      estaActivo: usuario.estaActivo,
+      activo: usuario.activo,
       emailVerificado: usuario.emailVerificado,
       fechaCreacion: usuario.fechaCreacion,
       ultimaActividad: usuario.ultimaActividad,

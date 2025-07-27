@@ -20,13 +20,17 @@ export const routes: Routes = [
     path: 'debug',
     loadComponent: () => import('./components/debug/debug.component').then(m => m.DebugComponent)
   },
+  {
+    path: 'no-autorizado',
+    loadComponent: () => import('./components/shared/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent)
+  },
   
   // Rutas para jugadores con layout móvil
   {
     path: 'jugador',
     loadComponent: () => import('./layouts/mobile-layout/mobile-layout.component').then(m => m.MobileLayoutComponent),
     canActivate: [GuardAutenticacion, GuardRol],
-    data: { roles: ['user', 'jugador'] },
+    data: { roles: ['JUGADOR'] },
     children: [
       {
         path: '',
@@ -52,65 +56,84 @@ export const routes: Routes = [
     ]
   },
 
-  // Rutas para administradores con layout de escritorio
+  // Rutas para administradores con layout de escritorio y redirección automática
   {
     path: 'admin',
     loadComponent: () => import('./layouts/desktop-layout/desktop-layout.component').then(m => m.DesktopLayoutComponent),
     canActivate: [GuardAutenticacion, GuardRol],
-    data: { roles: ['admin'] },
+    data: { roles: ['ADMIN_SISTEMA', 'ADMIN_CLUB'] },
     children: [
       {
         path: '',
-        redirectTo: 'dashboard',
+        redirectTo: 'system/dashboard',
         pathMatch: 'full'
       },
+      
+      // Rutas para Administradores de Sistema
       {
-        path: 'dashboard',
-        loadComponent: () => import('./components/admin/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent)
+        path: 'system',
+        canActivate: [GuardRol],
+        data: { roles: ['ADMIN_SISTEMA'] },
+        children: [
+          {
+            path: '',
+            redirectTo: 'dashboard',
+            pathMatch: 'full'
+          },
+          {
+            path: 'dashboard',
+            loadComponent: () => import('./components/admin/system-admin/system-admin-dashboard/system-admin-dashboard.component').then(m => m.SystemAdminDashboardComponent)
+          },
+          {
+            path: 'clubs',
+            loadComponent: () => import('./components/admin/system-admin/system-admin-clubs/system-admin-clubs.component').then(m => m.SystemAdminClubsComponent)
+          },
+          {
+            path: 'users',
+            loadComponent: () => import('./components/admin/system-admin/system-admin-users/system-admin-users.component').then(m => m.SystemAdminUsersComponent)
+          },
+          {
+            path: 'analytics',
+            loadComponent: () => import('./components/admin/system-admin/system-admin-analytics/system-admin-analytics.component').then(m => m.SystemAdminAnalyticsComponent)
+          },
+          {
+            path: 'settings',
+            loadComponent: () => import('./components/admin/system-admin/system-admin-settings/system-admin-settings.component').then(m => m.SystemAdminSettingsComponent)
+          }
+        ]
       },
+      
+      // Rutas para Administradores de Club
       {
-        path: 'usuarios',
-        loadComponent: () => import('./components/admin/admin-users/admin-users.component').then(m => m.AdminUsersComponent)
+        path: 'club',
+        canActivate: [GuardRol],
+        data: { roles: ['ADMIN_CLUB'] },
+        children: [
+          {
+            path: '',
+            redirectTo: 'dashboard',
+            pathMatch: 'full'
+          },
+          {
+            path: 'dashboard',
+            loadComponent: () => import('./components/admin/club-admin/club-admin-dashboard/club-admin-dashboard.component').then(m => m.ClubAdminDashboardComponent)
+          },
+          {
+            path: 'members',
+            loadComponent: () => import('./components/admin/club-admin/club-admin-members/club-admin-members.component').then(m => m.ClubAdminMembersComponent)
+          },
+          {
+            path: 'tournaments',
+            loadComponent: () => import('./components/admin/club-admin/club-admin-tournaments/club-admin-tournaments.component').then(m => m.ClubAdminTournamentsComponent)
+          },
+          {
+            path: 'rankings',
+            loadComponent: () => import('./components/admin/club-admin/club-admin-rankings/club-admin-rankings.component').then(m => m.ClubAdminRankingsComponent)
+          }
+        ]
       },
-      {
-        path: 'clubes',
-        loadComponent: () => import('./components/admin/admin-clubs/admin-clubs.component').then(m => m.AdminClubsComponent)
-      },
-      {
-        path: 'rankings',
-        loadComponent: () => import('./components/admin/admin-rankings/admin-rankings.component').then(m => m.AdminRankingsComponent)
-      },
-      {
-        path: 'partidos',
-        loadComponent: () => import('./components/admin/admin-matches/admin-matches.component').then(m => m.AdminMatchesComponent)
-      },
-      {
-        path: 'configuracion',
-        loadComponent: () => import('./components/admin/admin-settings/admin-settings.component').then(m => m.AdminSettingsComponent)
-      }
-    ]
-  },
 
-  // Rutas de compatibilidad (redirigir a jugador por defecto)
-  {
-    path: 'tablero',
-    redirectTo: '/jugador/tablero',
-    pathMatch: 'full'
-  },
-  {
-    path: 'perfil',
-    redirectTo: '/jugador/perfil',
-    pathMatch: 'full'
-  },
-  {
-    path: 'clubes',
-    redirectTo: '/jugador/clubes',
-    pathMatch: 'full'
-  },
-  {
-    path: 'rankings',
-    redirectTo: '/jugador/rankings',
-    pathMatch: 'full'
+    ]
   },
   
   { 

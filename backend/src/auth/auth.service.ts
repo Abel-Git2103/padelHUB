@@ -40,7 +40,7 @@ export class AuthService {
     }
 
     // Verificar que el usuario esté activo
-    if (!user.estaActivo && !user.activo) {
+    if (!user.activo) {
       throw new UnauthorizedException('Usuario desactivado');
     }
 
@@ -88,7 +88,7 @@ export class AuthService {
       });
 
       const user = await this.usersService.buscarPorEmail(decoded.email);
-      if (!user || !user.estaActivo) {
+      if (!user || !user.activo) {
         throw new UnauthorizedException('Token inválido');
       }
 
@@ -196,7 +196,7 @@ export class AuthService {
    */
   async validateUser(email: string): Promise<RespuestaUsuarioDto | null> {
     const user = await this.usersService.buscarPorEmail(email);
-    if (user && user.estaActivo) {
+    if (user && user.activo) {
       return this.usersService.buscarPorId(user._id.toString());
     }
     return null;

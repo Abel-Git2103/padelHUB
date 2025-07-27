@@ -8,7 +8,7 @@
     "shared"
   ],
   "scripts": {
-    "servidor": "npm run install:all && npm run build:shared && npm run build:backend && npm run dev:backend",
+    "servidor": "npm run install:all && npm run build:shared && npm run build:backend && concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "servidor:prod": "npm run install:all && npm run build:shared && npm run build:backend && cd backend && npm run start:prod",
     "servidor:setup": "npm run install:all && npm run build:shared && npm run build:backend",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",

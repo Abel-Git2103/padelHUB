@@ -30,8 +30,12 @@ import { BaseComponent } from '../../shared/base-component';
       <div style="margin: 20px 0;">
         <h3>Acciones de Prueba</h3>
         
-        <button (click)="loginComoAdmin()" style="padding: 10px 15px; margin: 5px; background: #ff6b6b; color: white; border: none; border-radius: 5px; font-weight: bold;">
-          🔑 Login Admin → Nueva Pestaña
+        <button (click)="loginComoAdminSistema()" style="padding: 10px 15px; margin: 5px; background: #dc3545; color: white; border: none; border-radius: 5px; font-weight: bold;">
+          🔧 Login Admin Sistema → Nueva Pestaña
+        </button>
+        
+        <button (click)="loginComoAdminClub()" style="padding: 10px 15px; margin: 5px; background: #fd7e14; color: white; border: none; border-radius: 5px; font-weight: bold;">
+          🏟️ Login Admin Club → Nueva Pestaña
         </button>
         
         <button (click)="loginComoJugador()" style="padding: 10px 15px; margin: 5px; background: #4ecdc4; color: white; border: none; border-radius: 5px; font-weight: bold;">
@@ -102,15 +106,15 @@ export class DebugComponent extends BaseComponent implements OnInit {
     this.datosUsuario.set(localStorage.getItem('datos_usuario') || '');
   }
 
-  loginComoAdmin() {
-    this.agregarLog('🔑 Iniciando login como admin...');
+  loginComoAdminSistema() {
+    this.agregarLog('� Iniciando login como Admin Sistema...');
     
-    const credencialesAdmin = {
-      email: 'admin@test.com',
+    const credencialesAdminSistema = {
+      email: 'admin.sistema@test.com',
       password: 'password123'
     };
 
-    this.servicioAuth.iniciarSesion(credencialesAdmin, false).pipe(
+    this.servicioAuth.iniciarSesion(credencialesAdminSistema, false).pipe(
       takeUntil(this.destroy$)
     ).subscribe({
       next: (respuesta) => {
@@ -118,7 +122,6 @@ export class DebugComponent extends BaseComponent implements OnInit {
         this.agregarLog('💾 Guardando datos en localStorage (sin navegación automática)...');
         this.actualizarEstado();
         
-        // Asegurar que localStorage está completamente actualizado antes de abrir pestaña
         setTimeout(() => {
           this.agregarLog('🔍 Verificando localStorage actualizado...');
           const tokenGuardado = localStorage.getItem('token_acceso');
@@ -126,10 +129,9 @@ export class DebugComponent extends BaseComponent implements OnInit {
           
           if (tokenGuardado && datosGuardados) {
             this.agregarLog('✅ localStorage confirmado - abriendo nueva pestaña...');
-            // Abrir nueva pestaña directamente al dashboard de admin
-            const nuevaVentana = window.open('/admin/dashboard', '_blank');
+            const nuevaVentana = window.open('/admin', '_blank');
             if (nuevaVentana) {
-              this.agregarLog('🆕 Nueva pestaña abierta - navegando directo a /admin/dashboard');
+              this.agregarLog('🆕 Nueva pestaña abierta - navegando a /admin (redirigirá a system/dashboard)');
             } else {
               this.agregarLog('⚠️ No se pudo abrir nueva pestaña (popup bloqueado?)');
             }
@@ -139,7 +141,47 @@ export class DebugComponent extends BaseComponent implements OnInit {
         }, 300);
       },
       error: (error) => {
-        this.agregarLog(`❌ Error en login admin: ${error.message}`);
+        this.agregarLog(`❌ Error en login Admin Sistema: ${error.message}`);
+      }
+    });
+  }
+
+  loginComoAdminClub() {
+    this.agregarLog('🏟️ Iniciando login como Admin Club...');
+    
+    const credencialesAdminClub = {
+      email: 'admin.club@test.com',
+      password: 'password123'
+    };
+
+    this.servicioAuth.iniciarSesion(credencialesAdminClub, false).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (respuesta) => {
+        this.agregarLog(`✅ Login exitoso como ${respuesta.user.rol}: ${respuesta.user.email}`);
+        this.agregarLog('💾 Guardando datos en localStorage (sin navegación automática)...');
+        this.actualizarEstado();
+        
+        setTimeout(() => {
+          this.agregarLog('🔍 Verificando localStorage actualizado...');
+          const tokenGuardado = localStorage.getItem('token_acceso');
+          const datosGuardados = localStorage.getItem('datos_usuario');
+          
+          if (tokenGuardado && datosGuardados) {
+            this.agregarLog('✅ localStorage confirmado - abriendo nueva pestaña...');
+            const nuevaVentana = window.open('/admin', '_blank');
+            if (nuevaVentana) {
+              this.agregarLog('🆕 Nueva pestaña abierta - navegando a /admin (redirigirá a club/dashboard)');
+            } else {
+              this.agregarLog('⚠️ No se pudo abrir nueva pestaña (popup bloqueado?)');
+            }
+          } else {
+            this.agregarLog('❌ Error: localStorage no se actualizó correctamente');
+          }
+        }, 300);
+      },
+      error: (error) => {
+        this.agregarLog(`❌ Error en login Admin Club: ${error.message}`);
       }
     });
   }

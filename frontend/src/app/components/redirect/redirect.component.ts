@@ -1,7 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ServicioAutenticacion } from '../../services/auth.service';
+import { ROLES } from '../../models/roles.constants';
 
+/**
+ * Componente de redirección inteligente
+ * Redirige automáticamente a los usuarios según su rol y la ruta solicitada:
+ * - JUGADOR: Rutas /jugador/*
+ * - ADMIN_CLUB: Rutas /admin/club/*
+ * - ADMIN_SISTEMA: Rutas /admin/system/*
+ */
 @Component({
   selector: 'app-redirect',
   standalone: true,
@@ -71,51 +79,84 @@ export class RedirectComponent implements OnInit, OnDestroy {
   }
 
   private redirigirSegunRol() {
-    const usuario = this.servicioAuth.usuarioActual();
-    const rutaActual = this.enrutador.url;
-    
-    // Evitar bucles infinitos
-    if (this.hasRedirected) {
-      return;
-    }
-    
-    if (!usuario) {
+    try {
+      const usuario = this.servicioAuth.usuarioActual();
+      const rutaActual = this.enrutador.url;
+      
+      // Evitar bucles infinitos
+      if (this.hasRedirected) {
+        return;
+      }
+      
+      if (!usuario) {
+        this.hasRedirected = true;
+        this.enrutador.navigate(['/iniciar-sesion'], { replaceUrl: true });
+        return;
+      }
+
+      // Determinar la ruta de destino según el rol y la ruta actual
+      let rutaDestino = '';
+      
+      if (usuario.rol === ROLES.ADMIN_SISTEMA) {
+        // Administrador de Sistema
+        if (rutaActual.includes('tablero') || rutaActual.includes('dashboard')) {
+          rutaDestino = '/admin/system/dashboard';
+        } else if (rutaActual.includes('perfil')) {
+          rutaDestino = '/admin/system/dashboard';
+        } else if (rutaActual.includes('clubes')) {
+          rutaDestino = '/admin/system/clubs';
+        } else if (rutaActual.includes('rankings')) {
+          rutaDestino = '/admin/system/analytics';
+        } else if (rutaActual.includes('usuarios')) {
+          rutaDestino = '/admin/system/users';
+        } else {
+          rutaDestino = '/admin/system/dashboard';
+        }
+      } else if (usuario.rol === ROLES.ADMIN_CLUB) {
+        // Administrador de Club
+        if (rutaActual.includes('tablero') || rutaActual.includes('dashboard')) {
+          rutaDestino = '/admin/club/dashboard';
+        } else if (rutaActual.includes('perfil')) {
+          rutaDestino = '/admin/club/dashboard';
+        } else if (rutaActual.includes('clubes')) {
+          rutaDestino = '/admin/club/dashboard';
+        } else if (rutaActual.includes('rankings')) {
+          rutaDestino = '/admin/club/rankings';
+        } else if (rutaActual.includes('miembros') || rutaActual.includes('usuarios')) {
+          rutaDestino = '/admin/club/members';
+        } else if (rutaActual.includes('torneos')) {
+          rutaDestino = '/admin/club/tournaments';
+        } else {
+          rutaDestino = '/admin/club/dashboard';
+        }
+      } else if (usuario.rol === ROLES.JUGADOR) {
+        // Jugador
+        if (rutaActual.includes('tablero') || rutaActual.includes('dashboard')) {
+          rutaDestino = '/jugador/tablero';
+        } else if (rutaActual.includes('perfil')) {
+          rutaDestino = '/jugador/perfil';
+        } else if (rutaActual.includes('clubes')) {
+          rutaDestino = '/jugador/clubes';
+        } else if (rutaActual.includes('rankings')) {
+          rutaDestino = '/jugador/rankings';
+        } else {
+          rutaDestino = '/jugador/tablero';
+        }
+      } else {
+        // Rol no reconocido, redirigir al login
+        this.hasRedirected = true;
+        this.enrutador.navigate(['/iniciar-sesion'], { replaceUrl: true });
+        return;
+      }
+
+      this.hasRedirected = true;
+      // Redirigir inmediatamente sin delay para mejorar performance
+      this.enrutador.navigate([rutaDestino], { replaceUrl: true });
+    } catch (error) {
+      console.error('Error en la redirección:', error);
+      // En caso de error, redirigir al login como fallback
       this.hasRedirected = true;
       this.enrutador.navigate(['/iniciar-sesion'], { replaceUrl: true });
-      return;
     }
-
-    // Determinar la ruta de destino según el rol y la ruta actual
-    let rutaDestino = '';
-    
-    if (usuario.rol === 'admin') {
-      if (rutaActual.includes('tablero')) {
-        rutaDestino = '/admin/dashboard';
-      } else if (rutaActual.includes('perfil')) {
-        rutaDestino = '/admin/dashboard';
-      } else if (rutaActual.includes('clubes')) {
-        rutaDestino = '/admin/clubes';
-      } else if (rutaActual.includes('rankings')) {
-        rutaDestino = '/admin/rankings';
-      } else {
-        rutaDestino = '/admin/dashboard';
-      }
-    } else {
-      if (rutaActual.includes('tablero')) {
-        rutaDestino = '/jugador/tablero';
-      } else if (rutaActual.includes('perfil')) {
-        rutaDestino = '/jugador/perfil';
-      } else if (rutaActual.includes('clubes')) {
-        rutaDestino = '/jugador/clubes';
-      } else if (rutaActual.includes('rankings')) {
-        rutaDestino = '/jugador/rankings';
-      } else {
-        rutaDestino = '/jugador/tablero';
-      }
-    }
-
-    this.hasRedirected = true;
-    // Redirigir inmediatamente sin delay para mejorar performance
-    this.enrutador.navigate([rutaDestino], { replaceUrl: true });
   }
 }

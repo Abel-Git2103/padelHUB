@@ -6,7 +6,6 @@ Esta carpeta contiene scripts de utilidad para la gestión de la base de datos y
 
 ### 🔧 Scripts de Corrección y Mantenimiento
 
-- **`corregir-esta-activo.js`** - Corrige el campo `estaActivo` en usuarios que no lo tienen definido
 - **`corregir-rol-admin.js`** - Corrige el rol del usuario admin de "JUGADOR" a "admin"
 
 ### 👤 Scripts de Gestión de Usuarios
@@ -42,9 +41,6 @@ node nombre-del-script.js
 ```bash
 # Verificar credenciales de usuarios
 node verificar-credenciales.js
-
-# Corregir el campo estaActivo
-node corregir-esta-activo.js
 
 # Ver todos los usuarios
 node verificar-usuarios.js

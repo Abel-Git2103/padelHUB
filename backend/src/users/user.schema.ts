@@ -129,10 +129,6 @@ export class Usuario {
   @Prop({ type: EsquemaConfiguracionPrivacidad, default: () => new ConfiguracionPrivacidad() })
   configuracionPrivacidad: ConfiguracionPrivacidad;
 
-  // Estado del usuario
-  @Prop({ default: true })
-  estaActivo: boolean;
-
   // Campo alternativo para compatibilidad
   @Prop({ default: true })
   activo?: boolean;

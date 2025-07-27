@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ServicioAutenticacion } from '../../services/auth.service';
 import { SolicitudLogin } from '../../models/user.model';
 import { Subscription } from 'rxjs';
+import { ROLES } from '../../models/roles.constants';
 
 @Component({
   selector: 'app-login',
@@ -53,28 +54,48 @@ export class ComponenteLogin implements OnInit, OnDestroy {
       this.cargando.set(true);
       this.error.set('');
 
-      // Extraer solo los campos que necesita el backend
-      const credenciales: SolicitudLogin = {
+      // Extraer todos los campos incluyendo recordarme
+      const credenciales = {
         email: this.formularioLogin.value.email,
-        password: this.formularioLogin.value.password
+        password: this.formularioLogin.value.password,
+        recordarme: this.formularioLogin.value.recordarme
       };
 
-      this.subscription = this.servicioAuth.iniciarSesion(credenciales).subscribe({
+      console.log('📝 Credenciales de login:', {
+        email: credenciales.email,
+        recordarme: credenciales.recordarme
+      });
+
+      this.subscription = this.servicioAuth.iniciarSesion(credenciales, false).subscribe({
         next: (respuesta) => {
-          console.log('✅ Login exitoso para:', respuesta.user.email);
+          console.log('🔑 LOGIN EXITOSO - ANÁLISIS COMPLETO:');
+          console.log('   📧 Usuario:', respuesta.user.email);
+          console.log('   👤 Rol:', respuesta.user.rol);
+          console.log('   🎯 Ruta actual antes de navegar:', this.enrutador.url);
+          
           this.cargando.set(false);
           
-          // Redirigir usando Angular Router de forma natural
-          // Los guards se encargarán de validar y redirigir al lugar correcto
-          const rutaDestino = respuesta.user.rol === 'admin' ? '/admin' : '/jugador';
+          // Determinar destino según rol - usar /admin para admins
+          let rutaDestino = '';
+          if (respuesta.user.rol === ROLES.ADMIN_SISTEMA || respuesta.user.rol === ROLES.ADMIN_CLUB) {
+            rutaDestino = '/admin';
+            console.log('   🎯 Destino: /admin (AdminRedirectGuard se encargará del resto)');
+          } else {
+            rutaDestino = '/jugador/tablero';
+            console.log('   🎯 Destino: Dashboard Jugador');
+          }
           
-          console.log('🔄 Navegando a:', rutaDestino);
-          this.enrutador.navigate([rutaDestino]).then((navegacionExitosa) => {
+          console.log('🔄 NAVEGANDO A:', rutaDestino);
+          
+          // Navegar directamente al destino final
+          this.enrutador.navigate([rutaDestino], { replaceUrl: true }).then((navegacionExitosa) => {
             if (navegacionExitosa) {
-              console.log('✅ Navegación exitosa');
+              console.log('✅ NAVEGACIÓN COMPLETADA - Sin redirecciones adicionales');
             } else {
-              console.log('❌ Error en navegación - posiblemente bloqueada por guards');
+              console.log('❌ ERROR EN NAVEGACIÓN - verificar guards o rutas');
             }
+          }).catch(error => {
+            console.error('💥 ERROR EN NAVEGACIÓN:', error);
           });
         },
         error: (err) => {

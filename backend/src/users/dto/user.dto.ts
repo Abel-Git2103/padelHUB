@@ -209,7 +209,7 @@ export class RespuestaUsuarioDto {
   idClub?: string;
 
   @ApiProperty({ description: 'Usuario activo' })
-  estaActivo: boolean;
+  activo: boolean;
 
   @ApiProperty({ description: 'Email verificado' })
   emailVerificado: boolean;

@@ -17,8 +17,9 @@ npm run build:backend
 
 echo ""
 echo "🚀 Iniciando servidor en modo desarrollo..."
-echo "El servidor estará disponible en: http://localhost:3000"
+echo "Backend estará disponible en: http://localhost:3000"
+echo "Frontend estará disponible en: http://localhost:4200"
 echo "Documentación Swagger en: http://localhost:3000/api/docs"
 echo ""
 
-npm run dev:backend
+npm run dev
