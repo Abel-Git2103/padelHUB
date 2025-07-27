@@ -50,8 +50,20 @@ export const routes: Routes = [
         loadComponent: () => import('./components/clubs/clubs.component').then(m => m.ComponenteClubes)
       },
       {
+        path: 'chat',
+        loadComponent: () => import('./components/shared/coming-soon/coming-soon.component').then(m => m.ComingSoonComponent)
+      },
+      {
+        path: 'monedero',
+        loadComponent: () => import('./components/shared/coming-soon/coming-soon.component').then(m => m.ComingSoonComponent)
+      },
+      {
         path: 'rankings',
         loadComponent: () => import('./components/rankings/rankings.component').then(m => m.ComponenteRankings)
+      },
+      {
+        path: 'ayuda',
+        loadComponent: () => import('./components/shared/coming-soon/coming-soon.component').then(m => m.ComingSoonComponent)
       }
     ]
   },

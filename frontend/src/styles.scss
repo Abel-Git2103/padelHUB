@@ -70,6 +70,11 @@
   box-sizing: border-box;
 }
 
+html {
+  width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   font-family: var(--font-family);
   font-size: var(--font-size-base);
@@ -78,6 +83,8 @@ body {
   background-color: var(--background-secondary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 /* Estilos de scrollbar para WebKit */

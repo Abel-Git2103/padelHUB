@@ -11,30 +11,6 @@ import { obtenerInfoRango } from '../../models/rango.model';
   imports: [CommonModule],
   template: `
     <div class="contenedor-rankings">
-      <!-- Barra de navegación -->
-      <nav class="barra-navegacion">
-        <div class="logo">
-          <h2>🏓 PadelHUB</h2>
-        </div>
-        <div class="menu-navegacion">
-          <button class="boton-nav" (click)="navegarA('/tablero')">
-            🏠 Inicio
-          </button>
-          <button class="boton-nav" (click)="navegarA('/perfil')">
-            👤 Perfil
-          </button>
-          <button class="boton-nav" (click)="navegarA('/clubes')">
-            🏟️ Clubes
-          </button>
-          <button class="boton-nav activo">
-            🏆 Rankings
-          </button>
-          <button class="boton-nav boton-salir" (click)="cerrarSesion()">
-            🚪 Salir
-          </button>
-        </div>
-      </nav>
-
       <!-- Contenido principal -->
       <main class="contenido-principal">
         <div class="encabezado">
@@ -189,57 +165,6 @@ import { obtenerInfoRango } from '../../models/rango.model';
     .contenedor-rankings {
       min-height: 100vh;
       background: #f8f9fa;
-    }
-
-    .barra-navegacion {
-      background: white;
-      padding: 1rem 2rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .logo h2 {
-      margin: 0;
-      color: #333;
-      font-size: 1.5rem;
-    }
-
-    .menu-navegacion {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-
-    .boton-nav {
-      padding: 0.5rem 1rem;
-      border: none;
-      background: transparent;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.2s;
-    }
-
-    .boton-nav:hover {
-      background: #f1f3f4;
-    }
-
-    .boton-nav.activo {
-      background: #667eea;
-      color: white;
-    }
-
-    .boton-salir {
-      color: #e74c3c;
-    }
-
-    .boton-salir:hover {
-      background: #fee;
     }
 
     .contenido-principal {
@@ -491,17 +416,6 @@ import { obtenerInfoRango } from '../../models/rango.model';
     }
 
     @media (max-width: 768px) {
-      .barra-navegacion {
-        flex-direction: column;
-        gap: 1rem;
-        padding: 1rem;
-      }
-
-      .menu-navegacion {
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
       .contenido-principal {
         padding: 1rem;
       }

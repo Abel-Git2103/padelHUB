@@ -42,6 +42,21 @@ export class DashboardComponent implements OnInit {
     return `${usuario.nombre.charAt(0)}${apellido.charAt(0) || usuario.nombre.charAt(1)}`.toUpperCase();
   }
 
+  obtenerPrimerNombre(): string {
+    const usuario = this.usuario();
+    if (!usuario) return 'Usuario';
+    
+    // Si el nombre tiene espacios, tomar solo el primer nombre
+    const primerNombre = usuario.nombre.split(' ')[0];
+    
+    // Si es muy largo, truncar
+    if (primerNombre.length > 15) {
+      return primerNombre.substring(0, 15) + '...';
+    }
+    
+    return primerNombre;
+  }
+
   obtenerColorRango(): string {
     const usuario = this.usuario();
     if (!usuario?.rangoActual) return '#666';

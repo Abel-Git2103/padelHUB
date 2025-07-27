@@ -2,7 +2,10 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
   background-color: #f8fafc;
+  overflow-x: hidden;
 }
 
 /* Header móvil */
@@ -13,6 +16,7 @@
   top: 0;
   z-index: 100;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
 .header-content {
@@ -21,6 +25,8 @@
   align-items: center;
   padding: 12px 16px;
   min-height: 56px;
+  width: 100%;
+  max-width: 100%;
 }
 
 .logo-section {
@@ -93,8 +99,10 @@
 .mobile-main {
   flex: 1;
   padding: 16px;
-  padding-bottom: 80px; /* Espacio para la navegación inferior */
+  padding-bottom: 100px; /* Espacio para la navegación inferior mejorada */
   overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
 }
 
 /* Navegación inferior móvil */
@@ -103,52 +111,87 @@
   bottom: 0;
   left: 0;
   right: 0;
+  width: 100%;
   background: white;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid #f1f5f9;
   display: flex;
-  padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+  justify-content: space-around;
+  align-items: center;
+  padding: 12px 8px calc(12px + env(safe-area-inset-bottom)) 8px;
   z-index: 100;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+  border-radius: 20px 20px 0 0;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
 }
 
 .nav-btn {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 8px 4px;
+  padding: 10px 6px;
   background: none;
   border: none;
-  color: #64748b;
-  font-size: 12px;
-  font-weight: 500;
+  color: #9CA3AF;
+  font-size: 9px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  gap: 4px;
-  min-height: 56px;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  gap: 5px;
+  min-width: 50px;
+  border-radius: 14px;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 
 .nav-btn:hover {
   color: #2E7D32;
-  background: rgba(46, 125, 50, 0.05);
+  background: rgba(46, 125, 50, 0.08);
+  transform: translateY(-2px);
 }
 
 .nav-btn.active {
   color: #2E7D32;
-  font-weight: 600;
+  font-weight: 700;
+  background: rgba(46, 125, 50, 0.12);
+  transform: translateY(-1px);
 }
 
 .nav-btn.active svg {
   color: #2E7D32;
+  transform: scale(1.15);
+  filter: drop-shadow(0 2px 4px rgba(46, 125, 50, 0.3));
+}
+
+.nav-btn.active::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 4px;
+  background: linear-gradient(90deg, #2E7D32 0%, #4CAF50 100%);
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.4);
 }
 
 .nav-btn span {
   line-height: 1;
   margin-top: 2px;
+  text-align: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  transition: all 0.3s ease;
 }
 
-/* Media queries para tablets */
+.nav-btn svg {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  filter: none;
+}
+
+/* Media queries para tablets y dispositivos grandes */
 @media (min-width: 768px) {
   .mobile-layout {
     max-width: 480px;
@@ -159,15 +202,72 @@
   .mobile-main {
     padding: 20px;
   }
+
+  /* Ajustar navbar para que esté dentro del contenedor */
+  .mobile-bottom-nav {
+    left: 50%;
+    right: unset;
+    width: 480px;
+    transform: translateX(-50%);
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  .nav-btn {
+    padding: 10px 12px;
+    min-width: 55px;
+    font-size: 10px;
+    gap: 6px;
+  }
+
+  .nav-btn span {
+    font-size: 11px;
+  }
 }
 
-/* Animaciones */
+/* Media query específica para dispositivos móviles */
+@media (max-width: 767px) {
+  .mobile-layout {
+    width: 100vw;
+    max-width: 100vw;
+    margin: 0;
+    overflow-x: hidden;
+  }
+  
+  .mobile-header {
+    width: 100vw;
+  }
+  
+  .mobile-bottom-nav {
+    width: 100vw;
+    left: 0;
+    right: 0;
+  }
+}
+
+/* Animaciones mejoradas */
 .nav-btn {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.95) translateY(-1px);
+}
+
+.nav-btn.active {
+  animation: activeButtonPulse 0.3s ease-out;
+}
+
+@keyframes activeButtonPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* Estados de carga */
