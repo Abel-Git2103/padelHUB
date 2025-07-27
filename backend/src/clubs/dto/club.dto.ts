@@ -27,7 +27,7 @@ export class ClubContactDto {
   email: string;
 
   @ApiProperty({ description: 'Teléfono de contacto' })
-  @IsPhoneNumber('ES')
+  @IsString()
   phone: string;
 
   @ApiPropertyOptional({ description: 'Sitio web del club' })

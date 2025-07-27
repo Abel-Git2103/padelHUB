@@ -30,19 +30,25 @@ import { Club } from '../../models/club.model';
           <div class="tarjeta-club" *ngFor="let club of clubes()">
             <div class="icono-club">🏟️</div>
             <div class="info-club">
-              <h3>{{ club.nombre }}</h3>
-              <p class="direccion">📍 {{ club.direccion }}</p>
-              <div class="detalles" *ngIf="club.telefono || club.email">
-                <p *ngIf="club.telefono" class="telefono">📞 {{ club.telefono }}</p>
-                <p *ngIf="club.email" class="email">✉️ {{ club.email }}</p>
+              <h3>{{ getClubName(club) }}</h3>
+              <p class="descripcion">{{ getClubDescription(club) }}</p>
+              <p class="direccion">📍 {{ getClubAddress(club) }}</p>
+              <div class="detalles">
+                <p *ngIf="getClubPhone(club)" class="telefono">📞 {{ getClubPhone(club) }}</p>
+                <p *ngIf="getClubEmail(club)" class="email">✉️ {{ getClubEmail(club) }}</p>
+                <p *ngIf="getClubCourts(club)" class="pistas">🎾 {{ getClubCourts(club) }} pistas</p>
+                <p *ngIf="getClubPrice(club)" class="precio">💰 {{ getClubPrice(club) }}€/hora</p>
               </div>
-              <div class="sitio-web" *ngIf="club.sitioWeb">
-                <a [href]="club.sitioWeb" target="_blank" class="enlace-web">
+              <div class="sitio-web" *ngIf="getClubWebsite(club)">
+                <a [href]="getClubWebsite(club)" target="_blank" class="enlace-web">
                   🌐 Sitio web
                 </a>
               </div>
             </div>
             <div class="acciones-club">
+              <button class="boton-ver-detalles" (click)="verDetallesClub(club._id!)" [disabled]="!club._id">
+                Ver Detalles
+              </button>
               <button class="boton-unirse" disabled>
                 Próximamente
               </button>
@@ -132,7 +138,26 @@ import { Club } from '../../models/club.model';
     .encabezado p {
       color: #666;
       font-size: 1.1rem;
-      margin: 0;
+      margin: 0 0 1rem 0;
+    }
+
+    .header-actions {
+      margin-top: 1rem;
+    }
+
+    .btn-primary {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #0056b3;
     }
 
     .cargando {
@@ -221,6 +246,32 @@ import { Club } from '../../models/club.model';
 
     .acciones-club {
       flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .boton-ver-detalles {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s;
+      white-space: nowrap;
+      font-size: 0.9rem;
+    }
+
+    .boton-ver-detalles:hover:not(:disabled) {
+      background: #0056b3;
+    }
+
+    .boton-ver-detalles:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      opacity: 0.6;
     }
 
     .boton-unirse {
@@ -232,6 +283,19 @@ import { Club } from '../../models/club.model';
       font-size: 0.9rem;
       cursor: not-allowed;
       opacity: 0.6;
+    }
+
+    .descripcion {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+
+    .pistas, .precio {
+      color: #007bff;
+      font-weight: 600;
+      margin: 0.25rem 0;
     }
 
     .sin-clubes,
@@ -370,11 +434,83 @@ export class ComponenteClubes implements OnInit {
     });
   }
 
+  // Métodos auxiliares para manejar compatibilidad de datos
+  getClubName(club: Club): string {
+    return club.name || club.nombre || 'Club sin nombre';
+  }
+
+  getClubDescription(club: Club): string {
+    return club.description || 'Descripción no disponible';
+  }
+
+  getClubAddress(club: Club): string {
+    return club.location?.address || club.direccion || 'Dirección no disponible';
+  }
+
+  getClubPhone(club: Club): string | null {
+    return club.contact?.phone || club.telefono || null;
+  }
+
+  getClubEmail(club: Club): string | null {
+    return club.contact?.email || club.email || null;
+  }
+
+  getClubWebsite(club: Club): string | null {
+    return club.contact?.website || club.sitioWeb || null;
+  }
+
+  getClubCourts(club: Club): number | null {
+    return club.totalCourts || club.numeroPistas || null;
+  }
+
+  getClubPrice(club: Club): number | null {
+    return club.pricing?.courtPricePerHour || club.precioHora || null;
+  }
+
   navegarA(ruta: string) {
     this.enrutador.navigate([ruta]);
   }
 
+  verDetallesClub(clubId: string) {
+    if (clubId) {
+      this.enrutador.navigate(['/clubes', clubId]);
+    }
+  }
+
   cerrarSesion() {
     this.servicioAuth.cerrarSesion();
+  }
+
+  // Métodos auxiliares para compatibilidad con diferentes formatos de datos
+  obtenerNombreClub(club: Club): string {
+    return club.name || club.nombre || 'Sin nombre';
+  }
+
+  obtenerDescripcionClub(club: Club): string {
+    return club.description || 'Descripción no disponible';
+  }
+
+  obtenerDireccionClub(club: Club): string {
+    return club.location?.address || club.direccion || 'Dirección no disponible';
+  }
+
+  obtenerTelefonoClub(club: Club): string | undefined {
+    return club.contact?.phone || club.telefono;
+  }
+
+  obtenerEmailClub(club: Club): string | undefined {
+    return club.contact?.email || club.email;
+  }
+
+  obtenerSitioWebClub(club: Club): string | undefined {
+    return club.contact?.website || club.sitioWeb;
+  }
+
+  obtenerNumeroPistas(club: Club): number | undefined {
+    return club.totalCourts || club.numeroPistas;
+  }
+
+  obtenerPrecioHora(club: Club): number | undefined {
+    return club.pricing?.courtPricePerHour || club.precioHora;
   }
 }

@@ -15,16 +15,30 @@ export class ClubsService {
    * Crear un nuevo club
    */
   async create(createClubDto: CreateClubDto): Promise<ClubResponseDto> {
-    // Verificar si el nombre ya existe
-    const existingClub = await this.clubModel.findOne({ name: createClubDto.name });
-    if (existingClub) {
-      throw new ConflictException('Ya existe un club con ese nombre');
+    try {
+      // Verificar si el nombre ya existe
+      const existingClub = await this.clubModel.findOne({ name: createClubDto.name });
+      if (existingClub) {
+        throw new ConflictException('Ya existe un club con ese nombre');
+      }
+
+      // Crear la instancia del modelo
+      const createdClub = new this.clubModel(createClubDto);
+      
+      // Guardar en la base de datos
+      await createdClub.save();
+      
+      // Convertir a DTO de respuesta
+      return this.toClubResponse(createdClub);
+      
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      
+      // Re-lanzar el error original con más contexto
+      throw new Error(`Error interno al crear club: ${error.message}`);
     }
-
-    const createdClub = new this.clubModel(createClubDto);
-    await createdClub.save();
-
-    return this.toClubResponse(createdClub);
   }
 
   /**

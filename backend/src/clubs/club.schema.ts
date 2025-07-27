@@ -65,7 +65,11 @@ export class ClubLocation {
   @Prop({ required: true })
   postalCode: string;
 
-  @Prop({ type: { type: String, default: 'Point' } })
+  @Prop({ 
+    type: Object,
+    required: false,
+    default: null
+  })
   coordinates?: {
     type: 'Point';
     coordinates: [number, number]; // [longitude, latitude]
@@ -161,7 +165,7 @@ export class Club {
   operatingHours: Map<string, { open: string; close: string }>; // 'monday' -> { open: '08:00', close: '22:00' }
 
   // Administradores del club (referencias a usuarios)
-  @Prop({ type: [Types.ObjectId], ref: 'User', default: [] })
+  @Prop({ type: [Types.ObjectId], ref: 'Usuario', default: [] })
   administrators: Types.ObjectId[];
 
   // Estadísticas por temporadas
@@ -203,7 +207,8 @@ ClubSchema.index({ name: 1 }, { unique: true });
 ClubSchema.index({ status: 1 });
 ClubSchema.index({ 'location.city': 1 });
 ClubSchema.index({ 'location.province': 1 });
-ClubSchema.index({ 'location.coordinates': '2dsphere' }); // Para búsquedas geoespaciales
+// TEMPORAL: Comentado hasta que las coordenadas funcionen correctamente
+// ClubSchema.index({ 'location.coordinates': '2dsphere' }); // Para búsquedas geoespaciales
 ClubSchema.index({ createdAt: -1 });
 
 // Middleware para actualizar updatedAt

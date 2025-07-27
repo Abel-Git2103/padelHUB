@@ -102,8 +102,49 @@ export class DebugComponent extends BaseComponent implements OnInit {
     this.estaAutenticado.set(this.servicioAuth.estaAutenticado());
     this.usuarioActual.set(this.servicioAuth.usuarioActual());
     this.rutaActual.set(this.router.url);
-    this.token.set(localStorage.getItem('token_acceso') || '');
-    this.datosUsuario.set(localStorage.getItem('datos_usuario') || '');
+    
+    // Manejo seguro del localStorage
+    try {
+      this.token.set(this.obtenerDeStorage('token_acceso') || '');
+      this.datosUsuario.set(this.obtenerDeStorage('datos_usuario') || '');
+    } catch (error) {
+      this.agregarLog(`⚠️ Error al acceder al localStorage: ${error}`);
+      this.token.set('Error al acceder');
+      this.datosUsuario.set('Error al acceder');
+    }
+  }
+
+  // Método auxiliar para acceso seguro al storage
+  private obtenerDeStorage(clave: string): string | null {
+    try {
+      return localStorage.getItem(clave) || sessionStorage.getItem(clave);
+    } catch (error) {
+      console.error(`Error al acceder al storage para la clave ${clave}:`, error);
+      return null;
+    }
+  }
+
+  // Método auxiliar para escritura segura al storage
+  private guardarEnStorage(clave: string, valor: string, recordarme: boolean = true): boolean {
+    try {
+      const storage = recordarme ? localStorage : sessionStorage;
+      storage.setItem(clave, valor);
+      return true;
+    } catch (error) {
+      console.error(`Error al guardar en storage para la clave ${clave}:`, error);
+      return false;
+    }
+  }
+
+  // Método auxiliar para limpiar storage de forma segura
+  private limpiarStorageSeguro(): void {
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+      this.agregarLog('🗑️ Storage limpiado exitosamente');
+    } catch (error) {
+      this.agregarLog(`⚠️ Error al limpiar storage: ${error}`);
+    }
   }
 
   loginComoAdminSistema() {
@@ -124,24 +165,31 @@ export class DebugComponent extends BaseComponent implements OnInit {
         
         setTimeout(() => {
           this.agregarLog('🔍 Verificando localStorage actualizado...');
-          const tokenGuardado = localStorage.getItem('token_acceso');
-          const datosGuardados = localStorage.getItem('datos_usuario');
+          const tokenGuardado = this.obtenerDeStorage('token_acceso');
+          const datosGuardados = this.obtenerDeStorage('datos_usuario');
           
           if (tokenGuardado && datosGuardados) {
             this.agregarLog('✅ localStorage confirmado - abriendo nueva pestaña...');
-            const nuevaVentana = window.open('/admin', '_blank');
-            if (nuevaVentana) {
-              this.agregarLog('🆕 Nueva pestaña abierta - navegando a /admin (redirigirá a system/dashboard)');
-            } else {
-              this.agregarLog('⚠️ No se pudo abrir nueva pestaña (popup bloqueado?)');
+            try {
+              const nuevaVentana = window.open('/admin', '_blank');
+              if (nuevaVentana) {
+                this.agregarLog('🆕 Nueva pestaña abierta - navegando a /admin (redirigirá a system/dashboard)');
+              } else {
+                this.agregarLog('⚠️ No se pudo abrir nueva pestaña (popup bloqueado?)');
+              }
+            } catch (error) {
+              this.agregarLog(`❌ Error al abrir nueva pestaña: ${error}`);
             }
           } else {
             this.agregarLog('❌ Error: localStorage no se actualizó correctamente');
+            this.agregarLog(`   Token: ${tokenGuardado ? 'OK' : 'FALTA'}`);
+            this.agregarLog(`   Datos: ${datosGuardados ? 'OK' : 'FALTA'}`);
           }
         }, 300);
       },
       error: (error) => {
-        this.agregarLog(`❌ Error en login Admin Sistema: ${error.message}`);
+        this.agregarLog(`❌ Error en login Admin Sistema: ${error.message || error}`);
+        console.error('Error completo:', error);
       }
     });
   }
@@ -164,24 +212,31 @@ export class DebugComponent extends BaseComponent implements OnInit {
         
         setTimeout(() => {
           this.agregarLog('🔍 Verificando localStorage actualizado...');
-          const tokenGuardado = localStorage.getItem('token_acceso');
-          const datosGuardados = localStorage.getItem('datos_usuario');
+          const tokenGuardado = this.obtenerDeStorage('token_acceso');
+          const datosGuardados = this.obtenerDeStorage('datos_usuario');
           
           if (tokenGuardado && datosGuardados) {
             this.agregarLog('✅ localStorage confirmado - abriendo nueva pestaña...');
-            const nuevaVentana = window.open('/admin', '_blank');
-            if (nuevaVentana) {
-              this.agregarLog('🆕 Nueva pestaña abierta - navegando a /admin (redirigirá a club/dashboard)');
-            } else {
-              this.agregarLog('⚠️ No se pudo abrir nueva pestaña (popup bloqueado?)');
+            try {
+              const nuevaVentana = window.open('/admin', '_blank');
+              if (nuevaVentana) {
+                this.agregarLog('🆕 Nueva pestaña abierta - navegando a /admin (redirigirá a club/dashboard)');
+              } else {
+                this.agregarLog('⚠️ No se pudo abrir nueva pestaña (popup bloqueado?)');
+              }
+            } catch (error) {
+              this.agregarLog(`❌ Error al abrir nueva pestaña: ${error}`);
             }
           } else {
             this.agregarLog('❌ Error: localStorage no se actualizó correctamente');
+            this.agregarLog(`   Token: ${tokenGuardado ? 'OK' : 'FALTA'}`);
+            this.agregarLog(`   Datos: ${datosGuardados ? 'OK' : 'FALTA'}`);
           }
         }, 300);
       },
       error: (error) => {
-        this.agregarLog(`❌ Error en login Admin Club: ${error.message}`);
+        this.agregarLog(`❌ Error en login Admin Club: ${error.message || error}`);
+        console.error('Error completo:', error);
       }
     });
   }
@@ -205,32 +260,45 @@ export class DebugComponent extends BaseComponent implements OnInit {
         // Asegurar que localStorage está completamente actualizado antes de abrir pestaña
         setTimeout(() => {
           this.agregarLog('🔍 Verificando localStorage actualizado...');
-          const tokenGuardado = localStorage.getItem('token_acceso');
-          const datosGuardados = localStorage.getItem('datos_usuario');
+          const tokenGuardado = this.obtenerDeStorage('token_acceso');
+          const datosGuardados = this.obtenerDeStorage('datos_usuario');
           
           if (tokenGuardado && datosGuardados) {
             this.agregarLog('✅ localStorage confirmado - abriendo nueva pestaña...');
-            // Abrir nueva pestaña directamente al dashboard de jugador
-            const nuevaVentana = window.open('/jugador/tablero', '_blank');
-            if (nuevaVentana) {
-              this.agregarLog('🆕 Nueva pestaña abierta - navegando directo a /jugador/tablero');
-            } else {
-              this.agregarLog('⚠️ No se pudo abrir nueva pestaña (popup bloqueado?)');
+            try {
+              // Abrir nueva pestaña directamente al dashboard de jugador
+              const nuevaVentana = window.open('/jugador/tablero', '_blank');
+              if (nuevaVentana) {
+                this.agregarLog('🆕 Nueva pestaña abierta - navegando directo a /jugador/tablero');
+              } else {
+                this.agregarLog('⚠️ No se pudo abrir nueva pestaña (popup bloqueado?)');
+              }
+            } catch (error) {
+              this.agregarLog(`❌ Error al abrir nueva pestaña: ${error}`);
             }
           } else {
             this.agregarLog('❌ Error: localStorage no se actualizó correctamente');
+            this.agregarLog(`   Token: ${tokenGuardado ? 'OK' : 'FALTA'}`);
+            this.agregarLog(`   Datos: ${datosGuardados ? 'OK' : 'FALTA'}`);
           }
         }, 300);
       },
       error: (error) => {
-        this.agregarLog(`❌ Error en login jugador: ${error.message}`);
+        this.agregarLog(`❌ Error en login jugador: ${error.message || error}`);
+        console.error('Error completo:', error);
       }
     });
   }
 
   limpiarStorage() {
-    localStorage.clear();
-    this.agregarLog('🗑️ LocalStorage limpiado completamente');
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+      this.agregarLog('🗑️ LocalStorage y SessionStorage limpiados completamente');
+    } catch (error) {
+      const mensaje = error instanceof Error ? error.message : String(error);
+      this.agregarLog(`⚠️ Error al limpiar storage: ${mensaje}`);
+    }
     
     // Forzar actualización del estado del servicio
     this.servicioAuth.limpiarEstadoCompleto();
@@ -251,12 +319,15 @@ export class DebugComponent extends BaseComponent implements OnInit {
 
   mostrarEstadoCompleto() {
     const usuario = this.servicioAuth.usuarioActual();
+    const tokenStorage = this.obtenerDeStorage('token_acceso');
+    const datosStorage = this.obtenerDeStorage('datos_usuario');
+    
     const estado = {
       estaAutenticado: this.servicioAuth.estaAutenticado(),
       usuario: usuario,
       localStorage: {
-        token: localStorage.getItem('token_acceso'),
-        datosUsuario: JSON.parse(localStorage.getItem('datos_usuario') || 'null')
+        token: tokenStorage,
+        datosUsuario: datosStorage ? JSON.parse(datosStorage) : null
       },
       ruta: this.router.url
     };

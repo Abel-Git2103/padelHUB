@@ -32,6 +32,9 @@ import { RolUsuario } from '../common/enums';
 export class ClubsController {
   constructor(private readonly clubsService: ClubsService) {}
 
+  /**
+   * Crear un nuevo club
+   */
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RolUsuario.ADMIN_SISTEMA, RolUsuario.ADMIN_CLUB)
@@ -46,7 +49,7 @@ export class ClubsController {
   @ApiResponse({ status: 409, description: 'Ya existe un club con ese nombre' })
   @ApiResponse({ status: 403, description: 'Acceso denegado' })
   async create(@Body() createClubDto: CreateClubDto): Promise<ClubResponseDto> {
-    return this.clubsService.create(createClubDto);
+    return await this.clubsService.create(createClubDto);
   }
 
   @Get()
@@ -72,12 +75,15 @@ export class ClubsController {
     },
   })
   async findAll(
-    @Query('page', new ParseIntPipe({ optional: true })) page: number = 1,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 10,
+    @Query('page') pageQuery?: string,
+    @Query('limit') limitQuery?: string,
     @Query('status', new ParseEnumPipe(EstadoClub, { optional: true })) status?: EstadoClub,
     @Query('city') city?: string,
     @Query('province') province?: string,
   ) {
+    const page = pageQuery ? parseInt(pageQuery) : 1;
+    const limit = limitQuery ? parseInt(limitQuery) : 10;
+    
     return this.clubsService.findAll(page, limit, status, city, province);
   }
 

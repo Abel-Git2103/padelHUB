@@ -1,42 +1,91 @@
+// Interfaces para información de contacto del club
+export interface ClubContact {
+  email: string;
+  phone: string;
+  website?: string;
+  socialMedia?: {
+    facebook?: string;
+    instagram?: string;
+    twitter?: string;
+  };
+}
+
+// Interfaces para ubicación del club
+export interface ClubLocation {
+  address: string;
+  city: string;
+  province: string;
+  postalCode: string;
+  coordinates?: [number, number];
+}
+
+// Interfaces para precios del club
+export interface ClubPricing {
+  courtPricePerHour: number;
+  memberDiscount?: number;
+  allowNonMembers?: boolean;
+}
+
 export interface Club {
   _id?: string;
-  nombre: string;
-  direccion: string;
+  name: string;
+  description: string;
+  logo?: string;
+  images?: string[];
+  contact: ClubContact;
+  location: ClubLocation;
+  pricing: ClubPricing;
+  totalCourts: number;
+  operatingHours?: Map<string, { open: string; close: string }>;
+  allowTournaments?: boolean;
+  allowExternalPlayers?: boolean;
+  requireMembershipApproval?: boolean;
+  estado?: string;
+  fechaCreacion?: Date;
+  fechaActualizacion?: Date;
+  
+  // Campos de compatibilidad con el modelo anterior
+  nombre?: string;
+  direccion?: string;
   telefono?: string;
   email?: string;
   sitioWeb?: string;
   ciudad?: string;
   codigoPostal?: string;
-  capacidadMaxima?: number;
   numeroPistas?: number;
   precioHora?: number;
   calificacion?: number;
   imagen?: string;
   servicios?: string[];
-  activo: boolean;
-  fechaCreacion?: Date;
+  activo?: boolean;
 }
 
 export interface SolicitudCrearClub {
-  nombre: string;
-  direccion: string;
-  telefono?: string;
-  email?: string;
-  ciudad?: string;
-  codigoPostal?: string;
-  capacidadMaxima?: number;
+  name: string;
+  description: string;
+  logo?: string;
+  images?: string[];
+  contact: ClubContact;
+  location: ClubLocation;
+  pricing: ClubPricing;
+  totalCourts: number;
+  operatingHours?: Map<string, { open: string; close: string }>;
+  allowTournaments?: boolean;
+  allowExternalPlayers?: boolean;
+  requireMembershipApproval?: boolean;
 }
 
 export interface SolicitudActualizarClub {
-  nombre?: string;
-  direccion?: string;
-  telefono?: string;
-  email?: string;
-  ciudad?: string;
-  codigoPostal?: string;
-  capacidadMaxima?: number;
-  numeroPistas?: number;
-  precioHora?: number;
-  servicios?: string[];
-  activo?: boolean;
+  name?: string;
+  description?: string;
+  logo?: string;
+  images?: string[];
+  contact?: ClubContact;
+  location?: ClubLocation;
+  pricing?: ClubPricing;
+  totalCourts?: number;
+  operatingHours?: Map<string, { open: string; close: string }>;
+  allowTournaments?: boolean;
+  allowExternalPlayers?: boolean;
+  requireMembershipApproval?: boolean;
 }

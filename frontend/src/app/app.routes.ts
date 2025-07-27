@@ -50,6 +50,10 @@ export const routes: Routes = [
         loadComponent: () => import('./components/clubs/clubs.component').then(m => m.ComponenteClubes)
       },
       {
+        path: 'clubes/:id',
+        loadComponent: () => import('./components/clubs/club-detail/club-detail.component').then(m => m.ClubDetailComponent)
+      },
+      {
         path: 'chat',
         loadComponent: () => import('./components/shared/coming-soon/coming-soon.component').then(m => m.ComingSoonComponent)
       },
@@ -98,7 +102,20 @@ export const routes: Routes = [
           },
           {
             path: 'clubs',
-            loadComponent: () => import('./components/admin/system-admin/system-admin-clubs/system-admin-clubs.component').then(m => m.SystemAdminClubsComponent)
+            children: [
+              {
+                path: '',
+                loadComponent: () => import('./components/admin/system-admin/system-admin-clubs/system-admin-clubs.component').then(m => m.SystemAdminClubsComponent)
+              },
+              {
+                path: 'registrar',
+                loadComponent: () => import('./components/clubs/club-register/club-register.component').then(m => m.ClubRegisterComponent)
+              },
+              {
+                path: ':id',
+                loadComponent: () => import('./components/clubs/club-detail/club-detail.component').then(m => m.ClubDetailComponent)
+              }
+            ]
           },
           {
             path: 'users',
@@ -141,6 +158,10 @@ export const routes: Routes = [
           {
             path: 'rankings',
             loadComponent: () => import('./components/admin/club-admin/club-admin-rankings/club-admin-rankings.component').then(m => m.ClubAdminRankingsComponent)
+          },
+          {
+            path: 'club-info',
+            loadComponent: () => import('./components/clubs/club-detail/club-detail.component').then(m => m.ClubDetailComponent)
           }
         ]
       },
