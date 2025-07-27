@@ -15,7 +15,11 @@ import { ROLES } from '../models/roles.constants';
   providedIn: 'root',
 })
 export class ServicioAutenticacion implements OnDestroy {
-  private readonly URL_API = 'http://localhost:3000/api';
+  // Detectar automáticamente si estamos en dev tunnels
+  private readonly URL_API = window.location.hostname.includes('devtunnels.ms') 
+    ? window.location.origin.replace('4200', '3000') + '/api'
+    : 'http://localhost:3000/api';
+    
   private sujetoUsuarioActual = new BehaviorSubject<Usuario | null>(null);
   public usuarioActual$ = this.sujetoUsuarioActual.asObservable();
 
@@ -30,6 +34,10 @@ export class ServicioAutenticacion implements OnDestroy {
     private http: HttpClient,
     private enrutador: Router,
   ) {
+    // Log para verificar la URL de la API
+    console.log('🔗 API URL configurada:', this.URL_API);
+    console.log('🌐 Window location:', window.location.origin);
+    
     // Restaurar estado de autenticación al inicializar
     this.cargarEstadoAlmacenado();
   }

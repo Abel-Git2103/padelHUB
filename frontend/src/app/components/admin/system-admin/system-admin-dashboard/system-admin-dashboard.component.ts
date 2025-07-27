@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { AdminBaseComponent } from '../../shared/admin-base.component';
 import { AdminStatsCardComponent } from '../../shared/admin-stats-card/admin-stats-card.component';
 import { AdminActionCardComponent } from '../../shared/admin-action-card/admin-action-card.component';
+import { SvgIconComponent } from '../../../shared/svg-icon/svg-icon.component';
 
 @Component({
   selector: 'app-system-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, AdminStatsCardComponent, AdminActionCardComponent],
+  imports: [CommonModule, AdminStatsCardComponent, AdminActionCardComponent, SvgIconComponent],
   template: `
     <div class="system-admin-dashboard">
       <div class="dashboard-header">
@@ -22,7 +23,7 @@ import { AdminActionCardComponent } from '../../shared/admin-action-card/admin-a
           [valor]="estadisticasGlobales().totalClubes"
           descripcion="Clubes registrados en el sistema"
           tipo="primary"
-          [icono]="iconos.clubes"
+          iconoTipo="clubes"
           [cambio]="{ valor: '+5 este mes', positivo: true }">
         </app-admin-stats-card>
 
@@ -31,7 +32,7 @@ import { AdminActionCardComponent } from '../../shared/admin-action-card/admin-a
           [valor]="estadisticasGlobales().usuariosActivos"
           descripcion="Usuarios activos en la plataforma"
           tipo="success"
-          [icono]="iconos.usuarios"
+          iconoTipo="usuarios"
           [cambio]="{ valor: '+12% este mes', positivo: true }">
         </app-admin-stats-card>
 
@@ -40,7 +41,7 @@ import { AdminActionCardComponent } from '../../shared/admin-action-card/admin-a
           [valor]="estadisticasGlobales().ingresosMensuales"
           descripcion="Ingresos por suscripciones"
           tipo="info"
-          [icono]="iconos.ingresos"
+          iconoTipo="ingresos"
           [cambio]="{ valor: '+8.5%', positivo: true }">
         </app-admin-stats-card>
 
@@ -49,7 +50,7 @@ import { AdminActionCardComponent } from '../../shared/admin-action-card/admin-a
           [valor]="estadisticasGlobales().partidosJugados"
           descripcion="Total este mes"
           tipo="warning"
-          [icono]="iconos.partidos"
+          iconoTipo="partidos"
           [cambio]="{ valor: '+23%', positivo: true }">
         </app-admin-stats-card>
       </div>
@@ -62,6 +63,7 @@ import { AdminActionCardComponent } from '../../shared/admin-action-card/admin-a
             *ngFor="let accion of accionesRapidas"
             [titulo]="accion.titulo"
             [descripcion]="accion.descripcion"
+            [iconoTipo]="accion.iconoTipo"
             [icono]="accion.icono"
             [proximamente]="accion.proximamente || false"
             (cardClick)="ejecutarAccion(accion)">
@@ -77,7 +79,11 @@ import { AdminActionCardComponent } from '../../shared/admin-action-card/admin-a
             *ngFor="let actividad of actividadReciente" 
             class="activity-item">
             <div class="activity-icon">
-              <div [innerHTML]="actividad.icono"></div>
+              <app-svg-icon 
+                [type]="actividad.iconoTipo" 
+                [size]="16" 
+                [color]="actividad.color">
+              </app-svg-icon>
             </div>
             <div class="activity-content">
               <p [innerHTML]="actividad.descripcion"></p>
@@ -241,6 +247,7 @@ export class SystemAdminDashboardComponent extends AdminBaseComponent {
       titulo: 'Gestionar Clubes',
       descripcion: 'Control global de todos los clubes',
       icono: this.iconos.clubes,
+      iconoTipo: 'clubes' as const,
       ruta: '/admin/system/clubs'
     },
     {
@@ -248,6 +255,7 @@ export class SystemAdminDashboardComponent extends AdminBaseComponent {
       titulo: 'Usuarios Globales',
       descripcion: 'Gestión de todos los usuarios',
       icono: this.iconos.usuarios,
+      iconoTipo: 'usuarios' as const,
       ruta: '/admin/system/users'
     },
     {
@@ -257,6 +265,7 @@ export class SystemAdminDashboardComponent extends AdminBaseComponent {
       icono: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
       </svg>`,
+      iconoTipo: 'analytics' as const,
       ruta: '/admin/system/analytics'
     },
     {
@@ -267,6 +276,7 @@ export class SystemAdminDashboardComponent extends AdminBaseComponent {
         <circle cx="12" cy="12" r="3"></circle>
         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
       </svg>`,
+      iconoTipo: 'configuracion' as const,
       ruta: '/admin/system/settings'
     },
     {
@@ -276,6 +286,7 @@ export class SystemAdminDashboardComponent extends AdminBaseComponent {
       icono: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
       </svg>`,
+      iconoTipo: 'rankings' as const,
       ruta: '/admin/system/rankings'
     },
     {
@@ -283,6 +294,7 @@ export class SystemAdminDashboardComponent extends AdminBaseComponent {
       titulo: 'Gestión Financiera',
       descripcion: 'Suscripciones y pagos',
       icono: this.iconos.ingresos,
+      iconoTipo: 'ingresos' as const,
       proximamente: true
     }
   ];
@@ -296,7 +308,9 @@ export class SystemAdminDashboardComponent extends AdminBaseComponent {
         <circle cx="12" cy="12" r="10"></circle>
         <polyline points="16,12 12,8 8,12"></polyline>
         <line x1="12" y1="16" x2="12" y2="8"></line>
-      </svg>`
+      </svg>`,
+      iconoTipo: 'actividad' as const,
+      color: '#4CAF50'
     },
     {
       descripcion: '<strong>Suscripción renovada:</strong> Club Padel Elite Valencia',
@@ -305,15 +319,20 @@ export class SystemAdminDashboardComponent extends AdminBaseComponent {
         <circle cx="12" cy="12" r="10"></circle>
         <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
         <line x1="12" y1="17" x2="12.01" y2="17"></line>
-      </svg>`
+      </svg>`,
+      iconoTipo: 'suscripcion' as const,
+      color: '#2196F3'
     },
     {
       descripción: '<strong>Usuario suspendido:</strong> Comportamiento inapropiado reportado',
+      descripcion: '<strong>Usuario suspendido:</strong> Comportamiento inapropiado reportado',
       tiempo: 'Hace 6 horas',
       icono: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF9800" stroke-width="2">
         <circle cx="12" cy="12" r="10"></circle>
         <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
-      </svg>`
+      </svg>`,
+      iconoTipo: 'suspension' as const,
+      color: '#FF9800'
     }
   ];
 

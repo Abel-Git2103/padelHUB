@@ -8,7 +8,10 @@ async function bootstrap() {
 
   // Configuración CORS para el frontend Angular
   app.enableCors({
-    origin: 'http://localhost:4200',
+    origin: [
+      'http://localhost:4200',
+      'https://tzv6h03m-4200.uks1.devtunnels.ms'
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });

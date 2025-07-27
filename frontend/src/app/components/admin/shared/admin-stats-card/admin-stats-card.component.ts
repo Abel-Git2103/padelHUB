@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SvgIconComponent, IconType } from '../../../shared/svg-icon/svg-icon.component';
 
 export interface EstadisticaCard {
   titulo: string;
@@ -16,11 +17,19 @@ export interface EstadisticaCard {
 @Component({
   selector: 'app-admin-stats-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SvgIconComponent],
   template: `
     <div class="stat-card" [class]="tipo" (click)="onClick()">
       <div class="stat-icon" [class]="tipo">
-        <div [innerHTML]="icono"></div>
+        <app-svg-icon 
+          *ngIf="iconoTipo; else iconoTexto"
+          [type]="iconoTipo" 
+          [size]="24" 
+          color="currentColor">
+        </app-svg-icon>
+        <ng-template #iconoTexto>
+          <div [innerHTML]="icono"></div>
+        </ng-template>
       </div>
       <div class="stat-content">
         <h3>{{ valor }}</h3>
@@ -53,7 +62,7 @@ export interface EstadisticaCard {
     .stat-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      border-color: var(--primary-color);
+      border-color: var(--primary-color, #2E7D32);
     }
 
     .stat-icon {
@@ -154,6 +163,7 @@ export class AdminStatsCardComponent {
   @Input() valor!: string | number;
   @Input() descripcion!: string;
   @Input() icono!: string;
+  @Input() iconoTipo?: IconType; // Nueva propiedad para usar iconos tipados
   @Input() tipo: 'success' | 'warning' | 'info' | 'primary' = 'primary';
   @Input() cambio?: { valor: string; positivo: boolean };
   @Input() clickeable: boolean = false;

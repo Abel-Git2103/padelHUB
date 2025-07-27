@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SvgIconComponent, IconType } from '../../../shared/svg-icon/svg-icon.component';
 
 export interface AccionRapida {
   id: string;
@@ -14,7 +15,7 @@ export interface AccionRapida {
 @Component({
   selector: 'app-admin-action-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SvgIconComponent],
   template: `
     <div 
       class="action-card" 
@@ -23,7 +24,15 @@ export interface AccionRapida {
       (click)="onClick()">
       
       <div class="action-icon">
-        <div [innerHTML]="icono"></div>
+        <app-svg-icon 
+          *ngIf="iconoTipo; else iconoTexto"
+          [type]="iconoTipo" 
+          [size]="24" 
+          color="currentColor">
+        </app-svg-icon>
+        <ng-template #iconoTexto>
+          <div [innerHTML]="icono"></div>
+        </ng-template>
       </div>
       
       <h3>{{ titulo }}</h3>
@@ -53,7 +62,7 @@ export interface AccionRapida {
     .action-card.clickeable:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      border-color: var(--primary-color);
+      border-color: var(--primary-color, #2E7D32);
     }
 
     .action-card.coming-soon {
@@ -73,7 +82,7 @@ export interface AccionRapida {
       justify-content: center;
       width: 48px;
       height: 48px;
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      background: linear-gradient(135deg, var(--primary-color, #2E7D32) 0%, var(--primary-dark, #1B5E20) 100%);
       border-radius: 12px;
       color: white;
       margin: 0 auto 16px;
@@ -132,6 +141,7 @@ export class AdminActionCardComponent {
   @Input() titulo!: string;
   @Input() descripcion!: string;
   @Input() icono!: string;
+  @Input() iconoTipo?: IconType; // Nueva propiedad para usar iconos tipados
   @Input() proximamente: boolean = false;
   @Input() clickeable: boolean = true;
   
