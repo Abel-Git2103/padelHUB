@@ -112,6 +112,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./components/clubs/club-register/club-register.component').then(m => m.ClubRegisterComponent)
               },
               {
+                path: 'editar/:id',
+                loadComponent: () => import('./components/clubs/club-edit/club-edit.component').then(m => m.ClubEditComponent)
+              },
+              {
                 path: ':id',
                 loadComponent: () => import('./components/clubs/club-detail/club-detail.component').then(m => m.ClubDetailComponent)
               }

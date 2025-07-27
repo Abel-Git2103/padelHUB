@@ -28,22 +28,24 @@ import { Club } from '../../models/club.model';
         <!-- Lista de clubes -->
         <div class="lista-clubes" *ngIf="!cargando()">
           <div class="tarjeta-club" *ngFor="let club of clubes()">
-            <div class="icono-club">🏟️</div>
-            <div class="info-club">
-              <h3>{{ getClubName(club) }}</h3>
-              <p class="descripcion">{{ getClubDescription(club) }}</p>
-              <p class="direccion">📍 {{ getClubAddress(club) }}</p>
-              <div class="detalles">
-                <p *ngIf="getClubPhone(club)" class="telefono">📞 {{ getClubPhone(club) }}</p>
-                <p *ngIf="getClubEmail(club)" class="email">✉️ {{ getClubEmail(club) }}</p>
-                <p *ngIf="getClubCourts(club)" class="pistas">🎾 {{ getClubCourts(club) }} pistas</p>
-                <p *ngIf="getClubPrice(club)" class="precio">💰 {{ getClubPrice(club) }}€/hora</p>
+            <div class="club-header">
+              <div class="icono-club">🏟️</div>
+              <div class="info-club">
+                <h3>{{ getClubName(club) }}</h3>
+                <p class="descripcion">{{ getClubDescription(club) }}</p>
+                <p class="direccion">📍 {{ getClubAddress(club) }}</p>
               </div>
-              <div class="sitio-web" *ngIf="getClubWebsite(club)">
-                <a [href]="getClubWebsite(club)" target="_blank" class="enlace-web">
-                  🌐 Sitio web
-                </a>
-              </div>
+            </div>
+            <div class="detalles">
+              <p *ngIf="getClubPhone(club)" class="telefono">📞 {{ getClubPhone(club) }}</p>
+              <p *ngIf="getClubEmail(club)" class="email">✉️ {{ getClubEmail(club) }}</p>
+              <p *ngIf="getClubCourts(club)" class="pistas">🎾 {{ getClubCourts(club) }} pistas</p>
+              <p *ngIf="getClubPrice(club)" class="precio">💰 {{ getClubPrice(club) }}€/hora</p>
+            </div>
+            <div class="sitio-web" *ngIf="getClubWebsite(club)">
+              <a [href]="getClubWebsite(club)" target="_blank" class="enlace-web">
+                🌐 Sitio web
+              </a>
             </div>
             <div class="acciones-club">
               <button class="boton-ver-detalles" (click)="verDetallesClub(club._id!)" [disabled]="!club._id">
@@ -192,9 +194,12 @@ import { Club } from '../../models/club.model';
       padding: 2rem;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       display: flex;
-      align-items: center;
-      gap: 2rem;
+      flex-direction: column;
+      gap: 1.5rem;
       transition: transform 0.2s;
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
     }
 
     .tarjeta-club:hover {
@@ -204,11 +209,20 @@ import { Club } from '../../models/club.model';
 
     .icono-club {
       font-size: 4rem;
-      flex-shrink: 0;
+      align-self: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .club-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
     }
 
     .info-club {
       flex: 1;
+      min-width: 0;
     }
 
     .info-club h3 {
@@ -245,10 +259,10 @@ import { Club } from '../../models/club.model';
     }
 
     .acciones-club {
-      flex-shrink: 0;
       display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1rem;
     }
 
     .boton-ver-detalles {
@@ -262,6 +276,8 @@ import { Club } from '../../models/club.model';
       transition: background-color 0.2s;
       white-space: nowrap;
       font-size: 0.9rem;
+      flex: 1;
+      max-width: 150px;
     }
 
     .boton-ver-detalles:hover:not(:disabled) {
@@ -279,10 +295,12 @@ import { Club } from '../../models/club.model';
       color: white;
       border: none;
       padding: 0.75rem 1.5rem;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 0.9rem;
       cursor: not-allowed;
       opacity: 0.6;
+      flex: 1;
+      max-width: 150px;
     }
 
     .descripcion {
@@ -391,9 +409,20 @@ import { Club } from '../../models/club.model';
         padding: 1rem;
       }
 
-      .tarjeta-club {
+      .club-header {
         flex-direction: column;
         text-align: center;
+        gap: 1rem;
+      }
+
+      .icono-club {
+        align-self: center;
+        margin-bottom: 0;
+      }
+
+      .acciones-club {
+        flex-direction: column;
+        gap: 0.5rem;
       }
 
       .caracteristicas {

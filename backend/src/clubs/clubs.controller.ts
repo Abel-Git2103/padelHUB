@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   Body,
   Patch,
   Param,
@@ -127,6 +128,27 @@ export class ClubsController {
   @ApiResponse({ status: 404, description: 'Club no encontrado' })
   async findOne(@Param('id') id: string): Promise<ClubResponseDto> {
     return this.clubsService.findById(id);
+  }
+
+  @Put(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RolUsuario.ADMIN_SISTEMA, RolUsuario.ADMIN_CLUB)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Actualizar club completo (PUT)' })
+  @ApiParam({ name: 'id', description: 'ID del club a actualizar' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Club actualizado exitosamente',
+    type: ClubResponseDto 
+  })
+  @ApiResponse({ status: 404, description: 'Club no encontrado' })
+  @ApiResponse({ status: 403, description: 'Acceso denegado' })
+  @ApiResponse({ status: 409, description: 'Ya existe un club con ese nombre' })
+  async updateComplete(
+    @Param('id') id: string,
+    @Body() updateClubDto: UpdateClubDto
+  ): Promise<ClubResponseDto> {
+    return await this.clubsService.update(id, updateClubDto);
   }
 
   @Patch(':id')

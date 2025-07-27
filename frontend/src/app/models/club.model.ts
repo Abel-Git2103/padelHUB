@@ -44,6 +44,9 @@ export interface Club {
   fechaCreacion?: Date;
   fechaActualizacion?: Date;
   
+  // Lista de administradores del club
+  administrators?: any[];
+  
   // Campos de compatibilidad con el modelo anterior
   nombre?: string;
   direccion?: string;
@@ -51,6 +54,7 @@ export interface Club {
   email?: string;
   sitioWeb?: string;
   ciudad?: string;
+  provincia?: string;
   codigoPostal?: string;
   numeroPistas?: number;
   precioHora?: number;

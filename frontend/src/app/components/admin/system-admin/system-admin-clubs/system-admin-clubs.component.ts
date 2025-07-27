@@ -83,9 +83,43 @@ import { firstValueFrom } from 'rxjs';
               <div class="club-info">
                 <h3>{{ getClubName(club) }}</h3>
                 <p class="club-location">📍 {{ getClubAddress(club) }}</p>
+                <p class="club-city">{{ getClubCity(club) }}, {{ getClubProvince(club) }}</p>
               </div>
             </div>
             
+            <!-- Información del propietario/administradores -->
+            <div class="club-owner-section" *ngIf="getClubAdministrators(club) && getClubAdministrators(club).length > 0">
+              <h4>👤 Administradores</h4>
+              <div class="admin-list">
+                <div class="admin-item" *ngFor="let admin of getClubAdministrators(club); let i = index; trackBy: trackByAdmin">
+                  <span class="admin-name">{{ getAdminName(admin) }}</span>
+                  <span class="admin-email">{{ getAdminEmail(admin) }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Información de contacto expandida -->
+            <div class="club-contact-section">
+              <h4>📞 Contacto</h4>
+              <div class="contact-details">
+                <div class="contact-item">
+                  <span class="contact-icon">✉️</span>
+                  <span class="contact-text">{{ getClubEmail(club) || 'No disponible' }}</span>
+                </div>
+                <div class="contact-item" *ngIf="getClubPhone(club)">
+                  <span class="contact-icon">📱</span>
+                  <span class="contact-text">{{ getClubPhone(club) }}</span>
+                </div>
+                <div class="contact-item" *ngIf="getClubWebsite(club)">
+                  <span class="contact-icon">🌐</span>
+                  <a [href]="getClubWebsite(club)" target="_blank" class="contact-link">
+                    Sitio web
+                  </a>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Detalles del club -->
             <div class="club-details">
               <div class="detail-item">
                 <span class="label">Pistas:</span>
@@ -95,17 +129,41 @@ import { firstValueFrom } from 'rxjs';
                 <span class="label">Precio/hora:</span>
                 <span class="value">{{ getClubPrice(club) ? getClubPrice(club) + '€' : 'N/A' }}</span>
               </div>
+              <div class="detail-item" *ngIf="getClubMemberDiscount(club)">
+                <span class="label">Desc. miembros:</span>
+                <span class="value discount">{{ getClubMemberDiscount(club) }}%</span>
+              </div>
               <div class="detail-item">
-                <span class="label">Email:</span>
-                <span class="value email">{{ getClubEmail(club) || 'N/A' }}</span>
+                <span class="label">Estado:</span>
+                <span class="value status" [class.active]="isClubActive(club)">
+                  {{ getClubStatus(club) }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Configuraciones del club -->
+            <div class="club-settings">
+              <div class="setting-badge" *ngIf="getClubAllowTournaments(club)">
+                🏆 Torneos
+              </div>
+              <div class="setting-badge" *ngIf="getClubAllowExternalPlayers(club)">
+                👥 Jugadores externos
+              </div>
+              <div class="setting-badge" *ngIf="getClubAllowNonMembers(club)">
+                🔓 No miembros
               </div>
             </div>
 
             <div class="club-actions">
-              <button class="btn-view" (click)="verDetallesClub(club._id!)">
+              <button class="btn-view" (click)="verDetallesClub(club._id!)" [disabled]="!club._id">
                 Ver Detalles
               </button>
-              <button class="btn-edit" disabled>
+              <button 
+                class="btn-edit" 
+                (click)="editarClub(club._id!)" 
+                [disabled]="!club._id"
+                type="button"
+              >
                 Editar
               </button>
               <button class="btn-delete" disabled>
@@ -255,7 +313,7 @@ import { firstValueFrom } from 'rxjs';
 
     .clubs-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
       gap: 20px;
     }
 
@@ -265,6 +323,9 @@ import { firstValueFrom } from 'rxjs';
       padding: 20px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       transition: transform 0.2s, box-shadow 0.2s;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
     }
 
     .club-card:hover {
@@ -339,9 +400,135 @@ import { firstValueFrom } from 'rxjs';
       word-break: break-all;
     }
 
+    .detail-item .value.discount {
+      color: #f59e0b;
+      font-weight: 600;
+    }
+
+    .detail-item .value.status {
+      font-weight: 600;
+      color: #ef4444;
+    }
+
+    .detail-item .value.status.active {
+      color: #10b981;
+    }
+
+    /* Estilos para sección de administradores */
+    .club-owner-section {
+      margin: 16px 0;
+      padding: 12px;
+      background: #f8fafc;
+      border-radius: 8px;
+    }
+
+    .club-owner-section h4 {
+      margin: 0 0 8px 0;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .admin-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .admin-item {
+      display: flex;
+      flex-direction: column;
+      padding: 6px;
+      background: white;
+      border-radius: 4px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .admin-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #374151;
+    }
+
+    .admin-email {
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    /* Estilos para sección de contacto */
+    .club-contact-section {
+      margin: 16px 0;
+      padding: 12px;
+      background: #f0f9ff;
+      border-radius: 8px;
+    }
+
+    .club-contact-section h4 {
+      margin: 0 0 8px 0;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .contact-details {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.875rem;
+    }
+
+    .contact-icon {
+      font-size: 1rem;
+    }
+
+    .contact-text {
+      color: #374151;
+      word-break: break-word;
+    }
+
+    .contact-link {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+
+    .contact-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Estilos para configuraciones del club */
+    .club-settings {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 12px 0;
+    }
+
+    .setting-badge {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .club-city {
+      color: #6b7280;
+      font-size: 0.875rem;
+      margin: 2px 0 0 0;
+    }
+
     .club-actions {
       display: flex;
       gap: 8px;
+      margin-top: auto;
+      padding-top: 16px;
     }
 
     .btn-view, .btn-edit, .btn-delete {
@@ -367,8 +554,10 @@ import { firstValueFrom } from 'rxjs';
     .btn-edit {
       background: #f59e0b;
       color: white;
-      opacity: 0.6;
-      cursor: not-allowed;
+    }
+
+    .btn-edit:hover {
+      background: #d97706;
     }
 
     .btn-delete {
@@ -458,6 +647,12 @@ export class SystemAdminClubsComponent implements OnInit {
     }
   }
 
+  editarClub(clubId: string) {
+    if (clubId) {
+      this.router.navigate(['/admin/system/clubs/editar', clubId]);
+    }
+  }
+
   onImageError(event: any) {
     event.target.style.display = 'none';
   }
@@ -482,6 +677,14 @@ export class SystemAdminClubsComponent implements OnInit {
     return club.location?.address || club.direccion || 'Dirección no disponible';
   }
 
+  getClubCity(club: Club): string {
+    return club.location?.city || club.ciudad || 'Ciudad no disponible';
+  }
+
+  getClubProvince(club: Club): string {
+    return club.location?.province || club.provincia || 'Provincia no disponible';
+  }
+
   getClubPhone(club: Club): string | null {
     return club.contact?.phone || club.telefono || null;
   }
@@ -490,11 +693,61 @@ export class SystemAdminClubsComponent implements OnInit {
     return club.contact?.email || club.email || null;
   }
 
+  getClubWebsite(club: Club): string | null {
+    return club.contact?.website || club.sitioWeb || null;
+  }
+
   getClubCourts(club: Club): number | null {
     return club.totalCourts || club.numeroPistas || null;
   }
 
   getClubPrice(club: Club): number | null {
     return club.pricing?.courtPricePerHour || club.precioHora || null;
+  }
+
+  getClubMemberDiscount(club: Club): number | null {
+    return club.pricing?.memberDiscount || null;
+  }
+
+  getClubStatus(club: Club): string {
+    if (club.activo === false) return 'Inactivo';
+    return club.estado || 'Activo';
+  }
+
+  isClubActive(club: Club): boolean {
+    return club.activo !== false;
+  }
+
+  getClubAllowTournaments(club: Club): boolean {
+    return club.allowTournaments !== false;
+  }
+
+  getClubAllowExternalPlayers(club: Club): boolean {
+    return club.allowExternalPlayers !== false;
+  }
+
+  getClubAllowNonMembers(club: Club): boolean {
+    return club.pricing?.allowNonMembers !== false;
+  }
+
+  // Métodos para administradores
+  getClubAdministrators(club: Club): any[] {
+    return club.administrators || [];
+  }
+
+  getAdminName(admin: any): string {
+    if (typeof admin === 'string') return admin;
+    return admin?.firstName && admin?.lastName 
+      ? `${admin.firstName} ${admin.lastName}`
+      : admin?.email || 'Administrador';
+  }
+
+  getAdminEmail(admin: any): string {
+    if (typeof admin === 'string') return admin;
+    return admin?.email || 'Email no disponible';
+  }
+
+  trackByAdmin(index: number, admin: any): any {
+    return admin?._id || admin?.email || index;
   }
 }

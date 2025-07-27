@@ -238,6 +238,50 @@
     font-weight: 600;
     border: 1px solid #f5c6cb;
   }
+
+  // Estilos para estados de carga y error
+  .loading-container, .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    background: white;
+    border-radius: 12px;
+    margin: 20px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e9ecef;
+    border-top: 4px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+
+  .error-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+  }
+
+  .btn-retry {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 10px;
+
+    &:hover {
+      background: #2563eb;
+    }
+  }
 }
 
 @keyframes spin {

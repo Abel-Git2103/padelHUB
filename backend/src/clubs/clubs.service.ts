@@ -265,7 +265,7 @@ export class ClubsService {
     );
 
     return {
-      id: club._id.toString(),
+      _id: club._id.toString(),
       name: club.name,
       description: club.description,
       logo: club.logo,

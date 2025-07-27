@@ -238,7 +238,7 @@ export class UpdateClubDto {
  */
 export class ClubResponseDto {
   @ApiProperty({ description: 'ID del club' })
-  id: string;
+  _id: string;
 
   @ApiProperty({ description: 'Nombre del club' })
   name: string;
