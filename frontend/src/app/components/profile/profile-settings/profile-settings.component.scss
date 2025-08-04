@@ -1,0 +1,371 @@
+.profile-settings {
+  .settings-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+    @media (max-width: 576px) {
+      padding: 1rem;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #374151;
+      margin: 0 0 1.5rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      @media (max-width: 576px) {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+      }
+
+      .title-icon {
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  .settings-group {
+    margin-bottom: 2rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .group-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #4b5563;
+      margin: 0 0 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      @media (max-width: 576px) {
+        font-size: 1rem;
+      }
+
+      .group-icon {
+        font-size: 1rem;
+      }
+
+      &.danger {
+        color: #dc2626;
+      }
+    }
+
+    &.danger-zone {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+  }
+
+  // Lista de configuraciones
+  .settings-list {
+    display: grid;
+    gap: 0.75rem;
+
+    .setting-item {
+      .setting-label {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: #374151;
+
+        @media (max-width: 576px) {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.5rem;
+        }
+
+        .label-text {
+          flex: 1;
+          font-weight: 500;
+        }
+
+        // Checkbox personalizado
+        input[type="checkbox"] {
+          display: none;
+        }
+
+        .checkmark {
+          width: 20px;
+          height: 20px;
+          background: #f3f4f6;
+          border: 2px solid #d1d5db;
+          border-radius: 4px;
+          position: relative;
+          transition: all 0.2s ease;
+
+          &::after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 2px;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+          }
+        }
+
+        input[type="checkbox"]:checked + .checkmark {
+          background: #4f46e5;
+          border-color: #4f46e5;
+
+          &::after {
+            opacity: 1;
+          }
+        }
+
+        .setting-select {
+          padding: 0.5rem 0.75rem;
+          border: 1px solid #d1d5db;
+          border-radius: 6px;
+          background: white;
+          font-size: 0.9rem;
+          color: #374151;
+          min-width: 150px;
+
+          @media (max-width: 576px) {
+            width: 100%;
+          }
+
+          &:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+          }
+        }
+      }
+    }
+  }
+
+  // Grupos de radio buttons
+  .radio-group {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+
+    .radio-label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: #374151;
+      padding: 0.5rem;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background: #f9fafb;
+      }
+
+      // Radio button personalizado
+      input[type="radio"] {
+        display: none;
+      }
+
+      .radio-checkmark {
+        width: 18px;
+        height: 18px;
+        background: #f3f4f6;
+        border: 2px solid #d1d5db;
+        border-radius: 50%;
+        position: relative;
+        transition: all 0.2s ease;
+
+        &::after {
+          content: '';
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 8px;
+          height: 8px;
+          background: white;
+          border-radius: 50%;
+          transform: translate(-50%, -50%);
+          opacity: 0;
+          transition: opacity 0.2s ease;
+        }
+      }
+
+      input[type="radio"]:checked + .radio-checkmark {
+        background: #4f46e5;
+        border-color: #4f46e5;
+
+        &::after {
+          opacity: 1;
+        }
+      }
+
+      .radio-text {
+        font-weight: 500;
+      }
+    }
+  }
+
+  // Acciones de cuenta
+  .account-actions, .danger-actions {
+    display: grid;
+    gap: 0.75rem;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .account-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+
+      .btn-icon {
+        font-size: 1rem;
+      }
+
+      &.primary {
+        background: #4f46e5;
+        color: white;
+
+        &:hover {
+          background: #4338ca;
+          transform: translateY(-1px);
+        }
+      }
+
+      &.secondary {
+        background: #6b7280;
+        color: white;
+
+        &:hover {
+          background: #4b5563;
+          transform: translateY(-1px);
+        }
+      }
+
+      &.warning {
+        background: #f59e0b;
+        color: white;
+
+        &:hover {
+          background: #d97706;
+          transform: translateY(-1px);
+        }
+      }
+
+      &.danger {
+        background: #dc2626;
+        color: white;
+
+        &:hover {
+          background: #b91c1c;
+          transform: translateY(-1px);
+        }
+      }
+    }
+  }
+
+  // Sección de guardar
+  .save-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+
+    .save-btn {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      border: none;
+      padding: 1rem 3rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-width: 200px;
+
+      @media (max-width: 576px) {
+        width: 100%;
+      }
+
+      .save-icon {
+        font-size: 1.1rem;
+      }
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  // Animaciones
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .settings-section {
+    animation: slideIn 0.3s ease;
+  }
+
+  // Estados de hover mejorados
+  .setting-item:hover .setting-label {
+    color: #4f46e5;
+  }
+
+  .radio-label:hover input[type="radio"]:not(:checked) + .radio-checkmark {
+    border-color: #4f46e5;
+    background: #eef2ff;
+  }
+
+  .setting-label:hover input[type="checkbox"]:not(:checked) + .checkmark {
+    border-color: #4f46e5;
+    background: #eef2ff;
+  }
+}

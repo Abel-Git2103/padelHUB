@@ -1,0 +1,374 @@
+.profile-stats {
+  .stats-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+    @media (max-width: 576px) {
+      padding: 1rem;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #374151;
+      margin: 0 0 1.5rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #e5e7eb;
+
+      @media (max-width: 576px) {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+      }
+    }
+
+    .subsection-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #4b5563;
+      margin: 1.5rem 0 1rem 0;
+      padding-left: 0.5rem;
+      border-left: 3px solid #4f46e5;
+
+      @media (max-width: 576px) {
+        font-size: 1rem;
+        margin: 1rem 0 0.75rem 0;
+      }
+    }
+  }
+
+  // Grid de estadísticas principales
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+
+      .stat-icon {
+        font-size: 1.5rem;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.8);
+      }
+
+      .stat-content {
+        flex: 1;
+
+        .stat-value {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #374151;
+        }
+
+        .stat-label {
+          font-size: 0.8rem;
+          color: #6b7280;
+          font-weight: 500;
+        }
+      }
+
+      &.victories {
+        border-left: 4px solid #10b981;
+      }
+
+      &.draws {
+        border-left: 4px solid #f59e0b;
+      }
+
+      &.defeats {
+        border-left: 4px solid #ef4444;
+      }
+
+      &.total {
+        border-left: 4px solid #6366f1;
+      }
+    }
+  }
+
+  // Card de efectividad
+  .effectiveness-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+
+    .effectiveness-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+
+      .icon {
+        font-size: 1.2rem;
+      }
+
+      .label {
+        font-weight: 600;
+      }
+    }
+
+    .effectiveness-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .effectiveness-bar {
+      background: rgba(255, 255, 255, 0.3);
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+
+      .effectiveness-fill {
+        background: rgba(255, 255, 255, 0.9);
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.8s ease;
+      }
+    }
+  }
+
+  // Card de racha
+  .streak-card {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .streak-icon {
+      font-size: 2rem;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+    }
+
+    .streak-content {
+      flex: 1;
+
+      .streak-title {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        opacity: 0.9;
+      }
+
+      .streak-value {
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+    }
+  }
+
+  // Rankings
+  .rankings-section {
+    .ranking-cards {
+      display: grid;
+      gap: 1rem;
+
+      @media (min-width: 768px) {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .ranking-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+
+        .ranking-icon {
+          font-size: 1.5rem;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          background: white;
+        }
+
+        .ranking-content {
+          flex: 1;
+
+          .ranking-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: 500;
+          }
+
+          .ranking-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #374151;
+          }
+        }
+
+        &.club {
+          border-left: 4px solid #8b5cf6;
+        }
+
+        &.global {
+          border-left: 4px solid #06b6d4;
+        }
+      }
+    }
+  }
+
+  // Progreso
+  .progress-section {
+    .progress-items {
+      display: grid;
+      gap: 0.75rem;
+
+      .progress-item {
+        background: #f1f5f9;
+        border-radius: 8px;
+        padding: 1rem;
+        border-left: 4px solid #64748b;
+
+        .progress-header {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          margin-bottom: 0.25rem;
+
+          .icon {
+            font-size: 1rem;
+          }
+
+          .label {
+            font-weight: 600;
+            color: #374151;
+          }
+        }
+
+        .progress-value {
+          font-size: 0.9rem;
+          color: #6b7280;
+        }
+      }
+    }
+  }
+
+  // Estadísticas históricas
+  .historical-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    .historical-stat {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+
+      .stat-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-content {
+        .stat-value {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #374151;
+          margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+          font-size: 0.8rem;
+          color: #6b7280;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  // Temporadas
+  .seasons-section {
+    .seasons-list {
+      display: grid;
+      gap: 0.5rem;
+
+      .season-item {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &.current {
+          background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+          border-color: #0ea5e9;
+        }
+
+        .season-name {
+          font-weight: 600;
+          color: #374151;
+        }
+
+        .season-stats {
+          font-size: 0.9rem;
+          color: #6b7280;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+
+          .current-badge {
+            background: #0ea5e9;
+            color: white;
+            padding: 0.1rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+}

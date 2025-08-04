@@ -87,10 +87,8 @@ export class ClubPricingDto {
   @Max(100)
   memberDiscount?: number;
 
-  @ApiPropertyOptional({ description: 'Permitir jugadores externos' })
-  @IsOptional()
-  @IsBoolean()
-  allowNonMembers?: boolean;
+  // ELIMINADO: allowNonMembers - todos los clubes activos aceptan jugadores externos
+  // Esta funcionalidad está incluida en la suscripción de 200€/mes
 }
 
 /**
@@ -141,15 +139,9 @@ export class CreateClubDto {
   @IsObject()
   operatingHours?: Map<string, { open: string; close: string }>;
 
-  @ApiPropertyOptional({ description: 'Permitir torneos' })
-  @IsOptional()
-  @IsBoolean()
-  allowTournaments?: boolean;
-
-  @ApiPropertyOptional({ description: 'Permitir jugadores externos' })
-  @IsOptional()
-  @IsBoolean()
-  allowExternalPlayers?: boolean;
+  // Removidas las opciones allowTournaments y allowExternalPlayers
+  // Los clubes pagan 200€/mes para acceso completo al ecosistema PadelHUB
+  // Estas funcionalidades son CORE y siempre están habilitadas
 
   @ApiPropertyOptional({ description: 'Requiere aprobación para membresía' })
   @IsOptional()
@@ -217,15 +209,64 @@ export class UpdateClubDto {
   @IsObject()
   operatingHours?: Map<string, { open: string; close: string }>;
 
-  @ApiPropertyOptional({ description: 'Permitir torneos' })
-  @IsOptional()
-  @IsBoolean()
-  allowTournaments?: boolean;
+  // Removidas las opciones allowTournaments y allowExternalPlayers
+  // Los clubes pagan 200€/mes para acceso completo al ecosistema PadelHUB
+  // Estas funcionalidades son CORE y siempre están habilitadas
 
-  @ApiPropertyOptional({ description: 'Permitir jugadores externos' })
+  @ApiPropertyOptional({ description: 'Partidos abiertos actualmente' })
   @IsOptional()
-  @IsBoolean()
-  allowExternalPlayers?: boolean;
+  @IsNumber()
+  @Min(0)
+  currentOpenMatches?: number;
+
+  @ApiPropertyOptional({ description: 'Torneos activos actualmente' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  currentActiveTournaments?: number;
+
+  @ApiPropertyOptional({ description: 'Posición actual en ranking nacional' })
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  currentNationalRanking?: number;
+
+  @ApiPropertyOptional({ description: 'Pistas ocupadas actualmente' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  currentOccupiedCourts?: number;
+
+  @ApiPropertyOptional({ description: 'Porcentaje de ocupación actual' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(100)
+  occupancyPercentage?: number;
+
+  @ApiPropertyOptional({ description: 'Nuevos miembros este mes' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  newMembersThisMonth?: number;
+
+  @ApiPropertyOptional({ description: 'Reservas de hoy' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  todayReservations?: number;
+
+  @ApiPropertyOptional({ description: 'Ingresos del mes actual' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  monthlyRevenue?: number;
+
+  @ApiPropertyOptional({ description: 'Promedio de reservas por día' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  avgDailyReservations?: number;
 
   @ApiPropertyOptional({ description: 'Requiere aprobación para membresía' })
   @IsOptional()
@@ -288,11 +329,35 @@ export class ClubResponseDto {
   @ApiPropertyOptional({ description: 'Fecha de expiración de suscripción' })
   subscriptionExpiresAt?: Date;
 
-  @ApiProperty({ description: 'Permitir torneos' })
-  allowTournaments: boolean;
+  // Removidas allowTournaments y allowExternalPlayers del response
+  // Estas funcionalidades están siempre habilitadas para clubes que pagan 200€/mes
 
-  @ApiProperty({ description: 'Permitir jugadores externos' })
-  allowExternalPlayers: boolean;
+  @ApiProperty({ description: 'Partidos abiertos actualmente' })
+  currentOpenMatches: number;
+
+  @ApiProperty({ description: 'Torneos activos actualmente' })
+  currentActiveTournaments: number;
+
+  @ApiPropertyOptional({ description: 'Posición actual en ranking nacional' })
+  currentNationalRanking?: number;
+
+  @ApiProperty({ description: 'Pistas ocupadas actualmente' })
+  currentOccupiedCourts: number;
+
+  @ApiProperty({ description: 'Porcentaje de ocupación actual' })
+  occupancyPercentage: number;
+
+  @ApiProperty({ description: 'Nuevos miembros este mes' })
+  newMembersThisMonth: number;
+
+  @ApiProperty({ description: 'Reservas de hoy' })
+  todayReservations: number;
+
+  @ApiProperty({ description: 'Ingresos del mes actual' })
+  monthlyRevenue: number;
+
+  @ApiProperty({ description: 'Promedio de reservas por día' })
+  avgDailyReservations: number;
 
   @ApiProperty({ description: 'Requiere aprobación para membresía' })
   requireMembershipApproval: boolean;

@@ -141,18 +141,23 @@
             margin-bottom: 20px;
           }
 
-          .club-badges {
+          .club-info-summary {
             display: flex;
-            gap: 10px;
+            gap: 20px;
             flex-wrap: wrap;
+            margin-top: 15px;
 
-            .badge {
-              background: #007bff;
-              color: white;
-              padding: 6px 12px;
-              border-radius: 20px;
-              font-size: 0.875rem;
+            .info-item {
+              background: #f8f9fa;
+              color: #495057;
+              padding: 8px 16px;
+              border-radius: 25px;
+              font-size: 0.9rem;
               font-weight: 500;
+              border: 1px solid #e9ecef;
+              display: flex;
+              align-items: center;
+              gap: 6px;
             }
           }
         }

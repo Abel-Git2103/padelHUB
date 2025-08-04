@@ -228,15 +228,19 @@ import { Club } from '../../../models/club.model';
             />
           </div>
 
-          <div class="form-group checkbox-group">
-            <label class="checkbox-label">
-              <input
-                type="checkbox"
-                formControlName="allowNonMembers"
-              />
-              <span class="checkmark"></span>
-              Permitir jugadores externos
-            </label>
+          <!-- Nota informativa sobre funcionalidades incluidas -->
+          <div class="info-box premium-features">
+            <div class="info-icon">💎</div>
+            <div class="info-content">
+              <h4>Funcionalidades incluidas en tu suscripción</h4>
+              <p>Tu club tiene acceso completo a todas las funcionalidades de PadelHUB:</p>
+              <ul class="features-list">
+                <li>🏆 Organización de torneos</li>
+                <li>👥 Aceptación de jugadores de otros clubes</li>
+                <li>📊 Participación en rankings nacionales</li>
+                <li>📈 Estadísticas avanzadas</li>
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -244,26 +248,15 @@ import { Club } from '../../../models/club.model';
         <div class="form-section">
           <h2>⚙️ Configuración Adicional</h2>
           
-          <div class="form-group checkbox-group">
-            <label class="checkbox-label">
-              <input
-                type="checkbox"
-                formControlName="allowTournaments"
-              />
-              <span class="checkmark"></span>
-              Permitir torneos
-            </label>
-          </div>
-
-          <div class="form-group checkbox-group">
-            <label class="checkbox-label">
-              <input
-                type="checkbox"
-                formControlName="allowExternalPlayers"
-              />
-              <span class="checkmark"></span>
-              Permitir jugadores externos
-            </label>
+          <!-- Información sobre funcionalidades incluidas -->
+          <div class="info-box">
+            <h3>✅ Funcionalidades Incluidas en tu Suscripción (200€/mes)</h3>
+            <ul>
+              <li>🏆 <strong>Torneos habilitados</strong> - Organiza torneos internos e interclubes sin comisiones</li>
+              <li>👥 <strong>Jugadores externos permitidos</strong> - Acceso completo al ecosistema PadelHUB</li>
+              <li>📊 <strong>Rankings nacionales</strong> - Tu club participa en el ranking nacional</li>
+              <li>🎯 <strong>Sistema de ascensos</strong> - Tus miembros pueden ascender rápidamente</li>
+            </ul>
           </div>
 
           <div class="form-group checkbox-group">
@@ -385,11 +378,11 @@ export class ClubEditComponent extends BaseComponent implements OnInit {
       }),
       pricing: this.fb.group({
         courtPricePerHour: [0, [Validators.required, Validators.min(0)]],
-        memberDiscount: [0, [Validators.min(0), Validators.max(100)]],
-        allowNonMembers: [true]
+        memberDiscount: [0, [Validators.min(0), Validators.max(100)]]
+        // ELIMINADO: allowNonMembers - funcionalidad siempre habilitada
       }),
-      allowTournaments: [true],
-      allowExternalPlayers: [true],
+      // Removidos allowTournaments y allowExternalPlayers
+      // Estas funcionalidades están siempre habilitadas
       requireMembershipApproval: [false]
     });
   }
@@ -421,8 +414,8 @@ export class ClubEditComponent extends BaseComponent implements OnInit {
       description: club.description,
       logo: club.logo || '',
       totalCourts: club.totalCourts,
-      allowTournaments: club.allowTournaments !== false,
-      allowExternalPlayers: club.allowExternalPlayers !== false,
+      // Removidas allowTournaments y allowExternalPlayers
+      // Estas funcionalidades están siempre habilitadas
       requireMembershipApproval: club.requireMembershipApproval || false
     });
 
@@ -449,8 +442,8 @@ export class ClubEditComponent extends BaseComponent implements OnInit {
     if (club.pricing) {
       this.clubForm.get('pricing')?.patchValue({
         courtPricePerHour: club.pricing.courtPricePerHour,
-        memberDiscount: club.pricing.memberDiscount || 0,
-        allowNonMembers: club.pricing.allowNonMembers !== false
+        memberDiscount: club.pricing.memberDiscount || 0
+        // ELIMINADO: allowNonMembers - funcionalidad siempre habilitada
       });
     }
   }
@@ -508,11 +501,11 @@ export class ClubEditComponent extends BaseComponent implements OnInit {
         },
         pricing: {
           courtPricePerHour: formData.pricing.courtPricePerHour,
-          memberDiscount: formData.pricing.memberDiscount || undefined,
-          allowNonMembers: formData.pricing.allowNonMembers
+          memberDiscount: formData.pricing.memberDiscount || undefined
+          // ELIMINADO: allowNonMembers - funcionalidad siempre habilitada
         },
-        allowTournaments: formData.allowTournaments,
-        allowExternalPlayers: formData.allowExternalPlayers,
+        // Removidos allowTournaments y allowExternalPlayers
+        // Estas funcionalidades están siempre habilitadas
         requireMembershipApproval: formData.requireMembershipApproval
       };
 

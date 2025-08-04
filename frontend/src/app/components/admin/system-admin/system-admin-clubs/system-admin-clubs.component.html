@@ -1,0 +1,254 @@
+<div class="system-admin-page">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1>Gestión Global de Clubes</h1>
+        <p>Administra todos los clubes de la plataforma PadelHUB</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-primary" (click)="navegarARegistroClub()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          Registrar Nuevo Club
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="cargando()">
+    <div class="loading-spinner"></div>
+    <p>Cargando clubes...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error()">
+    <div class="error-icon">⚠️</div>
+    <h3>Error al cargar clubes</h3>
+    <p>{{ error() }}</p>
+    <button class="btn-retry" (click)="cargarClubes()">
+      Reintentar
+    </button>
+  </div>
+
+  <!-- Clubs List -->
+  <div class="clubs-container" *ngIf="!cargando() && !error()">
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">🏟️</div>
+        <div class="stat-content">
+          <h3>{{ clubes().length }}</h3>
+          <p>Clubes Totales</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+          <h3>{{ clubesActivos() }}</h3>
+          <p>Clubes Activos</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🎾</div>
+        <div class="stat-content">
+          <h3>{{ totalPistas() }}</h3>
+          <p>Pistas Totales</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clubs Grid -->
+    <div class="clubs-grid" *ngIf="clubes().length > 0">
+      <div class="club-card" *ngFor="let club of clubes()">
+        <div class="club-header">
+          <div class="club-logo">
+            <img *ngIf="club.logo" [src]="club.logo" [alt]="getClubName(club)" (error)="onImageError($event)"/>
+            <div *ngIf="!club.logo" class="logo-placeholder">🏟️</div>
+          </div>
+          <div class="club-info">
+            <h3>{{ getClubName(club) }}</h3>
+            <p class="club-location">📍 {{ getClubAddress(club) }}</p>
+            <p class="club-city">{{ getClubCity(club) }}, {{ getClubProvince(club) }}</p>
+          </div>
+        </div>
+        
+        <!-- Información del propietario/administradores -->
+        <div class="club-owner-section" *ngIf="getClubAdministrators(club) && getClubAdministrators(club).length > 0">
+          <h4>👤 Administradores</h4>
+          <div class="admin-list">
+            <div class="admin-item" *ngFor="let admin of getClubAdministrators(club); let i = index; trackBy: trackByAdmin">
+              <span class="admin-name">{{ getAdminName(admin) }}</span>
+              <span class="admin-email">{{ getAdminEmail(admin) }}</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Información de contacto expandida -->
+        <div class="club-contact-section">
+          <h4>Datos de contacto</h4>
+          <div class="contact-details">
+            <div class="contact-item">
+              <span class="contact-icon">✉️</span>
+              <span class="contact-text">{{ getClubEmail(club) || 'No disponible' }}</span>
+            </div>
+            <div class="contact-item" *ngIf="getClubPhone(club)">
+              <span class="contact-icon">📱</span>
+              <span class="contact-text">{{ getClubPhone(club) }}</span>
+            </div>
+            <div class="contact-item" *ngIf="getClubWebsite(club)">
+              <span class="contact-icon">🌐</span>
+              <a [href]="getClubWebsite(club)" target="_blank" class="contact-link">
+                Sitio web
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Detalles del club -->
+        <div class="club-details">
+          <div class="detail-item">
+            <span class="label">Pistas:</span>
+            <span class="value">{{ getClubCourts(club) || 'N/A' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Precio/hora:</span>
+            <span class="value">{{ getClubPrice(club) ? getClubPrice(club) + '€' : 'N/A' }}</span>
+          </div>
+          <div class="detail-item" *ngIf="getClubMemberDiscount(club)">
+            <span class="label">Desc. miembros:</span>
+            <span class="value discount">{{ getClubMemberDiscount(club) }}%</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Estado:</span>
+            <span class="value status" [class.active]="isClubActive(club)">
+              {{ getClubStatus(club) }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Información dinámica del club -->
+        <div class="club-dynamic-info">
+          <!-- Actividad actual -->
+          <div class="activity-section">
+            <h4>📊 Actividad Actual</h4>
+            <div class="activity-grid">
+              <div class="activity-item">
+                <span class="activity-icon">🎾</span>
+                <div class="activity-details">
+                  <span class="activity-label">Partidos abiertos</span>
+                  <span class="activity-value">{{ getOpenMatches(club) }}</span>
+                </div>
+              </div>
+              <div class="activity-item">
+                <span class="activity-icon">🏆</span>
+                <div class="activity-details">
+                  <span class="activity-label">Torneos activos</span>
+                  <span class="activity-value">{{ getActiveTournaments(club) }}</span>
+                </div>
+              </div>
+              <div class="activity-item">
+                <span class="activity-icon">📈</span>
+                <div class="activity-details">
+                  <span class="activity-label">Ranking nacional</span>
+                  <span class="activity-value ranking">{{ getNationalRanking(club) }}</span>
+                </div>
+              </div>
+              <div class="activity-item">
+                <span class="activity-icon">🏟️</span>
+                <div class="activity-details">
+                  <span class="activity-label">Pistas ocupadas</span>
+                  <span class="activity-value">{{ getOccupiedCourts(club) }}</span>
+                </div>
+              </div>
+              <div class="activity-item">
+                <span class="activity-icon">📊</span>
+                <div class="activity-details">
+                  <span class="activity-label">Ocupación</span>
+                  <span class="activity-value">{{ getOccupancyPercentage(club) }}%</span>
+                </div>
+              </div>
+              <div class="activity-item">
+                <span class="activity-icon">👥</span>
+                <div class="activity-details">
+                  <span class="activity-label">Nuevos miembros</span>
+                  <span class="activity-value">{{ getNewMembersThisMonth(club) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Métricas de rendimiento -->
+          <div class="performance-section">
+            <h4>💰 Rendimiento del Mes</h4>
+            <div class="performance-grid">
+              <div class="performance-item">
+                <span class="performance-icon">📅</span>
+                <div class="performance-details">
+                  <span class="performance-label">Reservas hoy</span>
+                  <span class="performance-value">{{ getTodayReservations(club) }}</span>
+                </div>
+              </div>
+              <div class="performance-item">
+                <span class="performance-icon">💶</span>
+                <div class="performance-details">
+                  <span class="performance-label">Ingresos mes</span>
+                  <span class="performance-value revenue">{{ getMonthlyRevenue(club) }}</span>
+                </div>
+              </div>
+              <div class="performance-item">
+                <span class="performance-icon">📈</span>
+                <div class="performance-details">
+                  <span class="performance-label">Promedio diario</span>
+                  <span class="performance-value">{{ getAvgDailyReservations(club) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Horarios de servicio -->
+          <div class="schedule-section" *ngIf="getOperatingHours(club)">
+            <h4>⏰ Horario de Servicio</h4>
+            <div class="schedule-info">
+              <div class="schedule-today" *ngIf="getTodaySchedule(club)">
+                <span class="schedule-label">Hoy:</span>
+                <span class="schedule-hours">{{ getTodaySchedule(club) }}</span>
+              </div>
+              <div class="schedule-status" [ngClass]="{'open': isCurrentlyOpen(club), 'closed': !isCurrentlyOpen(club)}">
+                {{ getCurrentStatus(club) }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="club-actions">
+          <button class="btn-view" (click)="verDetallesClub(club._id!)" [disabled]="!club._id">
+            Ver Detalles
+          </button>
+          <button 
+            class="btn-edit" 
+            (click)="editarClub(club._id!)" 
+            [disabled]="!club._id"
+            type="button"
+          >
+            Editar
+          </button>
+          <button class="btn-delete" disabled>
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="clubes().length === 0">
+      <div class="empty-icon">🏟️</div>
+      <h3>No hay clubes registrados</h3>
+      <p>Comienza registrando el primer club de la plataforma</p>
+      <button class="btn-primary" (click)="navegarARegistroClub()">
+        Registrar Primer Club
+      </button>
+    </div>
+  </div>
+</div>

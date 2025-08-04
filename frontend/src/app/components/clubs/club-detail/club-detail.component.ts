@@ -58,16 +58,16 @@ import { BaseComponent } from '../../../shared/base-component';
               <h1>{{ club()?.name }}</h1>
               <p class="club-description">{{ club()?.description }}</p>
               
-              <div class="club-badges">
-                <span class="badge" *ngIf="club()?.allowTournaments">
-                  🏆 Torneos
-                </span>
-                <span class="badge" *ngIf="club()?.allowExternalPlayers">
-                  👥 Jugadores externos
-                </span>
-                <span class="badge">
+              <div class="club-info-summary">
+                <div class="info-item">
                   🎾 {{ club()?.totalCourts }} pista{{ club()?.totalCourts !== 1 ? 's' : '' }}
-                </span>
+                </div>
+                <div class="info-item">
+                  💰 {{ club()?.pricing?.courtPricePerHour || 'N/A' }}€/hora
+                </div>
+                <div class="info-item">
+                  � {{ club()?.location?.city }}, {{ club()?.location?.province }}
+                </div>
               </div>
             </div>
           </div>
@@ -136,37 +136,44 @@ import { BaseComponent } from '../../../shared/base-component';
                 <span class="price-value discount">{{ club()?.pricing?.memberDiscount }}%</span>
               </div>
               
-              <div class="price-note" *ngIf="club()?.pricing?.allowNonMembers">
-                ✅ Permite jugadores externos
-              </div>
-              <div class="price-note" *ngIf="!club()?.pricing?.allowNonMembers">
-                🔒 Solo para miembros
+              <div class="price-note">
+                ✅ Acepta jugadores de cualquier club
               </div>
             </div>
           </div>
 
           <!-- Facilities Information -->
           <div class="info-card">
-            <h3>🏟️ Instalaciones</h3>
+            <h3>🏟️ Instalaciones y Servicios</h3>
             <div class="facilities-info">
               <div class="facility-item">
                 <span class="facility-icon">🎾</span>
                 <span>{{ club()?.totalCourts }} pista{{ club()?.totalCourts !== 1 ? 's' : '' }} de pádel</span>
               </div>
               
-              <div class="facility-item" *ngIf="club()?.allowTournaments">
+              <div class="facility-item">
                 <span class="facility-icon">🏆</span>
-                <span>Organiza torneos</span>
+                <span>Organización de torneos</span>
               </div>
               
-              <div class="facility-item" *ngIf="club()?.allowExternalPlayers">
+              <div class="facility-item">
                 <span class="facility-icon">👥</span>
-                <span>Acepta jugadores externos</span>
+                <span>Acepta jugadores de otros clubes</span>
+              </div>
+              
+              <div class="facility-item">
+                <span class="facility-icon">📊</span>
+                <span>Participa en rankings nacionales</span>
               </div>
               
               <div class="facility-item" *ngIf="club()?.requireMembershipApproval">
                 <span class="facility-icon">✋</span>
                 <span>Requiere aprobación para membresía</span>
+              </div>
+              
+              <div class="facility-item" *ngIf="club()?.pricing?.memberDiscount && (club()?.pricing?.memberDiscount ?? 0) > 0">
+                <span class="facility-icon">💰</span>
+                <span>{{ club()?.pricing?.memberDiscount }}% descuento para miembros</span>
               </div>
             </div>
           </div>

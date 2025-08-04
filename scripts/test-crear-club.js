@@ -19,11 +19,10 @@ const clubData = {
   },
   pricing: {
     courtPricePerHour: 10,
-    memberDiscount: undefined,
-    allowNonMembers: true
+    memberDiscount: undefined
+    // ELIMINADO: allowNonMembers - funcionalidad siempre habilitada para clubes activos
   },
-  allowTournaments: true,
-  allowExternalPlayers: true,
+  // ELIMINADO: allowTournaments, allowExternalPlayers - funcionalidades siempre habilitadas
   requireMembershipApproval: true
 };
 

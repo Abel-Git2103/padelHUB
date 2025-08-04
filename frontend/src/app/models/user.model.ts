@@ -5,6 +5,8 @@ export interface Usuario {
   nombre: string;
   apellidos: string;
   rangoActual: 'PLATINO' | 'ORO' | 'PLATA' | 'BRONCE' | 'COBRE';
+  posicionJuego?: 'DRIVE' | 'REVES' | 'AMBIDIESTRO';
+  telefono?: string;
   rol: 'JUGADOR' | 'ADMIN_CLUB' | 'ADMIN_SISTEMA';
   imagenPerfil?: string;
   idClub?: string;
@@ -34,5 +36,6 @@ export interface SolicitudRegistro {
   telefono?: string;
   fechaNacimiento?: string;
   rangoActual?: 'PLATINO' | 'ORO' | 'PLATA' | 'BRONCE' | 'COBRE';
+  posicionJuego?: 'DRIVE' | 'REVES' | 'AMBIDIESTRO';
   idClub?: string;
 }

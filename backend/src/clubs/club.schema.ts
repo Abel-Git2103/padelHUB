@@ -14,9 +14,9 @@ export class ClubPricing {
 
   @Prop({ default: 0 })
   memberDiscount: number; // Porcentaje de descuento para miembros
-
-  @Prop({ default: false })
-  allowNonMembers: boolean; // Si permite jugadores externos
+  
+  // ELIMINADO: allowNonMembers - todos los clubes activos aceptan jugadores externos
+  // Esta funcionalidad está incluida en la suscripción de 200€/mes
 }
 
 const ClubPricingSchema = SchemaFactory.createForClass(ClubPricing);
@@ -182,12 +182,41 @@ export class Club {
   @Prop({ required: false })
   subscriptionExpiresAt?: Date;
 
-  // Configuraciones específicas del club
-  @Prop({ default: true })
-  allowTournaments: boolean;
+  // Métricas en tiempo real del club
+  @Prop({ default: 0 })
+  currentOpenMatches: number; // Partidos abiertos actualmente esperando jugadores
 
-  @Prop({ default: true })
-  allowExternalPlayers: boolean; // Si permite jugadores de otros clubes
+  @Prop({ default: 0 })
+  currentActiveTournaments: number; // Torneos activos en este momento
+
+  @Prop({ default: null })
+  currentNationalRanking: number; // Posición actual en ranking nacional
+
+  // Métricas de ocupación
+  @Prop({ default: 0 })
+  currentOccupiedCourts: number; // Pistas ocupadas en este momento
+
+  @Prop({ default: 0 })
+  occupancyPercentage: number; // Porcentaje de ocupación actual
+
+  // Métricas de actividad reciente
+  @Prop({ default: 0 })
+  newMembersThisMonth: number; // Nuevos miembros este mes
+
+  @Prop({ default: 0 })
+  todayReservations: number; // Reservas de hoy
+
+  // Métricas de rendimiento
+  @Prop({ default: 0 })
+  monthlyRevenue: number; // Ingresos del mes actual
+
+  @Prop({ default: 0 })
+  avgDailyReservations: number; // Promedio de reservas por día
+
+  // Configuraciones específicas del club
+  // Removidas allowTournaments y allowExternalPlayers
+  // Estas funcionalidades están SIEMPRE habilitadas para clubes activos
+  // Los clubes pagan 200€/mes para acceso completo al ecosistema
 
   @Prop({ default: false })
   requireMembershipApproval: boolean; // Si requiere aprobación para unirse

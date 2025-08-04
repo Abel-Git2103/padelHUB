@@ -43,7 +43,11 @@ export const routes: Routes = [
       },
       {
         path: 'perfil',
-        loadComponent: () => import('./components/profile/profile.component').then(m => m.ComponentePerfil)
+        loadComponent: () => import('./components/profile/profile.component').then(m => m.ProfileComponent)
+      },
+      {
+        path: 'perfil/:id',
+        loadComponent: () => import('./components/profile/profile.component').then(m => m.ProfileComponent)
       },
       {
         path: 'clubes',
