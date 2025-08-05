@@ -19,10 +19,11 @@ import {
   ApiBearerAuth,
   ApiQuery,
   ApiParam,
+  ApiBody,
 } from '@nestjs/swagger';
 
 import { ClubsService } from './clubs.service';
-import { CreateClubDto, UpdateClubDto, ClubResponseDto, ApplyRestrictionDto } from './dto/club.dto';
+import { CreateClubDto, UpdateClubDto, ClubResponseDto, ApplyRestrictionDto, RemoveRestrictionDto } from './dto/club.dto';
 import { EstadoClub } from '../common/enums';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard, Roles } from '../auth/guards/roles.guard';
@@ -277,9 +278,21 @@ export class ClubsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RolUsuario.ADMIN_SISTEMA)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Quitar restricción de un club' })
+  @ApiOperation({ summary: 'Quitar restricción de un club (mantiene historial)' })
   @ApiParam({ name: 'id', description: 'ID del club' })
   @ApiParam({ name: 'type', description: 'Tipo de restricción a quitar' })
+  @ApiQuery({ 
+    name: 'removedBy', 
+    description: 'ID del administrador que remueve la restricción',
+    required: false,
+    type: 'string'
+  })
+  @ApiQuery({ 
+    name: 'removalReason', 
+    description: 'Razón por la cual se remueve la restricción',
+    required: false,
+    type: 'string'
+  })
   @ApiResponse({
     status: 200,
     description: 'Restricción removida exitosamente',
@@ -290,8 +303,15 @@ export class ClubsController {
   async removeRestriction(
     @Param('id') clubId: string,
     @Param('type') restrictionType: string,
+    @Query('removedBy') removedBy?: string,
+    @Query('removalReason') removalReason?: string,
   ): Promise<ClubResponseDto> {
-    return this.clubsService.removeRestriction(clubId, restrictionType);
+    return this.clubsService.removeRestriction(
+      clubId, 
+      restrictionType, 
+      removedBy, 
+      removalReason
+    );
   }
 
   @Get(':id/restrictions')
@@ -314,5 +334,37 @@ export class ClubsController {
   })
   async getRestrictions(@Param('id') clubId: string) {
     return this.clubsService.getRestrictions(clubId);
+  }
+
+  @Get(':id/restrictions/history')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RolUsuario.ADMIN_SISTEMA, RolUsuario.ADMIN_CLUB)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Obtener historial completo de restricciones del club' })
+  @ApiParam({ name: 'id', description: 'ID del club' })
+  @ApiResponse({
+    status: 200,
+    description: 'Historial de restricciones del club obtenido exitosamente',
+    schema: {
+      type: 'object',
+      properties: {
+        history: { type: 'array', description: 'Historial completo de restricciones' },
+        stats: { 
+          type: 'object', 
+          description: 'Estadísticas de restricciones',
+          properties: {
+            totalApplied: { type: 'number' },
+            totalRemoved: { type: 'number' },
+            currentActive: { type: 'number' },
+            lastRestrictionDate: { type: 'string', format: 'date-time' },
+            lastRemovalDate: { type: 'string', format: 'date-time' }
+          }
+        },
+        currentRestrictions: { type: 'array', description: 'Restricciones actualmente activas' }
+      }
+    }
+  })
+  async getRestrictionsHistory(@Param('id') clubId: string) {
+    return this.clubsService.getRestrictionsHistory(clubId);
   }
 }

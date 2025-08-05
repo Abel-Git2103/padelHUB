@@ -26,6 +26,19 @@ export class ClubRestriction {
 
   @Prop({ required: true, default: true })
   isActive: boolean;
+
+  // Campos de auditoría para el historial
+  @Prop()
+  removedDate?: Date; // Fecha cuando se desactivó la restricción
+
+  @Prop()
+  removedBy?: string; // ID del administrador que removió la restricción
+
+  @Prop()
+  removalReason?: string; // Razón por la cual se removió la restricción
+
+  @Prop({ default: Date.now })
+  lastModified: Date; // Última modificación de esta restricción
 }
 
 const ClubRestrictionSchema = SchemaFactory.createForClass(ClubRestriction);
@@ -39,10 +52,23 @@ export class ClubRestrictions {
   isRestricted: boolean;
 
   @Prop({ type: [ClubRestrictionSchema], default: [] })
-  activeRestrictions: ClubRestriction[];
+  activeRestrictions: ClubRestriction[]; // Solo restricciones activas (isActive: true)
+
+  @Prop({ type: [ClubRestrictionSchema], default: [] })
+  restrictionsHistory: ClubRestriction[]; // Historial completo de todas las restricciones
 
   @Prop({ type: [String], default: [] })
   restrictionsSummary?: string[]; // Resumen de restricciones activas para UI
+
+  // Estadísticas del historial
+  @Prop({ default: 0 })
+  totalRestrictionsApplied: number; // Total de restricciones aplicadas históricamente
+
+  @Prop()
+  lastRestrictionDate?: Date; // Fecha de la última restricción aplicada
+
+  @Prop()
+  lastRestrictionRemovalDate?: Date; // Fecha de la última restricción removida
 }
 
 const ClubRestrictionsSchema = SchemaFactory.createForClass(ClubRestrictions);
@@ -310,34 +336,68 @@ ClubSchema.methods.isOperational = function(): boolean {
          !this.restrictions.isRestricted;
 };
 
-// Métodos para manejo de restricciones
+// Métodos para manejo de restricciones con historial
 ClubSchema.methods.addRestriction = function(restriction: ClubRestriction): void {
   if (!this.restrictions) {
-    this.restrictions = { isRestricted: false, activeRestrictions: [], restrictionsSummary: [] };
+    this.restrictions = { 
+      isRestricted: false, 
+      activeRestrictions: [], 
+      restrictionsHistory: [],
+      restrictionsSummary: [],
+      totalRestrictionsApplied: 0
+    };
   }
   
-  // Remover restricción existente del mismo tipo si existe
-  this.restrictions.activeRestrictions = this.restrictions.activeRestrictions.filter(
-    r => r.type !== restriction.type
-  );
+  // Si ya existe una restricción del mismo tipo activa, desactivarla primero
+  const existingRestriction = this.restrictions.activeRestrictions.find(r => r.type === restriction.type);
+  if (existingRestriction) {
+    this.removeRestriction(restriction.type, restriction.appliedBy, 'Reemplazada por nueva restricción del mismo tipo');
+  }
   
   // Agregar nueva restricción
   this.restrictions.activeRestrictions.push(restriction);
+  this.restrictions.restrictionsHistory.push({...restriction}); // Copia para el historial
   this.restrictions.isRestricted = true;
+  this.restrictions.totalRestrictionsApplied += 1;
+  this.restrictions.lastRestrictionDate = restriction.appliedDate;
   
   // Actualizar resumen
   this.updateRestrictionsSummary();
 };
 
-ClubSchema.methods.removeRestriction = function(restrictionType: RestrictionType): boolean {
+ClubSchema.methods.removeRestriction = function(restrictionType: RestrictionType, removedBy: string, removalReason?: string): boolean {
   if (!this.restrictions || this.restrictions.activeRestrictions.length === 0) {
     return false;
   }
   
-  const initialLength = this.restrictions.activeRestrictions.length;
-  this.restrictions.activeRestrictions = this.restrictions.activeRestrictions.filter(
-    r => r.type !== restrictionType
+  // Buscar la restricción activa
+  const restrictionIndex = this.restrictions.activeRestrictions.findIndex(r => r.type === restrictionType);
+  if (restrictionIndex === -1) {
+    return false; // No se encontró la restricción
+  }
+  
+  // Obtener la restricción antes de removerla
+  const restrictionToRemove = this.restrictions.activeRestrictions[restrictionIndex];
+  
+  // Marcar como inactiva en el historial
+  const now = new Date();
+  restrictionToRemove.isActive = false;
+  restrictionToRemove.removedDate = now;
+  restrictionToRemove.removedBy = removedBy;
+  restrictionToRemove.removalReason = removalReason || 'Restricción removida';
+  restrictionToRemove.lastModified = now;
+  
+  // Actualizar el historial
+  const historyIndex = this.restrictions.restrictionsHistory.findIndex(
+    r => r.type === restrictionType && r.appliedDate.getTime() === restrictionToRemove.appliedDate.getTime()
   );
+  if (historyIndex !== -1) {
+    this.restrictions.restrictionsHistory[historyIndex] = {...restrictionToRemove};
+  }
+  
+  // Remover de restricciones activas
+  this.restrictions.activeRestrictions.splice(restrictionIndex, 1);
+  this.restrictions.lastRestrictionRemovalDate = now;
   
   // Si no quedan restricciones activas, marcar como no restringido
   if (this.restrictions.activeRestrictions.length === 0) {
@@ -347,7 +407,7 @@ ClubSchema.methods.removeRestriction = function(restrictionType: RestrictionType
     this.updateRestrictionsSummary();
   }
   
-  return this.restrictions.activeRestrictions.length < initialLength;
+  return true;
 };
 
 ClubSchema.methods.hasRestriction = function(restrictionType: RestrictionType): boolean {
@@ -364,4 +424,33 @@ ClubSchema.methods.updateRestrictionsSummary = function(): void {
 
 ClubSchema.methods.getActiveRestrictions = function(): ClubRestriction[] {
   return this.restrictions?.activeRestrictions?.filter(r => r.isActive) || [];
+};
+
+// Nuevos métodos para manejo del historial
+ClubSchema.methods.getRestrictionsHistory = function(): ClubRestriction[] {
+  return this.restrictions?.restrictionsHistory || [];
+};
+
+ClubSchema.methods.getRestrictionsByType = function(restrictionType: RestrictionType): ClubRestriction[] {
+  return this.restrictions?.restrictionsHistory?.filter(r => r.type === restrictionType) || [];
+};
+
+ClubSchema.methods.getRestrictionsStats = function() {
+  if (!this.restrictions) return {
+    totalApplied: 0,
+    totalRemoved: 0,
+    currentActive: 0,
+    lastRestrictionDate: null,
+    lastRemovalDate: null
+  };
+  
+  const totalRemoved = this.restrictions.restrictionsHistory.filter(r => !r.isActive).length;
+  
+  return {
+    totalApplied: this.restrictions.totalRestrictionsApplied,
+    totalRemoved: totalRemoved,
+    currentActive: this.restrictions.activeRestrictions.length,
+    lastRestrictionDate: this.restrictions.lastRestrictionDate,
+    lastRemovalDate: this.restrictions.lastRestrictionRemovalDate
+  };
 };

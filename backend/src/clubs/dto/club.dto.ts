@@ -366,7 +366,11 @@ export class ClubResponseDto {
   restrictions: {
     isRestricted: boolean;
     activeRestrictions: any[];
+    restrictionsHistory: any[];
     restrictionsSummary?: string[];
+    totalRestrictionsApplied: number;
+    lastRestrictionDate?: Date;
+    lastRestrictionRemovalDate?: Date;
   };
 
   @ApiProperty({ description: 'Fecha de creación' })
@@ -396,4 +400,18 @@ export class ApplyRestrictionDto {
   @ApiProperty({ description: 'ID del administrador que aplica la restricción' })
   @IsString()
   appliedBy: string;
+}
+
+/**
+ * DTO para remover restricciones con auditoría
+ */
+export class RemoveRestrictionDto {
+  @ApiProperty({ description: 'ID del administrador que remueve la restricción' })
+  @IsString()
+  removedBy: string;
+
+  @ApiPropertyOptional({ description: 'Razón por la cual se remueve la restricción' })
+  @IsOptional()
+  @IsString()
+  removalReason?: string;
 }

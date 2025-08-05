@@ -403,9 +403,15 @@ export class SystemAdminClubsComponent implements OnInit {
         const updatedClubs = [...clubs];
         updatedClubs[clubIndex] = updatedClub;
         this.clubes.set(updatedClubs);
+        
+        // También actualizar el club seleccionado para refrescar la modal inmediatamente
+        this.selectedClub.set(updatedClub);
       }
 
-      this.closeRestrictionsModal();
+      // Limpiar el formulario de nueva restricción
+      this.selectedRestrictionType.set(null);
+      this.restrictionReason.set('');
+
       this.toastService.success(`Restricción "${this.getRestrictionLabel(restrictionType)}" aplicada correctamente al club ${this.getClubName(club)}.`);
     } catch (error: any) {
       console.error('Error al aplicar restricción:', error);
@@ -444,6 +450,9 @@ export class SystemAdminClubsComponent implements OnInit {
         const updatedClubs = [...clubs];
         updatedClubs[clubIndex] = updatedClub;
         this.clubes.set(updatedClubs);
+        
+        // También actualizar el club seleccionado para refrescar la modal inmediatamente
+        this.selectedClub.set(updatedClub);
       }
 
       this.toastService.success(`Restricción "${this.getRestrictionLabel(restriction.type)}" eliminada correctamente del club ${this.getClubName(club)}.`);
