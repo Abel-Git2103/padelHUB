@@ -587,3 +587,366 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Estilos para sistema de restricciones */
+.restrictions-indicator {
+  position: relative;
+  margin-bottom: 12px;
+  padding: 8px;
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: 6px;
+}
+
+.restrictions-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #92400e;
+}
+
+.restriction-icon {
+  font-size: 14px;
+}
+
+.active-restrictions {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.restriction-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.restriction-type-icon {
+  margin-right: 4px;
+}
+
+.remove-restriction-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 10px;
+  padding: 2px;
+  border-radius: 2px;
+  
+  &:hover {
+    background: rgba(239, 68, 68, 0.1);
+  }
+}
+
+/* Clases para diferentes tipos de restricciones */
+.club-banned {
+  border: 2px solid #dc2626 !important;
+  background: linear-gradient(135deg, #fef2f2 0%, #fff 100%);
+  
+  .club-header h3 {
+    color: #dc2626;
+  }
+}
+
+.club-suspended {
+  border: 2px solid #f59e0b !important;
+  background: linear-gradient(135deg, #fffbeb 0%, #fff 100%);
+  
+  .club-header h3 {
+    color: #f59e0b;
+  }
+}
+
+.club-maintenance {
+  border: 2px solid #6b7280 !important;
+  background: linear-gradient(135deg, #f9fafb 0%, #fff 100%);
+  
+  .club-header h3 {
+    color: #6b7280;
+  }
+}
+
+.club-restricted {
+  border: 2px solid #8b5cf6 !important;
+  background: linear-gradient(135deg, #faf5ff 0%, #fff 100%);
+  
+  .club-header h3 {
+    color: #8b5cf6;
+  }
+}
+
+/* Botón de restricciones */
+.btn-restrictions {
+  background: #f59e0b;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: #d97706;
+    transform: translateY(-1px);
+  }
+  
+  &:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+/* Modal de restricciones */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.restrictions-modal {
+  .modal-header {
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid #e5e7eb;
+    position: relative;
+    
+    h3 {
+      margin: 0 0 8px 0;
+      color: #1f2937;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    
+    p {
+      margin: 0;
+      color: #6b7280;
+      font-size: 14px;
+    }
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #6b7280;
+    
+    &:hover {
+      color: #374151;
+    }
+  }
+  
+  .modal-body {
+    padding: 24px;
+  }
+  
+  .current-restrictions {
+    margin-bottom: 24px;
+    
+    h4 {
+      margin: 0 0 12px 0;
+      color: #1f2937;
+      font-size: 16px;
+      font-weight: 600;
+    }
+  }
+  
+  .restrictions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .restriction-item.active {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: #f3f4f6;
+    border-radius: 8px;
+    border-left: 4px solid #f59e0b;
+  }
+  
+  .restriction-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+  }
+  
+  .restriction-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .restriction-label {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 14px;
+  }
+  
+  .restriction-reason {
+    color: #6b7280;
+    font-size: 12px;
+  }
+  
+  .restriction-date {
+    color: #9ca3af;
+    font-size: 11px;
+  }
+  
+  .btn-remove-restriction {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    
+    &:hover {
+      background: #dc2626;
+    }
+  }
+  
+  .apply-restriction {
+    h4 {
+      margin: 0 0 16px 0;
+      color: #1f2937;
+      font-size: 16px;
+      font-weight: 600;
+    }
+  }
+  
+  .restriction-type-selector {
+    margin-bottom: 16px;
+    
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: #374151;
+      font-size: 14px;
+    }
+    
+    .restriction-select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      background: white;
+      font-size: 14px;
+      
+      &:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+    }
+    
+    .restriction-description {
+      margin: 8px 0 0 0;
+      font-size: 12px;
+      color: #6b7280;
+      font-style: italic;
+    }
+  }
+  
+  .restriction-reason-input {
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: #374151;
+      font-size: 14px;
+    }
+    
+    .reason-textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      resize: vertical;
+      font-size: 14px;
+      font-family: inherit;
+      
+      &:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+    }
+  }
+  
+  .modal-footer {
+    padding: 16px 24px 24px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  .btn-cancel {
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    
+    &:hover {
+      background: #e5e7eb;
+    }
+  }
+  
+  .btn-apply-restriction {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    
+    &:hover:not(:disabled) {
+      background: #dc2626;
+    }
+    
+    &:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+  }
+}

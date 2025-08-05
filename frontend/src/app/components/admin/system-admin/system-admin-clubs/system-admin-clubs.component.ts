@@ -1,14 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { Club } from '../../../../models/club.model';
+import { Club, RestrictionType, ClubRestriction } from '../../../../models/club.model';
 import { ServicioClubes } from '../../../../services/clubes.service';
+import { ServicioAutenticacion } from '../../../../services/auth.service';
+import { ToastService } from '../../../../services/toast.service';
 
 @Component({
   selector: 'app-system-admin-clubs',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './system-admin-clubs.component.html',
   styleUrl: './system-admin-clubs.component.scss',
 })
@@ -16,10 +19,18 @@ export class SystemAdminClubsComponent implements OnInit {
   clubes = signal<Club[]>([]);
   cargando = signal(false);
   error = signal<string | null>(null);
+  
+  // Signals para el modal de restricciones
+  showRestrictionsModal = signal(false);
+  selectedClub = signal<Club | null>(null);
+  selectedRestrictionType = signal<RestrictionType | null>(null);
+  restrictionReason = signal('');
 
   constructor(
     private servicioClub: ServicioClubes,
     private router: Router,
+    private servicioAuth: ServicioAutenticacion,
+    private toastService: ToastService,
   ) {}
 
   ngOnInit() {
@@ -35,11 +46,16 @@ export class SystemAdminClubsComponent implements OnInit {
         this.servicioClub.obtenerTodosClubes(),
       );
       this.clubes.set(clubes);
+      
+      // Toast informativo al cargar correctamente
+      if (clubes.length > 0) {
+        this.toastService.info(`${clubes.length} clubes cargados correctamente.`, 3000);
+      }
     } catch (error: any) {
       console.error('Error al cargar clubes:', error);
-      this.error.set(
-        'Error al cargar los clubes. Por favor, intenta de nuevo.',
-      );
+      const errorMessage = 'Error al cargar los clubes. Por favor, intenta de nuevo.';
+      this.error.set(errorMessage);
+      this.toastService.error(errorMessage);
     } finally {
       this.cargando.set(false);
     }
@@ -204,7 +220,7 @@ export class SystemAdminClubsComponent implements OnInit {
 
   getAvgDailyReservations(club: Club): string {
     const avg = club.avgDailyReservations ?? 0;
-    return avg.toFixed(1);
+    return Math.round(avg).toString();
   }
 
   getOperatingHours(club: Club): boolean {
@@ -252,5 +268,189 @@ export class SystemAdminClubsComponent implements OnInit {
 
   getCurrentStatus(club: Club): string {
     return this.isCurrentlyOpen(club) ? '🟢 Abierto ahora' : '🔴 Cerrado';
+  }
+
+  // Métodos para sistema de restricciones
+  
+  getRestrictionTypes() {
+    return [
+      { value: RestrictionType.SUSPENDED, label: '🚫 Suspender Club', description: 'Club temporalmente inactivo' },
+      { value: RestrictionType.BANNED, label: '❌ Banear Club', description: 'Club permanentemente bloqueado' },
+      { value: RestrictionType.MAINTENANCE, label: '🔧 Modo Mantenimiento', description: 'Visible pero sin funcionalidades' },
+      { value: RestrictionType.VERIFICATION_PENDING, label: '⏳ Verificación Pendiente', description: 'Requiere revisión antes de activarse' },
+      { value: RestrictionType.NO_RESERVATIONS, label: '📅 Sin Reservas', description: 'No puede recibir nuevas reservas' },
+      { value: RestrictionType.NO_TOURNAMENTS, label: '🏆 Sin Torneos', description: 'No puede organizar torneos' },
+      { value: RestrictionType.LIMITED_MEMBERS, label: '👥 Miembros Limitados', description: 'Límite en número de miembros' },
+      { value: RestrictionType.NO_EXTERNAL_PLAYERS, label: '🚷 Sin Jugadores Externos', description: 'No puede aceptar jugadores externos' },
+      { value: RestrictionType.PAYMENT_FROZEN, label: '💳 Pagos Congelados', description: 'Facturación suspendida' },
+      { value: RestrictionType.HIDDEN_FROM_SEARCH, label: '🔍 Oculto de Búsquedas', description: 'No visible en búsquedas públicas' }
+    ];
+  }
+
+  isClubRestricted(club: Club): boolean {
+    return club.restrictions?.isRestricted ?? false;
+  }
+
+  getActiveRestrictions(club: Club): ClubRestriction[] {
+    return club.restrictions?.activeRestrictions?.filter(r => r.isActive) ?? [];
+  }
+
+  getRestrictionsDisplay(club: Club): string {
+    const restrictions = this.getActiveRestrictions(club);
+    if (restrictions.length === 0) return '';
+    if (restrictions.length === 1) {
+      return this.getRestrictionLabel(restrictions[0].type);
+    }
+    return `${restrictions.length} restricciones activas`;
+  }
+
+  getRestrictionLabel(type: RestrictionType): string {
+    const restrictionMap = {
+      [RestrictionType.SUSPENDED]: 'Suspendido',
+      [RestrictionType.BANNED]: 'Baneado',
+      [RestrictionType.MAINTENANCE]: 'Mantenimiento',
+      [RestrictionType.VERIFICATION_PENDING]: 'Verificación Pendiente',
+      [RestrictionType.NO_RESERVATIONS]: 'Sin Reservas',
+      [RestrictionType.NO_TOURNAMENTS]: 'Sin Torneos',
+      [RestrictionType.LIMITED_MEMBERS]: 'Miembros Limitados',
+      [RestrictionType.NO_EXTERNAL_PLAYERS]: 'Sin Externos',
+      [RestrictionType.PAYMENT_FROZEN]: 'Pagos Congelados',
+      [RestrictionType.HIDDEN_FROM_SEARCH]: 'Oculto'
+    };
+    return restrictionMap[type] || 'Restricción';
+  }
+
+  getRestrictionIcon(type: RestrictionType): string {
+    const iconMap = {
+      [RestrictionType.SUSPENDED]: '🚫',
+      [RestrictionType.BANNED]: '❌',
+      [RestrictionType.MAINTENANCE]: '🔧',
+      [RestrictionType.VERIFICATION_PENDING]: '⏳',
+      [RestrictionType.NO_RESERVATIONS]: '📅',
+      [RestrictionType.NO_TOURNAMENTS]: '🏆',
+      [RestrictionType.LIMITED_MEMBERS]: '👥',
+      [RestrictionType.NO_EXTERNAL_PLAYERS]: '🚷',
+      [RestrictionType.PAYMENT_FROZEN]: '💳',
+      [RestrictionType.HIDDEN_FROM_SEARCH]: '🔍'
+    };
+    return iconMap[type] || '⚠️';
+  }
+
+  getClubRestrictionsClass(club: Club): string {
+    const restrictions = this.getActiveRestrictions(club);
+    if (restrictions.length === 0) return '';
+    
+    if (restrictions.some(r => r.type === RestrictionType.BANNED)) return 'club-banned';
+    if (restrictions.some(r => r.type === RestrictionType.SUSPENDED)) return 'club-suspended';
+    if (restrictions.some(r => r.type === RestrictionType.MAINTENANCE)) return 'club-maintenance';
+    
+    return 'club-restricted';
+  }
+
+  getRestrictionDescription(type: RestrictionType | null): string {
+    if (!type) return '';
+    const restrictionType = this.getRestrictionTypes().find(t => t.value === type);
+    return restrictionType?.description || '';
+  }
+
+  // Modal y acciones de restricciones
+  openRestrictionsModal(club: Club) {
+    this.selectedClub.set(club);
+    this.selectedRestrictionType.set(null);
+    this.restrictionReason.set('');
+    this.showRestrictionsModal.set(true);
+  }
+
+  closeRestrictionsModal() {
+    this.showRestrictionsModal.set(false);
+    this.selectedClub.set(null);
+    this.selectedRestrictionType.set(null);
+    this.restrictionReason.set('');
+  }
+
+  async applyRestriction() {
+    const club = this.selectedClub();
+    const restrictionType = this.selectedRestrictionType();
+    const reason = this.restrictionReason();
+
+    if (!club || !restrictionType || !reason.trim()) {
+      this.toastService.warning('Por favor, selecciona una restricción y proporciona un motivo.');
+      return;
+    }
+
+    if (!club._id) {
+      this.toastService.error('Error: ID del club no disponible.');
+      return;
+    }
+
+    // Obtener el usuario actual para el campo appliedBy
+    const currentUser = this.servicioAuth.usuarioActual();
+    if (!currentUser || !currentUser.id) {
+      this.toastService.error('Error: Usuario no identificado. Inicia sesión nuevamente.');
+      return;
+    }
+
+    try {
+      // Llamada real al servicio para aplicar la restricción
+      const updatedClub = await firstValueFrom(
+        this.servicioClub.aplicarRestriccion(club._id, restrictionType, reason, currentUser.id)
+      );
+      
+      // Actualizar el club en la lista local
+      const clubs = this.clubes();
+      const clubIndex = clubs.findIndex(c => c._id === club._id);
+      if (clubIndex >= 0) {
+        const updatedClubs = [...clubs];
+        updatedClubs[clubIndex] = updatedClub;
+        this.clubes.set(updatedClubs);
+      }
+
+      this.closeRestrictionsModal();
+      this.toastService.success(`Restricción "${this.getRestrictionLabel(restrictionType)}" aplicada correctamente al club ${this.getClubName(club)}.`);
+    } catch (error: any) {
+      console.error('Error al aplicar restricción:', error);
+      const errorMessage = error.error?.message || 'Error al aplicar la restricción. Inténtalo de nuevo.';
+      this.toastService.error(errorMessage);
+    }
+  }
+
+  async removeRestriction(club: Club, restriction: ClubRestriction) {
+    // Usar toast con acción para confirmación
+    this.toastService.withAction(
+      `¿Quitar restricción "${this.getRestrictionLabel(restriction.type)}" del club ${this.getClubName(club)}?`,
+      'warning',
+      'Confirmar',
+      () => this.confirmRemoveRestriction(club, restriction),
+      8000
+    );
+  }
+
+  private async confirmRemoveRestriction(club: Club, restriction: ClubRestriction) {
+    if (!club._id) {
+      this.toastService.error('Error: ID del club no disponible.');
+      return;
+    }
+
+    try {
+      // Llamada real al servicio para quitar la restricción
+      const updatedClub = await firstValueFrom(
+        this.servicioClub.quitarRestriccion(club._id, restriction.type)
+      );
+      
+      // Actualizar el club en la lista local
+      const clubs = this.clubes();
+      const clubIndex = clubs.findIndex(c => c._id === club._id);
+      if (clubIndex >= 0) {
+        const updatedClubs = [...clubs];
+        updatedClubs[clubIndex] = updatedClub;
+        this.clubes.set(updatedClubs);
+      }
+
+      this.toastService.success(`Restricción "${this.getRestrictionLabel(restriction.type)}" eliminada correctamente del club ${this.getClubName(club)}.`);
+    } catch (error: any) {
+      console.error('Error al quitar restricción:', error);
+      const errorMessage = error.error?.message || 'Error al quitar la restricción. Inténtalo de nuevo.';
+      this.toastService.error(errorMessage);
+    }
   }
 }

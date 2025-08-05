@@ -61,7 +61,24 @@
 
     <!-- Clubs Grid -->
     <div class="clubs-grid" *ngIf="clubes().length > 0">
-      <div class="club-card" *ngFor="let club of clubes()">
+      <div class="club-card" *ngFor="let club of clubes()" [ngClass]="getClubRestrictionsClass(club)">
+        <!-- Indicador de restricciones -->
+        <div class="restrictions-indicator" *ngIf="isClubRestricted(club)">
+          <div class="restrictions-badge">
+            <span class="restriction-icon">⚠️</span>
+            <span class="restriction-text">{{ getRestrictionsDisplay(club) }}</span>
+          </div>
+          <div class="active-restrictions" *ngIf="getActiveRestrictions(club).length > 0">
+            <div class="restriction-item" *ngFor="let restriction of getActiveRestrictions(club)">
+              <span class="restriction-type-icon">{{ getRestrictionIcon(restriction.type) }}</span>
+              <span class="restriction-type-label">{{ getRestrictionLabel(restriction.type) }}</span>
+              <button class="remove-restriction-btn" (click)="removeRestriction(club, restriction)" title="Quitar restricción">
+                ❌
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div class="club-header">
           <div class="club-logo">
             <img *ngIf="club.logo" [src]="club.logo" [alt]="getClubName(club)" (error)="onImageError($event)"/>
@@ -234,6 +251,14 @@
           >
             Editar
           </button>
+          <button 
+            class="btn-restrictions" 
+            (click)="openRestrictionsModal(club)"
+            [disabled]="!club._id"
+            type="button"
+          >
+            🚫 Restricciones
+          </button>
           <button class="btn-delete" disabled>
             Eliminar
           </button>
@@ -249,6 +274,80 @@
       <button class="btn-primary" (click)="navegarARegistroClub()">
         Registrar Primer Club
       </button>
+    </div>
+  </div>
+
+  <!-- Modal de Restricciones -->
+  <div class="modal-overlay" *ngIf="showRestrictionsModal()" (click)="closeRestrictionsModal()">
+    <div class="modal-content restrictions-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>🚫 Gestionar Restricciones</h3>
+        <p *ngIf="selectedClub()">Club: <strong>{{ getClubName(selectedClub()!) }}</strong></p>
+        <button class="modal-close" (click)="closeRestrictionsModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Restricciones actuales -->
+        <div class="current-restrictions" *ngIf="selectedClub() && getActiveRestrictions(selectedClub()!).length > 0">
+          <h4>Restricciones Activas:</h4>
+          <div class="restrictions-list">
+            <div class="restriction-item active" *ngFor="let restriction of getActiveRestrictions(selectedClub()!)">
+              <div class="restriction-info">
+                <span class="restriction-icon">{{ getRestrictionIcon(restriction.type) }}</span>
+                <div class="restriction-details">
+                  <span class="restriction-label">{{ getRestrictionLabel(restriction.type) }}</span>
+                  <small class="restriction-reason">{{ restriction.reason }}</small>
+                  <small class="restriction-date">Aplicada: {{ restriction.appliedDate | date:'short' }}</small>
+                </div>
+              </div>
+              <button class="btn-remove-restriction" (click)="removeRestriction(selectedClub()!, restriction)">
+                Quitar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Aplicar nueva restricción -->
+        <div class="apply-restriction">
+          <h4>Aplicar Nueva Restricción:</h4>
+          
+          <div class="restriction-type-selector">
+            <label>Tipo de Restricción:</label>
+            <select [ngModel]="selectedRestrictionType()" (ngModelChange)="selectedRestrictionType.set($event)" class="restriction-select">
+              <option [value]="null">Selecciona una restricción...</option>
+              <option *ngFor="let type of getRestrictionTypes()" [value]="type.value">
+                {{ type.label }}
+              </option>
+            </select>
+            <p class="restriction-description" *ngIf="selectedRestrictionType()">
+              {{ getRestrictionDescription(selectedRestrictionType()) }}
+            </p>
+          </div>
+
+          <div class="restriction-reason-input">
+            <label>Motivo de la Restricción:</label>
+            <textarea 
+              [ngModel]="restrictionReason()" 
+              (ngModelChange)="restrictionReason.set($event)"
+              placeholder="Explica el motivo de esta restricción..."
+              class="reason-textarea"
+              rows="3">
+            </textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeRestrictionsModal()">
+          Cancelar
+        </button>
+        <button 
+          class="btn-apply-restriction" 
+          (click)="applyRestriction()"
+          [disabled]="!selectedRestrictionType() || !restrictionReason().trim()">
+          Aplicar Restricción
+        </button>
+      </div>
     </div>
   </div>
 </div>

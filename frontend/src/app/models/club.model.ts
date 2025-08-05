@@ -27,6 +27,35 @@ export interface ClubPricing {
   // Esta funcionalidad está incluida en la suscripción mensual
 }
 
+// Interfaces para restricciones del club (solo administradores del sistema)
+export interface ClubRestriction {
+  type: RestrictionType;
+  reason: string;
+  appliedDate: Date;
+  expiryDate?: Date;
+  appliedBy: string; // ID del administrador del sistema
+  isActive: boolean;
+}
+
+export enum RestrictionType {
+  SUSPENDED = 'suspended', // Club suspendido temporalmente
+  BANNED = 'banned', // Club baneado permanentemente
+  MAINTENANCE = 'maintenance', // En modo mantenimiento
+  VERIFICATION_PENDING = 'verification_pending', // Pendiente de verificación
+  NO_RESERVATIONS = 'no_reservations', // No puede recibir nuevas reservas
+  NO_TOURNAMENTS = 'no_tournaments', // No puede organizar torneos
+  LIMITED_MEMBERS = 'limited_members', // Límite en número de miembros
+  NO_EXTERNAL_PLAYERS = 'no_external_players', // No puede aceptar jugadores externos
+  PAYMENT_FROZEN = 'payment_frozen', // Pagos congelados
+  HIDDEN_FROM_SEARCH = 'hidden_from_search' // Oculto de búsquedas públicas
+}
+
+export interface ClubRestrictions {
+  isRestricted: boolean;
+  activeRestrictions: ClubRestriction[];
+  restrictionsSummary?: string[]; // Resumen de restricciones activas para mostrar en UI
+}
+
 export interface Club {
   _id?: string;
   name: string;
@@ -37,7 +66,7 @@ export interface Club {
   location: ClubLocation;
   pricing: ClubPricing;
   totalCourts: number;
-  operatingHours?: Map<string, { open: string; close: string }>;
+  operatingHours?: { [key: string]: { open: string; close: string } };
   // Removidas allowTournaments y allowExternalPlayers
   // Estas funcionalidades están siempre habilitadas (parte del valor de 200€/mes)
   requireMembershipApproval?: boolean;
@@ -47,6 +76,9 @@ export interface Club {
   
   // Lista de administradores del club
   administrators?: any[];
+  
+  // Sistema de restricciones (solo para administradores del sistema)
+  restrictions?: ClubRestrictions;
   
   // Métricas en tiempo real del club
   currentOpenMatches?: number; // Partidos abiertos actualmente esperando jugadores

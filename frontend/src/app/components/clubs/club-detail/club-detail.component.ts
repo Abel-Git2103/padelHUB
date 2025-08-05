@@ -142,6 +142,35 @@ import { BaseComponent } from '../../../shared/base-component';
             </div>
           </div>
 
+          <!-- Operating Hours -->
+          <div class="info-card">
+            <h3>🕐 Horario de Servicio</h3>
+            <div class="hours-info">
+              <!-- Horario de hoy -->
+              <div class="today-hours">
+                <span class="today-label">Hoy:</span>
+                <span class="today-time">{{ getTodayHours() }}</span>
+                <span class="status-badge" [class]="getTodayStatus().class">
+                  {{ getTodayStatus().text }}
+                </span>
+              </div>
+              
+              <!-- Horarios por día -->
+              <div class="week-hours">
+                <div class="day-hours" *ngFor="let day of getWeekDays(); let i = index" 
+                     [class.current-day]="day.isToday">
+                  <span class="day-name">{{ day.name }}</span>
+                  <span class="day-time">{{ day.hours }}</span>
+                </div>
+                
+                <!-- Mensaje si no hay días -->
+                <div *ngIf="getWeekDays().length === 0" class="no-hours-message">
+                  ⚠️ No se encontraron horarios para mostrar
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Facilities Information -->
           <div class="info-card">
             <h3>🏟️ Instalaciones y Servicios</h3>
@@ -280,5 +309,93 @@ export class ClubDetailComponent extends BaseComponent implements OnInit {
     } else {
       this.router.navigate(['/clubes']);
     }
+  }
+
+  // Métodos para horarios de servicio
+  getTodayHours(): string {
+    const club = this.club();
+    
+    if (!club?.operatingHours) {
+      return 'No disponible';
+    }
+    
+    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const todayName = dayNames[new Date().getDay()];
+    
+    const todayHours = club.operatingHours[todayName];
+    
+    if (!todayHours?.open || !todayHours?.close) {
+      return 'Cerrado';
+    }
+    
+    return `${todayHours.open} - ${todayHours.close}`;
+  }
+
+  getTodayStatus(): { text: string; class: string } {
+    const club = this.club();
+    
+    if (!club?.operatingHours) {
+      return { text: 'Sin información', class: 'unknown' };
+    }
+    
+    const now = new Date();
+    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const todayName = dayNames[now.getDay()];
+    
+    const todayHours = club.operatingHours[todayName];
+    
+    if (!todayHours?.open || !todayHours?.close) {
+      return { text: 'Cerrado', class: 'closed' };
+    }
+    
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+    const [openHour, openMin] = todayHours.open.split(':').map(Number);
+    const [closeHour, closeMin] = todayHours.close.split(':').map(Number);
+    const openTime = openHour * 60 + openMin;
+    const closeTime = closeHour * 60 + closeMin;
+    
+    if (currentTime >= openTime && currentTime <= closeTime) {
+      return { text: 'Abierto', class: 'open' };
+    } else {
+      return { text: 'Cerrado', class: 'closed' };
+    }
+  }
+
+  getWeekDays(): Array<{ name: string; hours: string; isToday: boolean }> {
+    const club = this.club();
+    
+    if (!club?.operatingHours) {
+      return [];
+    }
+    
+    const dayNames = [
+      { key: 'monday', name: 'Lunes' },
+      { key: 'tuesday', name: 'Martes' },
+      { key: 'wednesday', name: 'Miércoles' },
+      { key: 'thursday', name: 'Jueves' },
+      { key: 'friday', name: 'Viernes' },
+      { key: 'saturday', name: 'Sábado' },
+      { key: 'sunday', name: 'Domingo' }
+    ];
+    
+    const today = new Date().getDay();
+    const todayIndex = today === 0 ? 6 : today - 1; // Convertir domingo (0) a índice 6
+    
+    const result = dayNames.map((day, index) => {
+      const dayHours = club.operatingHours?.[day.key];
+      let hours = 'Cerrado';
+      
+      if (dayHours?.open && dayHours?.close) {
+        hours = `${dayHours.open} - ${dayHours.close}`;
+      }
+      
+      return {
+        name: day.name,
+        hours: hours,
+        isToday: index === todayIndex
+      };
+    });
+    
+    return result;
   }
 }

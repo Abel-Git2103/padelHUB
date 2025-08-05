@@ -22,7 +22,7 @@ import {
 } from '@nestjs/swagger';
 
 import { ClubsService } from './clubs.service';
-import { CreateClubDto, UpdateClubDto, ClubResponseDto } from './dto/club.dto';
+import { CreateClubDto, UpdateClubDto, ClubResponseDto, ApplyRestrictionDto } from './dto/club.dto';
 import { EstadoClub } from '../common/enums';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard, Roles } from '../auth/guards/roles.guard';
@@ -249,5 +249,70 @@ export class ClubsController {
   async checkOperationalStatus(@Param('id') id: string): Promise<{ isOperational: boolean }> {
     const isOperational = await this.clubsService.isOperational(id);
     return { isOperational };
+  }
+
+  // ==================== ENDPOINTS DE RESTRICCIONES ====================
+
+  @Post(':id/restrictions')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RolUsuario.ADMIN_SISTEMA)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Aplicar restricción a un club' })
+  @ApiParam({ name: 'id', description: 'ID del club' })
+  @ApiResponse({
+    status: 200,
+    description: 'Restricción aplicada exitosamente',
+    type: ClubResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Club no encontrado' })
+  @ApiResponse({ status: 403, description: 'Solo administradores del sistema' })
+  async applyRestriction(
+    @Param('id') clubId: string,
+    @Body() restrictionData: ApplyRestrictionDto,
+  ): Promise<ClubResponseDto> {
+    return this.clubsService.applyRestriction(clubId, restrictionData);
+  }
+
+  @Delete(':id/restrictions/:type')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RolUsuario.ADMIN_SISTEMA)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Quitar restricción de un club' })
+  @ApiParam({ name: 'id', description: 'ID del club' })
+  @ApiParam({ name: 'type', description: 'Tipo de restricción a quitar' })
+  @ApiResponse({
+    status: 200,
+    description: 'Restricción removida exitosamente',
+    type: ClubResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Club o restricción no encontrada' })
+  @ApiResponse({ status: 403, description: 'Solo administradores del sistema' })
+  async removeRestriction(
+    @Param('id') clubId: string,
+    @Param('type') restrictionType: string,
+  ): Promise<ClubResponseDto> {
+    return this.clubsService.removeRestriction(clubId, restrictionType);
+  }
+
+  @Get(':id/restrictions')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RolUsuario.ADMIN_SISTEMA, RolUsuario.ADMIN_CLUB)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Obtener restricciones activas del club' })
+  @ApiParam({ name: 'id', description: 'ID del club' })
+  @ApiResponse({
+    status: 200,
+    description: 'Restricciones del club obtenidas exitosamente',
+    schema: {
+      type: 'object',
+      properties: {
+        isRestricted: { type: 'boolean' },
+        activeRestrictions: { type: 'array' },
+        restrictionsSummary: { type: 'array', items: { type: 'string' } },
+      },
+    },
+  })
+  async getRestrictions(@Param('id') clubId: string) {
+    return this.clubsService.getRestrictions(clubId);
   }
 }

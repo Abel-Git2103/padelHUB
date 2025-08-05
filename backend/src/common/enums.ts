@@ -107,6 +107,22 @@ export enum EstadoClub {
 }
 
 /**
+ * Tipos de restricciones para clubes
+ */
+export enum RestrictionType {
+  SUSPENDED = 'suspended',
+  BANNED = 'banned',
+  MAINTENANCE = 'maintenance',
+  VERIFICATION_PENDING = 'verification_pending',
+  NO_RESERVATIONS = 'no_reservations',
+  NO_TOURNAMENTS = 'no_tournaments',
+  LIMITED_MEMBERS = 'limited_members',
+  NO_EXTERNAL_PLAYERS = 'no_external_players',
+  PAYMENT_FROZEN = 'payment_frozen',
+  HIDDEN_FROM_SEARCH = 'hidden_from_search'
+}
+
+/**
  * Temporadas del sistema (Sept - Mayo)
  */
 export interface Temporada {

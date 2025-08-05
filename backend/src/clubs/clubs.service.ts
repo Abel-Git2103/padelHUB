@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Club, ClubDocument } from './club.schema';
+import { Club, ClubDocument, ClubRestriction } from './club.schema';
 import { CreateClubDto, UpdateClubDto, ClubResponseDto } from './dto/club.dto';
-import { EstadoClub, TEMPORADA_ACTUAL } from '../common/enums';
+import { EstadoClub, TEMPORADA_ACTUAL, RestrictionType } from '../common/enums';
 
 @Injectable()
 export class ClubsService {
@@ -237,7 +237,14 @@ export class ClubsService {
       return false;
     }
 
-    return (club as any).isOperational();
+    const now = new Date();
+    const hasValidSubscription = club.status === EstadoClub.ACTIVO && 
+                                 club.isSubscriptionActive && 
+                                 (!club.subscriptionExpiresAt || club.subscriptionExpiresAt > now);
+
+    const isNotRestricted = !club.restrictions?.isRestricted;
+
+    return hasValidSubscription && isNotRestricted;
   }
 
   /**
@@ -282,6 +289,12 @@ export class ClubsService {
       monthlySubscriptionFee: club.monthlySubscriptionFee,
       isSubscriptionActive: club.isSubscriptionActive,
       subscriptionExpiresAt: club.subscriptionExpiresAt,
+      // Sistema de restricciones
+      restrictions: club.restrictions || { 
+        isRestricted: false, 
+        activeRestrictions: [], 
+        restrictionsSummary: [] 
+      },
       // Métricas en tiempo real
       currentOpenMatches: club.currentOpenMatches,
       currentActiveTournaments: club.currentActiveTournaments,
@@ -296,6 +309,102 @@ export class ClubsService {
       requireMembershipApproval: club.requireMembershipApproval,
       createdAt: club.createdAt,
       updatedAt: club.updatedAt,
+    };
+  }
+
+  // ==================== MÉTODOS DE RESTRICCIONES ====================
+
+  /**
+   * Aplicar una restricción a un club
+   */
+  async applyRestriction(clubId: string, restrictionData: any): Promise<ClubResponseDto> {
+    const club = await this.clubModel.findById(clubId);
+    if (!club) {
+      throw new NotFoundException(`Club con ID ${clubId} no encontrado`);
+    }
+
+    const restriction: ClubRestriction = {
+      type: restrictionData.type as RestrictionType,
+      reason: restrictionData.reason,
+      appliedDate: new Date(),
+      expiryDate: restrictionData.expiryDate ? new Date(restrictionData.expiryDate) : undefined,
+      appliedBy: restrictionData.appliedBy,
+      isActive: true,
+    };
+
+    // Inicializar restricciones si no existen
+    if (!club.restrictions) {
+      club.restrictions = { isRestricted: false, activeRestrictions: [], restrictionsSummary: [] };
+    }
+
+    // Remover restricción existente del mismo tipo si existe
+    club.restrictions.activeRestrictions = club.restrictions.activeRestrictions.filter(
+      r => r.type !== restriction.type
+    );
+
+    // Agregar nueva restricción
+    club.restrictions.activeRestrictions.push(restriction);
+    club.restrictions.isRestricted = true;
+
+    // Actualizar resumen
+    club.restrictions.restrictionsSummary = club.restrictions.activeRestrictions
+      .filter(r => r.isActive)
+      .map(r => r.type);
+
+    await club.save();
+    return this.toClubResponse(club);
+  }
+
+  /**
+   * Quitar una restricción de un club
+   */
+  async removeRestriction(clubId: string, restrictionType: string): Promise<ClubResponseDto> {
+    const club = await this.clubModel.findById(clubId);
+    if (!club) {
+      throw new NotFoundException(`Club con ID ${clubId} no encontrado`);
+    }
+
+    if (!club.restrictions || club.restrictions.activeRestrictions.length === 0) {
+      throw new NotFoundException(`No hay restricciones activas en el club`);
+    }
+
+    const initialLength = club.restrictions.activeRestrictions.length;
+    club.restrictions.activeRestrictions = club.restrictions.activeRestrictions.filter(
+      r => r.type !== restrictionType
+    );
+
+    if (club.restrictions.activeRestrictions.length === initialLength) {
+      throw new NotFoundException(`Restricción de tipo ${restrictionType} no encontrada en el club`);
+    }
+
+    // Si no quedan restricciones activas, marcar como no restringido
+    if (club.restrictions.activeRestrictions.length === 0) {
+      club.restrictions.isRestricted = false;
+      club.restrictions.restrictionsSummary = [];
+    } else {
+      // Actualizar resumen
+      club.restrictions.restrictionsSummary = club.restrictions.activeRestrictions
+        .filter(r => r.isActive)
+        .map(r => r.type);
+    }
+
+    await club.save();
+    return this.toClubResponse(club);
+  }
+
+  /**
+   * Obtener las restricciones activas de un club
+   */
+  async getRestrictions(clubId: string) {
+    const club = await this.clubModel.findById(clubId);
+    if (!club) {
+      throw new NotFoundException(`Club con ID ${clubId} no encontrado`);
+    }
+
+    return club.restrictions || { 
+      isRestricted: false, 
+      activeRestrictions: [], 
+      restrictionsSummary: [] 
     };
   }
 }

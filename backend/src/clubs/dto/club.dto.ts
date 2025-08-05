@@ -362,9 +362,38 @@ export class ClubResponseDto {
   @ApiProperty({ description: 'Requiere aprobación para membresía' })
   requireMembershipApproval: boolean;
 
+  @ApiProperty({ description: 'Sistema de restricciones del club' })
+  restrictions: {
+    isRestricted: boolean;
+    activeRestrictions: any[];
+    restrictionsSummary?: string[];
+  };
+
   @ApiProperty({ description: 'Fecha de creación' })
   createdAt: Date;
 
   @ApiProperty({ description: 'Fecha de última actualización' })
   updatedAt: Date;
+}
+
+/**
+ * DTO para aplicar restricciones
+ */
+export class ApplyRestrictionDto {
+  @ApiProperty({ description: 'Tipo de restricción' })
+  @IsString()
+  type: string;
+
+  @ApiProperty({ description: 'Razón de la restricción' })
+  @IsString()
+  reason: string;
+
+  @ApiPropertyOptional({ description: 'Fecha de expiración de la restricción' })
+  @IsOptional()
+  @IsDateString()
+  expiryDate?: string;
+
+  @ApiProperty({ description: 'ID del administrador que aplica la restricción' })
+  @IsString()
+  appliedBy: string;
 }

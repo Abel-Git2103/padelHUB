@@ -1,8 +1,51 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { EstadoClub, RangoUsuario } from '../common/enums';
+import { EstadoClub, RangoUsuario, RestrictionType } from '../common/enums';
 
 export type ClubDocument = Club & Document;
+
+/**
+ * Esquema para restricciones individuales
+ */
+@Schema({ _id: false })
+export class ClubRestriction {
+  @Prop({ required: true, enum: RestrictionType })
+  type: RestrictionType;
+
+  @Prop({ required: true })
+  reason: string;
+
+  @Prop({ required: true, default: Date.now })
+  appliedDate: Date;
+
+  @Prop()
+  expiryDate?: Date;
+
+  @Prop({ required: true })
+  appliedBy: string; // ID del administrador que aplicó la restricción
+
+  @Prop({ required: true, default: true })
+  isActive: boolean;
+}
+
+const ClubRestrictionSchema = SchemaFactory.createForClass(ClubRestriction);
+
+/**
+ * Esquema para el sistema de restricciones del club
+ */
+@Schema({ _id: false })
+export class ClubRestrictions {
+  @Prop({ required: true, default: false })
+  isRestricted: boolean;
+
+  @Prop({ type: [ClubRestrictionSchema], default: [] })
+  activeRestrictions: ClubRestriction[];
+
+  @Prop({ type: [String], default: [] })
+  restrictionsSummary?: string[]; // Resumen de restricciones activas para UI
+}
+
+const ClubRestrictionsSchema = SchemaFactory.createForClass(ClubRestrictions);
 
 /**
  * Configuración de precios del club
@@ -213,6 +256,10 @@ export class Club {
   @Prop({ default: 0 })
   avgDailyReservations: number; // Promedio de reservas por día
 
+  // Sistema de restricciones administrativas
+  @Prop({ type: ClubRestrictionsSchema, default: () => ({ isRestricted: false, activeRestrictions: [], restrictionsSummary: [] }) })
+  restrictions: ClubRestrictions;
+
   // Configuraciones específicas del club
   // Removidas allowTournaments y allowExternalPlayers
   // Estas funcionalidades están SIEMPRE habilitadas para clubes activos
@@ -259,5 +306,62 @@ ClubSchema.methods.isOperational = function(): boolean {
   const now = new Date();
   return this.status === EstadoClub.ACTIVO && 
          this.isSubscriptionActive && 
-         (!this.subscriptionExpiresAt || this.subscriptionExpiresAt > now);
+         (!this.subscriptionExpiresAt || this.subscriptionExpiresAt > now) &&
+         !this.restrictions.isRestricted;
+};
+
+// Métodos para manejo de restricciones
+ClubSchema.methods.addRestriction = function(restriction: ClubRestriction): void {
+  if (!this.restrictions) {
+    this.restrictions = { isRestricted: false, activeRestrictions: [], restrictionsSummary: [] };
+  }
+  
+  // Remover restricción existente del mismo tipo si existe
+  this.restrictions.activeRestrictions = this.restrictions.activeRestrictions.filter(
+    r => r.type !== restriction.type
+  );
+  
+  // Agregar nueva restricción
+  this.restrictions.activeRestrictions.push(restriction);
+  this.restrictions.isRestricted = true;
+  
+  // Actualizar resumen
+  this.updateRestrictionsSummary();
+};
+
+ClubSchema.methods.removeRestriction = function(restrictionType: RestrictionType): boolean {
+  if (!this.restrictions || this.restrictions.activeRestrictions.length === 0) {
+    return false;
+  }
+  
+  const initialLength = this.restrictions.activeRestrictions.length;
+  this.restrictions.activeRestrictions = this.restrictions.activeRestrictions.filter(
+    r => r.type !== restrictionType
+  );
+  
+  // Si no quedan restricciones activas, marcar como no restringido
+  if (this.restrictions.activeRestrictions.length === 0) {
+    this.restrictions.isRestricted = false;
+    this.restrictions.restrictionsSummary = [];
+  } else {
+    this.updateRestrictionsSummary();
+  }
+  
+  return this.restrictions.activeRestrictions.length < initialLength;
+};
+
+ClubSchema.methods.hasRestriction = function(restrictionType: RestrictionType): boolean {
+  return this.restrictions?.activeRestrictions?.some(r => r.type === restrictionType && r.isActive) || false;
+};
+
+ClubSchema.methods.updateRestrictionsSummary = function(): void {
+  if (!this.restrictions) return;
+  
+  this.restrictions.restrictionsSummary = this.restrictions.activeRestrictions
+    .filter(r => r.isActive)
+    .map(r => r.type);
+};
+
+ClubSchema.methods.getActiveRestrictions = function(): ClubRestriction[] {
+  return this.restrictions?.activeRestrictions?.filter(r => r.isActive) || [];
 };
