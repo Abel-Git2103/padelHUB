@@ -10,11 +10,14 @@ import { PlayerProfile } from '../../models/player-stats.model';
 import { Usuario } from '../../models/user.model';
 import { ProfileHistoryComponent } from './profile-history/profile-history.component';
 import { RankBadgeComponent } from '../shared/rank-badge/rank-badge.component';
+import { CompactRankProgressComponent } from '../shared/compact-rank-progress/compact-rank-progress.component';
+import { IllustratedRankBarComponent } from '../shared/illustrated-rank-bar/illustrated-rank-bar.component';
+import { TipoRango } from '../../models/rango.model';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ProfileHistoryComponent, RankBadgeComponent],
+  imports: [CommonModule, ProfileHistoryComponent, RankBadgeComponent, IllustratedRankBarComponent],
   template: `
     <div class="profile-container" *ngIf="playerProfile">
       <div class="profile-header">
@@ -113,19 +116,14 @@ import { RankBadgeComponent } from '../shared/rank-badge/rank-badge.component';
             <!-- Separador horizontal -->
             <div class="horizontal-separator"></div>
             
-            <!-- Barra de progreso para ascenso/descenso -->
-            <div class="rank-progress">
-              <div class="progress-info">
-                <span class="progress-label">Progreso de Ranking</span>
-                <span class="progress-percentage">{{ getRankProgress() }}%</span>
-              </div>
-              <div class="progress-bar">
-                <div class="progress-fill" [style.width.%]="getRankProgress()"></div>
-              </div>
-              <div class="progress-status">
-                <span class="status-text">{{ getRankStatus() }}</span>
-              </div>
-            </div>
+            <!-- Barra de progreso de ranking ilustrativa -->
+            <app-illustrated-rank-bar
+              [rangoActual]="playerProfile.usuario.rangoActual"
+              [puntos]="getCurrentPoints()"
+              [winRate]="getEfficiencyPercentage()"
+              [partidosJugados]="getTotalMatches()"
+              [victorias]="playerProfile.estadisticas.victorias">
+            </app-illustrated-rank-bar>
           </div>
 
           <!-- Estadísticas temporada actual -->

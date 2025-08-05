@@ -28,7 +28,7 @@ export class DashboardComponent implements OnInit {
     
     // Suscribirse a cambios del usuario solo si es diferente
     this.servicioAuth.usuarioActual$.subscribe(usuario => {
-      if (usuario !== this.usuario()) {
+      if (this.usuario() !== usuario) {
         this.usuario.set(usuario);
       }
     });

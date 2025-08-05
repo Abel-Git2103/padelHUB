@@ -1,11 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PlayerStats, PlayerHistoricalStats } from '../../../models/player-stats.model';
+import { CompactRankProgressComponent } from '../../shared/compact-rank-progress/compact-rank-progress.component';
+import { TipoRango } from '../../../models/rango.model';
 
 @Component({
   selector: 'app-profile-stats',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CompactRankProgressComponent],
   template: `
     <div class="profile-stats" *ngIf="estadisticas">
       <!-- Estadísticas Temporada Actual -->
@@ -104,9 +106,22 @@ import { PlayerStats, PlayerHistoricalStats } from '../../../models/player-stats
           </div>
         </div>
 
-        <!-- Progreso hacia objetivos -->
+        <!-- Progreso hacia objetivos - Nueva barra ilustrativa -->
         <div class="progress-section">
-          <h3 class="subsection-title">Progreso</h3>
+          <h3 class="subsection-title">Progreso de Rango</h3>
+          
+          <app-compact-rank-progress
+            [rangoActual]="rangoActual"
+            [puntos]="puntosActuales"
+            [winRate]="estadisticas.efectividad"
+            [partidosJugados]="estadisticas.totalPartidos"
+            [victorias]="estadisticas.victorias">
+          </app-compact-rank-progress>
+        </div>
+
+        <!-- Progreso hacia objetivos básico -->
+        <div class="progress-section">
+          <h3 class="subsection-title">Otros Objetivos</h3>
           
           <div class="progress-items">
             <div class="progress-item">
@@ -203,6 +218,8 @@ import { PlayerStats, PlayerHistoricalStats } from '../../../models/player-stats
 export class ProfileStatsComponent {
   @Input() estadisticas!: PlayerStats;
   @Input() estadisticasHistoricas!: PlayerHistoricalStats;
+  @Input() rangoActual: TipoRango = 'PLATA'; // Debería venir del usuario
+  @Input() puntosActuales: number = 62; // Debería venir del usuario
 
   getStreakLabel(tipo: 'victorias' | 'derrotas' | 'empates'): string {
     const labels = {

@@ -167,7 +167,7 @@ export class PlayerProfileService {
         nombreCompleto: 'Abel Jornet',
         email: 'juan.perez@email.com',
         telefono: '+34 666 123 456',
-        rangoActual: 'PLATINO',
+        rangoActual: 'PLATA',
         posicionJuego: 'DRIVE',
         club: {
           id: 'club1',

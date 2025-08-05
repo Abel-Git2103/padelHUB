@@ -5,21 +5,7 @@
 ### 📊 Umbrales de Puntos por Rango
 
 ```
-┌─────────────┬────────────#### 🥇 ORO → 💎 PLATINO
-
-```javascript
-// Solo por invitación - Ver wireframes/00-sistema-niveles.md
-const platinumInvitationCriteria = {
-  points: 90,  // 35 puntos sobre mínimo ORO
-  mon// Ejemplos prácticos:
-// BRONCE (30 pts mín) → Degrada con 24 pts o menos
-// PLATA (50 pts mín) → Degrada con 44 pts o menos  
-// ORO (70 pts mín) → Degrada con 64 pts o menosnOro: 6,
-  monthlyMatches: 15,
-  winRateInOro: 70,
-  tournamentsWon: 2
-};
-```───────────────┬─────────────────────┐
+┌─────────────┬─────────────────┬─────────────────────┬─────────────────────┐
 │    RANGO    │ PUNTOS MÍNIMOS  │ UMBRAL DE ASCENSO   │ ASCENSO ACELERADO   │
 ├─────────────┼─────────────────┼─────────────────────┼─────────────────────┤
 │ 🟫 COBRE    │       0         │   30 pts + 40% wins │   Torneo COBRE      │
@@ -28,6 +14,28 @@ const platinumInvitationCriteria = {
 │ 🥇 ORO      │      55         │   Solo invitación   │   N/A               │
 │ 💎 PLATINO  │   Invitación    │        N/A          │   N/A               │
 └─────────────┴─────────────────┴─────────────────────┴─────────────────────┘
+
+* Ascenso inmediato al cumplir criterios (puntos implican partidos jugados)
+** Conducta antideportiva gestionada directamente por el club
+```
+
+### ⚙️ Criterios para Invitación PLATINO
+
+```javascript
+// Solo por invitación - Criterios objetivos para evaluación
+const platinumInvitationCriteria = {
+  points: 90,  // 35 puntos sobre mínimo ORO
+  monthsInOro: 6,
+  monthlyMatches: 15,
+  winRateInOro: 70,
+  tournamentsWon: 2
+};
+
+// Ejemplos prácticos de degradación:
+// BRONCE (20 pts mín) → Degrada con 14 pts o menos
+// PLATA (35 pts mín) → Degrada con 29 pts o menos  
+// ORO (55 pts mín) → Degrada con 49 pts o menos
+```
 
 * Ascenso inmediato al cumplir criterios (puntos implican partidos jugados)
 ** Conducta antideportiva gestionada directamente por el club
@@ -471,28 +479,221 @@ const shouldDemote = (user) => {
 
 ---
 
-## 📈 Progreso Visualizado
+## 📈 Progreso Visualizado - Sistema Illustrativo de Rankings
 
-### Wireframe: Barra de Progreso hacia Siguiente Rango
+### 🎯 Barra de Progreso Multi-Nivel con Umbrales Reales
+
+#### Ejemplo 1: Jugador en PLATA progresando hacia ORO
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│ 📈 Progreso hacia 🥇 ORO                                │
+│ 📈 Progreso en el Sistema de Rankings - Juan Pérez      │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
-│ 🥈 PLATA (Actual: 62 puntos)                           │
+│ 🎯 RANGO ACTUAL: 🥈 PLATA (Actual: 62 puntos)          │
 │                                                         │
+│ 📊 LÍNEA DE PROGRESO COMPLETA:                          │
+│                                                         │
+│ 🟫 COBRE     🥉 BRONCE     🥈 PLATA     🥇 ORO     💎 PLATINO │
+│  0 ──────── 30 ──────── 50 ──────── 70 ──────── 90+     │
+│  │    ✅      │    ✅      │    ⬤ 62   │           │      │
+│  └─ Mín: 0   └─ Mín: 20   └─ Mín: 35  └─ Mín: 55 └─ Inv │
+│                                                         │
+│ 🎯 PROGRESO HACIA 🥇 ORO:                               │
 │ Puntos: ████████████████████████░░░░ 62/70 (89%)       │
+│ WinRate: ██████████████████████████ 68%/60% ✅          │
 │                                                         │
-│ 📋 Requisitos para ORO:                                 │
-│ ✅ Puntos: 62/70 (Faltan 8)                            │
-│ ✅ Victorias: 68%/60%                                  │
+│ 📋 STATUS ACTUAL:                                       │
+│ ✅ Cumples requisito WinRate (68% > 60% requerido)     │
+│ ⏳ Te faltan 8 puntos para ascender (62/70)            │
+│ 🎯 Necesitas ~3 victorias más para ORO                 │
 │                                                         │
-│ 🎯 Siguiente partido igualado: +3 puntos si ganas      │
-│ 🏆 ¡Solo te faltan ~3 victorias para ORO!              │
+│ 🚨 ZONA SEGURA EN PLATA:                                │
+│ • Mínimo PLATA: 35 pts (✅ Tienes 62 - Muy seguro)     │
+│ • Degradación: Solo si bajas de 29 pts                 │
+│ • Margen actual: 33 puntos de seguridad                │
 │                                                         │
-│ [VER TORNEOS DISPONIBLES]    [HISTORIAL]               │
+│ [VER TORNEOS DE ASCENSO]  [HISTORIAL]  [BUSCAR RIVAL]  │
 └─────────────────────────────────────────────────────────┘
+```
+
+#### Ejemplo 2: Jugador en BRONCE cerca del ascenso a PLATA
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ 📈 Progreso en el Sistema de Rankings - María López     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ 🎯 RANGO ACTUAL: 🥉 BRONCE (Actual: 47 puntos)         │
+│                                                         │
+│ 📊 LÍNEA DE PROGRESO COMPLETA:                          │
+│                                                         │
+│ 🟫 COBRE     🥉 BRONCE     🥈 PLATA     🥇 ORO     💎 PLATINO │
+│  0 ──────── 30 ──────── 50 ──────── 70 ──────── 90+     │
+│  │    ✅      │    ⬤ 47   │           │           │      │
+│  └─ Mín: 0   └─ Mín: 20   └─ Mín: 35  └─ Mín: 55 └─ Inv │
+│                                                         │
+│ 🎯 PROGRESO HACIA 🥈 PLATA:                             │
+│ Puntos: ███████████████████████████░░░ 47/50 (94%)     │
+│ WinRate: ████████████████████████░░░░ 48%/50% ⚠️        │
+│                                                         │
+│ 📋 STATUS ACTUAL:                                       │
+│ ⚠️ WinRate insuficiente (48% < 50% requerido)          │
+│ ⏳ Te faltan 3 puntos para el umbral (47/50)           │
+│ 🎯 Necesitas ganar más partidos para mejorar WinRate   │
+│                                                         │
+│ 💡 ESTRATEGIA RECOMENDADA:                               │
+│ • Gana 2 partidos seguidos → 53 pts + mejor WinRate    │
+│ • Con 53 pts + 52% WinRate → ¡Ascenso automático!      │
+│ • Alternative: Torneo BRONCE este fin de semana        │
+│                                                         │
+│ 🚨 ZONA SEGURA EN BRONCE:                               │
+│ • Mínimo BRONCE: 20 pts (✅ Tienes 47 - Muy seguro)    │
+│ • Degradación: Solo si bajas de 14 pts                 │
+│ • Margen actual: 33 puntos de seguridad                │
+│                                                         │
+│ [INSCRIBIRSE TORNEO]  [BUSCAR PARTIDOS]  [TIPS MEJORA] │
+└─────────────────────────────────────────────────────────┘
+```
+
+#### Ejemplo 3: Jugador nuevo en COBRE progresando
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ 📈 Progreso en el Sistema de Rankings - Carlos Nuevo    │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ � RANGO ACTUAL: 🟫 COBRE (Actual: 18 puntos)          │
+│                                                         │
+│ 📊 LÍNEA DE PROGRESO COMPLETA:                          │
+│                                                         │
+│ 🟫 COBRE     🥉 BRONCE     🥈 PLATA     🥇 ORO     💎 PLATINO │
+│  0 ──────── 30 ──────── 50 ──────── 70 ──────── 90+     │
+│  │    ⬤ 18   │           │           │           │      │
+│  └─ Mín: 0   └─ Mín: 20   └─ Mín: 35  └─ Mín: 55 └─ Inv │
+│                                                         │
+│ 🎯 PROGRESO HACIA 🥉 BRONCE:                            │
+│ Puntos: ████████████████████░░░░░░░░ 18/30 (60%)       │
+│ WinRate: ███████████████████████░░░░ 46%/40% ✅         │
+│                                                         │
+│ 📋 STATUS ACTUAL:                                       │
+│ ✅ Cumples requisito WinRate (46% > 40% requerido)     │
+│ ⏳ Te faltan 12 puntos para BRONCE (18/30)             │
+│ 🎯 Necesitas ~4-5 victorias más para ascender          │
+│                                                         │
+│ 💪 ¡EXCELENTE PROGRESO!                                 │
+│ • Has jugado ~39 partidos (18 pts = experiencia)       │
+│ • Tu WinRate de 46% está por encima del mínimo         │
+│ • Con tu ritmo actual: BRONCE en 2-3 semanas           │
+│                                                         │
+│ 🎊 PRIMER ASCENSO A LA VISTA:                           │
+│ • Alternative rápida: Torneo COBRE disponible          │
+│ • Si ganas torneo: Ascenso inmediato + bonus           │
+│ • Sin presión: No hay degradación desde COBRE          │
+│                                                         │
+│ [VER TORNEO COBRE]  [BUSCAR RIVALES]  [GUÍA PRINCIPIANTE] │
+└─────────────────────────────────────────────────────────┘
+```
+
+#### Ejemplo 4: Jugador ORO elegible para invitación PLATINO
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ 📈 Progreso en el Sistema de Rankings - Elena Pro       │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ 🎯 RANGO ACTUAL: 🥇 ORO (Actual: 87 puntos)            │
+│                                                         │
+│ 📊 LÍNEA DE PROGRESO COMPLETA:                          │
+│                                                         │
+│ 🟫 COBRE     🥉 BRONCE     🥈 PLATA     🥇 ORO     💎 PLATINO │
+│  0 ──────── 30 ──────── 50 ──────── 70 ──────── 90+     │
+│  │    ✅      │    ✅      │    ✅      │    ⬤ 87  │      │
+│  └─ Mín: 0   └─ Mín: 20   └─ Mín: 35  └─ Mín: 55 └─ Inv │
+│                                                         │
+│ 🎯 PROGRESO HACIA 💎 PLATINO:                           │
+│ Puntos: ███████████████████████████░░░ 87/90 (97%)     │
+│ WinRate ORO: ████████████████████████ 73%/70% ✅        │
+│ Meses en ORO: ████████████░░░░░░░░░░░░ 8/6 meses ✅     │
+│ Torneos ganados: ██████░░░░░░░░░░░░░░░░ 1/2 ⚠️          │
+│                                                         │
+│ 📋 CRITERIOS PARA INVITACIÓN:                           │
+│ ✅ Puntos suficientes (87/90 - Solo faltan 3)          │
+│ ✅ WinRate en ORO excelente (73% > 70%)                │
+│ ✅ Tiempo en ORO cumplido (8 > 6 meses)                │
+│ ⚠️ Torneos ganados (1/2 - Falta 1 torneo)              │
+│ ✅ Partidos mensuales (18 > 15 partidos/mes)           │
+│                                                         │
+│ 🏆 CAMINO A PLATINO:                                    │
+│ • ¡Estás a solo 1 torneo ganado de ser elegible!       │
+│ • Próximo torneo mixto: Sábado 15 Agosto               │
+│ • Si ganas: +3 pts (90) + criterio cumplido            │
+│ • El club evaluará tu invitación automáticamente       │
+│                                                         │
+│ 🚨 MANTÉN TU NIVEL ORO:                                 │
+│ • Mínimo ORO: 55 pts (✅ Tienes 87 - Súper seguro)     │
+│ • Degradación: Solo si bajas de 49 pts (imposible)     │
+│                                                         │
+│ [VER TORNEOS ELITE]  [ESTADÍSTICAS]  [PERFIL PLATINO]  │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 🎨 Código de Implementación para Barras Dinámicas
+
+```javascript
+// Función para generar la barra de progreso ilustrativa
+function generateRankProgressBar(userStats) {
+  const { currentRank, points, winRate, monthsInRank, tournamentsWon } = userStats;
+  
+  // Umbrales del sistema actual
+  const thresholds = {
+    cobre: { min: 0, next: 30, winRateReq: 40, nextRank: 'bronce' },
+    bronce: { min: 20, next: 50, winRateReq: 50, nextRank: 'plata' },
+    plata: { min: 35, next: 70, winRateReq: 60, nextRank: 'oro' },
+    oro: { min: 55, next: 90, winRateReq: 70, nextRank: 'platino', special: true }
+  };
+  
+  const current = thresholds[currentRank];
+  const progressPoints = Math.round((points / current.next) * 100);
+  const progressWinRate = Math.round((winRate / current.winRateReq) * 100);
+  
+  // Calcular barras visuales
+  const pointsBar = '█'.repeat(Math.floor(progressPoints/4)) + '░'.repeat(25 - Math.floor(progressPoints/4));
+  const winRateBar = '█'.repeat(Math.floor(progressWinRate/4)) + '░'.repeat(25 - Math.floor(progressWinRate/4));
+  
+  // Calcular estado y consejos
+  const pointsNeeded = current.next - points;
+  const winRateStatus = winRate >= current.winRateReq ? '✅' : '⚠️';
+  const winsNeeded = Math.ceil(pointsNeeded / 3);
+  
+  return {
+    progressPoints,
+    progressWinRate,
+    pointsBar,
+    winRateBar,
+    pointsNeeded,
+    winsNeeded,
+    winRateStatus,
+    advice: generateAdvice(userStats, current)
+  };
+}
+
+// Generar consejos contextuales
+function generateAdvice(stats, thresholds) {
+  if (stats.points >= thresholds.next && stats.winRate >= thresholds.winRateReq) {
+    return "¡Ascenso automático disponible! El sistema te promoverá en la próxima actualización.";
+  }
+  
+  if (stats.points >= thresholds.next) {
+    return `Tienes suficientes puntos, pero necesitas mejorar tu WinRate al ${thresholds.winRateReq}%`;
+  }
+  
+  if (stats.winRate >= thresholds.winRateReq) {
+    return `Excelente WinRate! Solo necesitas ${thresholds.next - stats.points} puntos más.`;
+  }
+  
+  return `Necesitas tanto más puntos como mejor WinRate. ¡Sigue jugando y ganando!`;
+}
 ```
 
 ---
