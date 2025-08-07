@@ -26,60 +26,81 @@ import {
             </p>
           </div>
         </div>
-        <div class="progress-percentage" [class.complete]="progreso.puedeAscender">
-          {{ Math.round(progreso.progresoTotal) }}%
-        </div>
       </div>
 
-      <!-- Barra de progreso principal con detalles -->
+      <!-- Barra de progreso principal con badges laterales -->
       <div class="main-progress-section" *ngIf="umbralSiguiente?.siguienteRango">
-        <div class="progress-track">
-          <div 
-            class="progress-fill" 
-            [style.width.%]="progreso.progresoTotal"
-            [class.complete]="progreso.puedeAscender">
-            <div class="progress-shine"></div>
+        <!-- Barra de progreso principal -->
+        <div class="fifa-progress-container">
+          <!-- Badge izquierdo -->
+          <div class="fifa-rank-badge left-badge" *ngIf="umbralAnterior">
+            <div class="fifa-badge-content">
+              <div class="fifa-badge-icon">{{ obtenerIconoRango(umbralAnterior.rango) }}</div>
+            </div>
           </div>
-          <div class="progress-markers">
-            <span class="marker start">{{ progreso.puntos }}</span>
-            <span class="marker end">{{ umbralSiguiente.puntosRequeridos }}</span>
+
+          <!-- Barra central -->
+          <div class="fifa-progress-track">
+            <!-- Sección de descenso/mantenimiento -->
+            <div class="fifa-section fifa-hold" [style.width]="'30%'">
+              <span class="fifa-section-label">RIESGO</span>
+              <div class="fifa-zone-info" *ngIf="umbralAnterior">
+                <span class="zone-points">{{ umbralAnterior.puntosMinimoParaMantenerse }}+ pts</span>
+              </div>
+            </div>
+            
+            <!-- Sección de progreso actual -->
+            <div class="fifa-section fifa-current" 
+                 [style.width]="'70%'">
+              <!-- Marca de posición actual -->
+              <div class="fifa-position-marker" 
+                   [style.left]="calcularPosicionMarca() + '%'">
+                <div class="marker-line"></div>
+                <div class="marker-info">
+                  <span class="marker-points">{{ progreso.puntos }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Flecha de promoción -->
+            <div class="fifa-promotion-arrow" *ngIf="progreso.puedeAscender">
+              <span>▲ PROMOTION</span>
+            </div>
+          </div>
+
+          <!-- Badge derecho -->
+          <div class="fifa-rank-badge right-badge">
+            <div class="fifa-badge-content">
+              <div class="fifa-badge-icon">{{ obtenerIconoRango(umbralSiguiente.siguienteRango) }}</div>
+            </div>
           </div>
         </div>
-        
-        <!-- Información detallada debajo de la barra -->
-        <div class="progress-details">
-          <div class="detail-section partidos">
-            <div class="detail-icon">🎾</div>
-            <div class="detail-content">
-              <span class="detail-value">{{ partidosJugados }}</span>
-              <span class="detail-label">Partidos jugados</span>
-              <div class="detail-breakdown">
-                <span class="wins">{{ victorias }}W</span>
-                <span class="losses">{{ partidosJugados - victorias }}L</span>
-              </div>
-            </div>
-          </div>
 
-          <div class="detail-section winrate">
-            <div class="detail-icon">📈</div>
-            <div class="detail-content">
-              <span class="detail-value">{{ Math.round(winRate) }}%</span>
-              <span class="detail-label">Win Rate actual</span>
-              <div class="detail-comparison">
-                <span class="required">Necesario: {{ umbralSiguiente.winRateRequerido }}%</span>
-              </div>
-            </div>
+        <!-- Información adicional debajo de la barra -->
+        <div class="progress-info-bottom">
+          <div class="info-item">
+            <span class="info-label">Puntos actuales:</span>
+            <span class="info-value">{{ progreso.puntos }}</span>
           </div>
-
-          <div class="detail-section points">
-            <div class="detail-icon">🎯</div>
-            <div class="detail-content">
-              <span class="detail-value">{{ umbralSiguiente.puntosRequeridos - progreso.puntos }}</span>
-              <span class="detail-label">Puntos restantes</span>
-              <div class="detail-estimate" *ngIf="progreso.victoriasNecesarias > 0">
-                <span class="estimate">~{{ progreso.victoriasNecesarias }} victorias más</span>
-              </div>
-            </div>
+          <div class="info-item" *ngIf="umbralAnterior">
+            <span class="info-label">Zona riesgo:</span>
+            <span class="info-value">{{ umbralAnterior.puntosMinimoParaMantenerse }}+ pts</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Para ascender:</span>
+            <span class="info-value">{{ umbralSiguiente.puntosRequeridos }} pts</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Win rate actual:</span>
+            <span class="info-value">{{ Math.round(winRate) }}%</span>
+          </div>
+          <div class="info-item" *ngIf="umbralSiguiente?.winRateMinimo">
+            <span class="info-label">Win rate necesario:</span>
+            <span class="info-value">{{ umbralSiguiente.winRateMinimo }}%</span>
+          </div>
+          <div class="info-item" *ngIf="progreso.victoriasNecesarias > 0">
+            <span class="info-label">Victorias necesarias:</span>
+            <span class="info-value">{{ progreso.victoriasNecesarias }}</span>
           </div>
         </div>
       </div>
@@ -137,24 +158,42 @@ import {
       border: 1px solid #e2e8f0;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       margin: 16px 0;
+
+      @media (max-width: 768px) {
+        padding: 12px;
+        border-radius: 12px;
+        margin: 12px 0;
+      }
     }
 
     .rank-header {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
       margin-bottom: 20px;
+
+      @media (max-width: 768px) {
+        margin-bottom: 12px;
+      }
     }
 
     .rank-info {
       display: flex;
       align-items: center;
       gap: 12px;
+
+      @media (max-width: 768px) {
+        gap: 8px;
+      }
     }
 
     .rank-icon {
       font-size: 2.5rem;
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+
+      @media (max-width: 768px) {
+        font-size: 2rem;
+      }
     }
 
     .rank-details h3 {
@@ -162,54 +201,362 @@ import {
       font-size: 1.25rem;
       font-weight: 700;
       color: #2d3748;
+
+      @media (max-width: 768px) {
+        font-size: 1.1rem;
+      }
     }
 
     .rank-subtitle {
       margin: 4px 0 0 0;
       font-size: 0.9rem;
       color: #718096;
-    }
 
-    .progress-percentage {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #4299e1;
-      padding: 8px 16px;
-      background: rgba(66, 153, 225, 0.1);
-      border-radius: 20px;
-      border: 2px solid #4299e1;
-    }
-
-    .progress-percentage.complete {
-      color: #48bb78;
-      background: rgba(72, 187, 120, 0.1);
-      border-color: #48bb78;
+      @media (max-width: 768px) {
+        font-size: 0.8rem;
+      }
     }
 
     .main-progress-section {
       margin-bottom: 20px;
     }
 
-    .progress-track {
-      position: relative;
-      height: 12px;
+    /* Información debajo de la barra */
+    .progress-info-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 12px 16px;
+      background: rgba(248, 250, 252, 0.8);
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+
+      @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 6px;
+        padding: 8px;
+        margin-top: 8px;
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+        justify-content: center;
+        gap: 12px;
+      }
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      
+      @media (max-width: 768px) {
+        justify-content: space-between;
+        width: 100%;
+      }
+    }
+
+    .info-label {
+      font-size: 0.8rem;
+      color: #64748b;
+      font-weight: 500;
+
+      @media (max-width: 768px) {
+        font-size: 0.75rem;
+      }
+    }
+
+    .info-value {
+      font-size: 0.85rem;
+      color: #1e293b;
+      font-weight: 600;
+
+      @media (max-width: 768px) {
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Badges estilo FIFA */
+    .fifa-progress-container {
+      display: flex;
+      align-items: center;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border: 1px solid #e2e8f0;
+
+      @media (max-width: 768px) {
+        padding: 8px;
+        flex-direction: row;
+        gap: 8px;
+        align-items: center;
+      }
+    }
+
+    /* Badges estilo FIFA */
+    .fifa-rank-badge {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      min-width: 60px;
+      height: 48px;
+      color: #2d3748;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &.left-badge {
+        border-color: #f59e0b;
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        color: #92400e;
+      }
+
+      &.right-badge {
+        border-color: #10b981;
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #065f46;
+      }
+
+      @media (max-width: 768px) {
+        min-width: 45px;
+        height: 36px;
+        padding: 8px;
+        flex-shrink: 0;
+      }
+    }
+
+    .fifa-badge-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .fifa-badge-icon {
+      font-size: 2rem;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+
+      @media (max-width: 768px) {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* Barra de progreso principal estilo FIFA */
+    .fifa-progress-track {
+      flex: 1;
+      height: 48px;
       background: #e2e8f0;
       border-radius: 6px;
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #4299e1, #63b3ed);
-      border-radius: 6px;
-      transition: width 1s ease-out;
+      margin: 0 16px;
       position: relative;
       overflow: hidden;
+      border: 1px solid #cbd5e0;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+
+      @media (max-width: 768px) {
+        margin: 0 8px;
+        height: 36px;
+        flex: 1;
+      }
     }
 
-    .progress-fill.complete {
-      background: linear-gradient(90deg, #48bb78, #68d391);
+    /* Secciones de la barra */
+    .fifa-section {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.8s ease-out;
+    }
+
+    .fifa-section.fifa-hold {
+      left: 0;
+      background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+      border-right: 1px solid #d97706;
+      flex-direction: column;
+      gap: 2px;
+
+      .fifa-section-label {
+        color: white;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        font-weight: 600;
+        
+        @media (max-width: 768px) {
+          font-size: 0.55rem;
+        }
+      }
+    }
+
+    .fifa-zone-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .zone-points {
+      font-size: 0.6rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+
+      @media (max-width: 768px) {
+        font-size: 0.5rem;
+        padding: 1px 3px;
+      }
+    }
+
+    .fifa-section.fifa-current {
+      left: 30%;
+      background: linear-gradient(90deg, #e2e8f0 0%, #cbd5e0 100%);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .fifa-section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+
+      @media (max-width: 768px) {
+        font-size: 0.6rem;
+        letter-spacing: 0.5px;
+      }
+    }
+
+    /* Información dentro de la barra - Marca de posición */
+    .fifa-position-marker {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 2px;
+      z-index: 10;
+      transform: translateX(-50%);
+    }
+
+    .marker-line {
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(180deg, #6b7280 0%, #9ca3af 100%);
+      border-radius: 1px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      position: relative;
+    }
+
+    .marker-line::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-bottom: 6px solid #6b7280;
+    }
+
+    .marker-line::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 6px solid #9ca3af;
+    }
+
+    .marker-info {
+      position: absolute;
+      top: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+      color: white;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      white-space: nowrap;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.15);
+      border: 1px solid #6b7280;
+
+      @media (max-width: 768px) {
+        font-size: 0.6rem;
+        padding: 2px 5px;
+        top: -25px;
+      }
+    }
+
+    .marker-info::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      border-top: 3px solid #4b5563;
+    }
+
+    .marker-points {
+      color: #fbbf24;
+      font-weight: 700;
+    }
+
+    /* Flecha de promoción */
+    .fifa-promotion-arrow {
+      position: absolute;
+      right: -2px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg, #48bb78 0%, #38a169 100%);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      animation: pulse-promotion 2s infinite;
+      z-index: 15;
+
+      @media (max-width: 768px) {
+        font-size: 0.55rem;
+        padding: 2px 4px;
+        right: -1px;
+      }
+    }
+
+    @keyframes pulse-promotion {
+      0%, 100% { 
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+      }
+      50% { 
+        opacity: 0.8;
+        transform: translateY(-50%) scale(1.05);
+      }
     }
 
     .progress-shine {
@@ -225,86 +572,6 @@ import {
     @keyframes shine {
       0% { left: -100%; }
       100% { left: 100%; }
-    }
-
-    .progress-markers {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 4px;
-      font-size: 0.8rem;
-      color: #718096;
-    }
-
-    .progress-details {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 16px;
-      margin-top: 16px;
-    }
-
-    .detail-section {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.8);
-      border-radius: 10px;
-      border: 1px solid #e2e8f0;
-    }
-
-    .detail-icon {
-      font-size: 1.5rem;
-      margin-top: 2px;
-    }
-
-    .detail-content {
-      flex: 1;
-    }
-
-    .detail-value {
-      display: block;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #2d3748;
-    }
-
-    .detail-label {
-      display: block;
-      font-size: 0.8rem;
-      color: #718096;
-      margin-bottom: 4px;
-    }
-
-    .detail-breakdown {
-      display: flex;
-      gap: 8px;
-      font-size: 0.8rem;
-    }
-
-    .wins {
-      color: #48bb78;
-      font-weight: 500;
-    }
-
-    .losses {
-      color: #f56565;
-      font-weight: 500;
-    }
-
-    .detail-comparison,
-    .detail-estimate {
-      font-size: 0.8rem;
-      color: #4a5568;
-    }
-
-    .required {
-      color: #ed8936;
-      font-weight: 500;
-    }
-
-    .estimate {
-      color: #4299e1;
-      font-style: italic;
     }
 
     .ascension-ready {
@@ -428,22 +695,27 @@ import {
 
     @media (max-width: 768px) {
       .illustrated-rank-bar {
-        padding: 16px;
+        padding: 12px;
+        margin: 8px 0;
       }
       
       .rank-header {
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-start;
+        flex-direction: row;
+        gap: 8px;
+        align-items: center;
       }
       
-      .progress-details {
-        grid-template-columns: 1fr;
+      .rank-info {
+        align-self: stretch;
       }
       
       .ascension-stats {
         flex-direction: column;
         gap: 4px;
+      }
+      
+      .fifa-progress-container {
+        min-height: 60px;
       }
     }
   `]
@@ -458,6 +730,7 @@ export class IllustratedRankBarComponent {
   progreso!: ProgresoRango;
   consejos: string[] = [];
   umbralSiguiente: any;
+  umbralAnterior: any;
 
   // Exposer Math para el template
   Math = Math;
@@ -481,6 +754,66 @@ export class IllustratedRankBarComponent {
     
     this.consejos = obtenerConsejosProgreso(this.progreso);
     this.umbralSiguiente = UMBRALES_ASCENSO[this.rangoActual];
+    this.umbralAnterior = this.obtenerUmbralAnterior();
+  }
+
+  private obtenerUmbralAnterior() {
+    const rangos: TipoRango[] = ['COBRE', 'BRONCE', 'PLATA', 'ORO', 'PLATINO'];
+    const currentIndex = rangos.indexOf(this.rangoActual);
+    
+    if (currentIndex > 0) {
+      const rangoAnterior = rangos[currentIndex - 1];
+      const umbral = UMBRALES_ASCENSO[rangoAnterior];
+      return {
+        rango: rangoAnterior,
+        puntosMinimoParaMantenerse: umbral?.puntosRequeridos || 0
+      };
+    }
+    
+    return null;
+  }
+
+  calcularPorcentajeZonaPeligro(): number {
+    if (!this.progreso.enZonaPeligro) return 0;
+    
+    // La zona de peligro representa el primer 25% de la barra
+    const margenPeligro = this.progreso.margenSeguridad;
+    const rangoTotal = this.umbralSiguiente?.puntosRequeridos - (this.umbralAnterior?.puntosMinimoParaMantenerse || 0);
+    
+    if (rangoTotal > 0) {
+      return Math.min((margenPeligro / rangoTotal) * 100, 25);
+    }
+    
+    return 20; // Valor por defecto
+  }
+
+  calcularPosicionMarca(): number {
+    // Calcular la posición de la marca dentro de la barra total
+    const puntosMinimos = this.umbralAnterior?.puntosMinimoParaMantenerse || 0;
+    const puntosMaximos = this.umbralSiguiente?.puntosRequeridos || 100;
+    const puntosActuales = this.progreso.puntos;
+    
+    // Asegurar que los puntos estén dentro del rango válido
+    const puntosNormalizados = Math.max(puntosMinimos, Math.min(puntosMaximos, puntosActuales));
+    
+    // Calcular porcentaje dentro del rango total (0-100%)
+    const rangoTotal = puntosMaximos - puntosMinimos;
+    const progresoDentroDelRango = puntosNormalizados - puntosMinimos;
+    
+    let posicionTotal = 0;
+    
+    if (rangoTotal > 0) {
+      // Calcular porcentaje real de progreso dentro del rango
+      const porcentajeProgreso = (progresoDentroDelRango / rangoTotal) * 100;
+      
+      // Mapear directamente el porcentaje a toda la barra
+      // La zona de riesgo ocupa el 30%, el progreso el 70%
+      // Pero mapeamos los puntos proporcionalmente a toda la barra
+      posicionTotal = porcentajeProgreso;
+    }
+    
+    // Asegurar que esté dentro de los límites de la barra
+    return Math.min(98, Math.max(2, posicionTotal));
   }
 
   obtenerIconoRango(rango: TipoRango): string {

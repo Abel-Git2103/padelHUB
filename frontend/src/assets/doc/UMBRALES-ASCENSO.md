@@ -8,10 +8,10 @@
 ┌─────────────┬─────────────────┬─────────────────────┬─────────────────────┐
 │    RANGO    │ PUNTOS MÍNIMOS  │ UMBRAL DE ASCENSO   │ ASCENSO ACELERADO   │
 ├─────────────┼─────────────────┼─────────────────────┼─────────────────────┤
-│ 🟫 COBRE    │       0         │   30 pts + 40% wins │   Torneo COBRE      │
-│ 🥉 BRONCE   │      20         │   50 pts + 50% wins │   Torneo BRONCE     │
-│ 🥈 PLATA    │      35         │   70 pts + 60% wins │   Torneo PLATA      │
-│ 🥇 ORO      │      55         │   Solo invitación   │   N/A               │
+│ 🟫 COBRE    │       0         │   50 pts + 40% wins │   Torneo COBRE      │
+│ 🥉 BRONCE   │      50         │   80 pts + 50% wins │   Torneo BRONCE     │
+│ 🥈 PLATA    │      80         │  120 pts + 60% wins │   Torneo PLATA      │
+│ 🥇 ORO      │     120         │   Solo invitación   │   N/A               │
 │ 💎 PLATINO  │   Invitación    │        N/A          │   N/A               │
 └─────────────┴─────────────────┴─────────────────────┴─────────────────────┘
 
@@ -24,7 +24,7 @@
 ```javascript
 // Solo por invitación - Criterios objetivos para evaluación
 const platinumInvitationCriteria = {
-  points: 90,  // 35 puntos sobre mínimo ORO
+  points: 150,  // 30 puntos sobre mínimo ORO
   monthsInOro: 6,
   monthlyMatches: 15,
   winRateInOro: 70,
@@ -32,9 +32,9 @@ const platinumInvitationCriteria = {
 };
 
 // Ejemplos prácticos de degradación:
-// BRONCE (20 pts mín) → Degrada con 14 pts o menos
-// PLATA (35 pts mín) → Degrada con 29 pts o menos  
-// ORO (55 pts mín) → Degrada con 49 pts o menos
+// BRONCE (50 pts mín) → Degrada con 44 pts o menos
+// PLATA (80 pts mín) → Degrada con 74 pts o menos  
+// ORO (120 pts mín) → Degrada con 114 pts o menos
 ```
 
 * Ascenso inmediato al cumplir criterios (puntos implican partidos jugados)
@@ -53,10 +53,10 @@ Para entender mejor los requisitos y su adecuación a la temporada:
 │   PUNTOS    │ VICTORIAS MÍNIMAS │ DERROTAS MÁXIMAS │ PARTIDOS TOTALES │ TIEMPO ESTIMADO │
 │ REQUERIDOS  │ (Win Rate Mín.)  │   PERMITIDAS    │   JUGADOS       │   EN TEMPORADA  │
 ├─────────────┼─────────────────┼─────────────────┼─────────────────┼─────────────────┤
-│     30      │    12 (40%)     │      18         │      30         │ 3-4 meses       │
-│     50      │    25 (50%)     │      25         │      50         │ 5-6 meses       │
-│     70      │    42 (60%)     │      28         │      70         │ 7-8 meses       │
-│     90      │    63 (70%)     │      27         │      90         │ 9-10 meses      │
+│     50      │    20 (40%)     │      30         │      50         │ 3-4 meses       │
+│     80      │    40 (50%)     │      40         │      80         │ 5-6 meses       │
+│    120      │    72 (60%)     │      48         │     120         │ 7-8 meses       │
+│    150      │   105 (70%)     │      45         │     150         │ 9-10 meses      │
 └─────────────┴─────────────────┴─────────────────┴─────────────────┴─────────────────┘
 
 📝 Fórmula de cálculo:
@@ -66,10 +66,10 @@ Para entender mejor los requisitos y su adecuación a la temporada:
 - Win Rate = (Victorias / Partidos Totales) × 100
 
 💡 Análisis de viabilidad:
-• 30 puntos: Alcanzable en 3-4 meses con 2-3 partidos/semana
-• 50 puntos: Alcanzable en 5-6 meses con actividad constante
-• 70 puntos: Requiere 7-8 meses y buen nivel (60% wins)
-• 90 puntos: Solo los mejores al final de temporada (70% wins)
+• 50 puntos: Alcanzable en 3-4 meses con 2-3 partidos/semana
+• 80 puntos: Alcanzable en 5-6 meses con actividad constante
+• 120 puntos: Requiere 7-8 meses y buen nivel (60% wins)
+• 150 puntos: Solo los mejores al final de temporada (70% wins)
 ```
 
 ---
@@ -94,7 +94,7 @@ El sistema de reportes es **completamente independiente** del sistema de ascenso
 
 ```javascript
 const canAscendToBronce = (user) => {
-  return user.points >= 30 &&
+  return user.points >= 50 &&
          user.winRate >= 40%;
 }
 ```
@@ -103,7 +103,7 @@ const canAscendToBronce = (user) => {
 
 ```javascript
 const canAscendToPlata = (user) => {
-  return user.points >= 50 &&
+  return user.points >= 80 &&
          user.winRate >= 50%;
 }
 ```
@@ -112,7 +112,7 @@ const canAscendToPlata = (user) => {
 
 ```javascript
 const canAscendToOro = (user) => {
-  return user.points >= 70 &&
+  return user.points >= 120 &&
          user.winRate >= 60%;
 }
 ```
@@ -230,7 +230,7 @@ const getTournamentBonus = (tournamentType, position) => {
 ```javascript
 // Solo por invitación - Ver wireframes/00-sistema-niveles.md
 const platinumInvitationCriteria = {
-  points: 35, // 7 puntos sobre mínimo ORO
+  points: 150, // 30 puntos sobre mínimo ORO
   monthsInOro: 6,
   monthlyMatches: 15,
   winRateInOro: 70,
@@ -299,10 +299,10 @@ const platinumInvitationCriteria = {
 ┌─────────────┬─────────────────┬─────────────────────┬─────────────────────┐
 │    RANGO    │ PUNTOS MÍNIMOS  │ PERTENENCIA RANKING │ UMBRAL DEGRADACIÓN  │
 ├─────────────┼─────────────────┼─────────────────────┼─────────────────────┤
-│ 🥉 BRONCE   │      30         │   30+ puntos = ✅   │    ≤24 puntos = ❌   │
-│ 🥈 PLATA    │      50         │   50+ puntos = ✅   │    ≤44 puntos = ❌   │
-│ 🥇 ORO      │      70         │   70+ puntos = ✅   │    ≤64 puntos = ❌   │
-│ 💎 PLATINO  │   Invitación    │   Invitado = ✅     │    ≤64 puntos = ❌   │
+│ 🥉 BRONCE   │      50         │   50+ puntos = ✅   │    ≤44 puntos = ❌   │
+│ 🥈 PLATA    │      80         │   80+ puntos = ✅   │    ≤74 puntos = ❌   │
+│ 🥇 ORO      │     120         │  120+ puntos = ✅   │   ≤114 puntos = ❌   │
+│ 💎 PLATINO  │   Invitación    │   Invitado = ✅     │   ≤114 puntos = ❌   │
 └─────────────┴─────────────────┴─────────────────────┴─────────────────────┘
 ```
 
@@ -364,9 +364,9 @@ const platinumInvitationCriteria = {
 
 ```javascript
 function getUserRank(points) {
-  if (points >= 55) return "oro";
-  if (points >= 35) return "plata";
-  if (points >= 20) return "bronce";
+  if (points >= 120) return "oro";
+  if (points >= 80) return "plata";
+  if (points >= 50) return "bronce";
   return "cobre";
 }
 
@@ -390,10 +390,10 @@ function getRankingDisplay(user) {
 ┌─────────────┬─────────────────┬─────────────────────┬─────────────────────┐
 │    RANGO    │ PUNTOS MÍNIMOS  │ UMBRAL DEGRADACIÓN  │ DIFERENCIA          │
 ├─────────────┼─────────────────┼─────────────────────┼─────────────────────┤
-│ 🥉 BRONCE   │      30         │      24 puntos      │     -6 puntos       │
-│ 🥈 PLATA    │      50         │      44 puntos      │     -6 puntos       │
-│ 🥇 ORO      │      70         │      64 puntos      │     -6 puntos       │
-│ 💎 PLATINO  │   Invitación    │      64 puntos      │ -6 desde ORO mín.   │
+│ 🥉 BRONCE   │      50         │      44 puntos      │     -6 puntos       │
+│ 🥈 PLATA    │      80         │      74 puntos      │     -6 puntos       │
+│ 🥇 ORO      │     120         │     114 puntos      │     -6 puntos       │
+│ 💎 PLATINO  │   Invitación    │     114 puntos      │ -6 desde ORO mín.   │
 └─────────────┴─────────────────┴─────────────────────┴─────────────────────┘
 ```
 
@@ -410,9 +410,9 @@ const shouldDemote = (user) => {
 };
 
 // Ejemplos prácticos:
-// BRONCE (30 pts mín) → Degrada con 24 pts o menos
-// PLATA (50 pts mín) → Degrada con 44 pts o menos
-// ORO (70 pts mín) → Degrada con 64 pts o menos
+// BRONCE (50 pts mín) → Degrada con 44 pts o menos
+// PLATA (80 pts mín) → Degrada con 74 pts o menos
+// ORO (120 pts mín) → Degrada con 114 pts o menos
 ```
 
 ### Wireframe: Advertencia de Degradación
@@ -647,10 +647,10 @@ function generateRankProgressBar(userStats) {
   
   // Umbrales del sistema actual
   const thresholds = {
-    cobre: { min: 0, next: 30, winRateReq: 40, nextRank: 'bronce' },
-    bronce: { min: 20, next: 50, winRateReq: 50, nextRank: 'plata' },
-    plata: { min: 35, next: 70, winRateReq: 60, nextRank: 'oro' },
-    oro: { min: 55, next: 90, winRateReq: 70, nextRank: 'platino', special: true }
+    cobre: { min: 0, next: 50, winRateReq: 40, nextRank: 'bronce' },
+    bronce: { min: 50, next: 80, winRateReq: 50, nextRank: 'plata' },
+    plata: { min: 80, next: 120, winRateReq: 60, nextRank: 'oro' },
+    oro: { min: 120, next: 150, winRateReq: 70, nextRank: 'platino', special: true }
   };
   
   const current = thresholds[currentRank];
@@ -1029,10 +1029,10 @@ export class ConductReportService {
 ┌─────────────┬─────────────────┬─────────────────┬─────────────────────┐
 │   ASCENSO   │ UMBRAL ANTERIOR │ UMBRAL ACTUAL   │ MEJORA IMPLEMENTADA │
 ├─────────────┼─────────────────┼─────────────────┼─────────────────────┤
-│ COBRE→BRONCE│   15 pts + 40%  │  30 pts + 40%   │ +100% experiencia   │
-│ BRONCE→PLATA│   25 pts + 50%  │  50 pts + 50%   │ +100% experiencia   │
-│ PLATA→ORO   │   35 pts + 60%  │  70 pts + 60%   │ +100% experiencia   │
-│ ORO→PLATINO │   35 pts + 70%  │  90 pts + 70%   │ +157% experiencia   │
+│ COBRE→BRONCE│   15 pts + 40%  │  50 pts + 40%   │ +233% experiencia   │
+│ BRONCE→PLATA│   25 pts + 50%  │  80 pts + 50%   │ +220% experiencia   │
+│ PLATA→ORO   │   35 pts + 60%  │ 120 pts + 60%   │ +243% experiencia   │
+│ ORO→PLATINO │   35 pts + 70%  │ 150 pts + 70%   │ +329% experiencia   │
 └─────────────┴─────────────────┴─────────────────┴─────────────────────┘
 ```
 
