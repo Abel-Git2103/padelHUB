@@ -15,6 +15,33 @@
       "request": "launch",
       "preLaunchTask": "npm: test",
       "url": "http://localhost:9876/debug.html"
+    },
+    {
+      "name": "Debug MCP Server",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/mcp-server/dist/index.js",
+      "cwd": "${workspaceFolder}/mcp-server",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "console": "integratedTerminal",
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/mcp-server/dist/**/*.js"],
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Debug MCP Server (TypeScript)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/mcp-server/src/index.ts",
+      "cwd": "${workspaceFolder}/mcp-server",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "console": "integratedTerminal",
+      "runtimeArgs": ["-r", "tsx/cjs"],
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }

@@ -5,6 +5,11 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
+    "build:analyze": "ng build --configuration analyze && npx source-map-explorer dist/padelHUB/browser/main-*.js",
+    "bundle:analyze": "ng build --configuration analyze && npx source-map-explorer dist/padelHUB/browser/chunk-*.js --html bundle-analysis.html",
+    "bundle:monitor": "ng build --configuration analyze && node bundle-analyzer.js",
+    "bundle:report": "ng build --configuration analyze && node bundle-analyzer.js > bundle-report.txt",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -29,6 +34,7 @@
     "@angular/material": "^20.1.3",
     "@angular/platform-browser": "^20.1.0",
     "@angular/router": "^20.1.0",
+    "@angular/service-worker": "^20.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -43,6 +49,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.8.2"
+    "source-map-explorer": "^2.5.3",
+    "typescript": "~5.8.2",
+    "webpack-bundle-analyzer": "^4.10.2"
   }
 }

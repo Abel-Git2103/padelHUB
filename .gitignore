@@ -14,6 +14,8 @@
 # Angular specific
 frontend/.angular/
 frontend/dist/
+frontend/*.html
+frontend/tsconfig.tsbuildinfo
 
 # NestJS specific
 backend/dist/

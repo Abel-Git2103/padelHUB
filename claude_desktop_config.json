@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "padelhub": {
+      "command": "node",
+      "args": ["e:\\Repositorios\\FRONTEND\\Angular 20\\padelHUB\\mcp-server\\dist\\index.js"],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}

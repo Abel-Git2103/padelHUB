@@ -1,8 +1,7 @@
 import { Injectable, signal, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject, throwError, Subject } from 'rxjs';
-import { tap, catchError, takeUntil } from 'rxjs/operators';
+import { Observable, BehaviorSubject, throwError, Subject, tap, catchError, takeUntil } from 'rxjs';
 import {
   Usuario,
   RespuestaAutenticacion,

@@ -1,53 +1,42 @@
 # Scripts de Utilidades - PadelHUB
 
-Esta carpeta contiene scripts de utilidad para la gestión de la base de datos y debugging del proyecto PadelHUB.
+Esta carpeta contiene scripts de utilidad esenciales para la gestión de la base de datos y mantenimiento del proyecto PadelHUB.
 
-## 📋 Lista de Scripts
+## 📋 Scripts Activos
 
-### 🔧 Scripts de Corrección y Mantenimiento
-
-- **`corregir-rol-admin.js`** - Corrige el rol del usuario admin de "JUGADOR" a "admin"
-
-### 👤 Scripts de Gestión de Usuarios
-
+### 👤 Gestión de Usuarios
 - **`actualizar-usuario.js`** - Actualiza información específica de un usuario
 - **`crear-usuario-prueba.js`** - Crea usuarios de prueba para testing
-- **`create-test-user.js`** - Script alternativo para crear usuarios de prueba
+- **`crear-usuarios-roles.js`** - Gestiona la creación de usuarios con roles específicos
 
-### 🔍 Scripts de Verificación
-
+### 🔍 Verificación del Sistema
 - **`verificar-credenciales.js`** - Verifica que las credenciales de los usuarios sean correctas
 - **`verificar-usuario.js`** - Verifica información específica de un usuario
 - **`verificar-usuarios.js`** - Lista y verifica información de todos los usuarios
+- **`verificar-clubes.js`** - Verifica el estado y configuración de los clubes
+- **`verificar-horarios-club.js`** - Verifica los horarios de funcionamiento de los clubes
 
-### 🐛 Scripts de Debug
+### 🧪 Testing Funcional
+- **`test-crear-club.js`** - Test para la funcionalidad de creación de clubes
+- **`test-frontend-error.js`** - Test para errores del frontend
 
-- **`debug-login.js`** - Script para debuggear el proceso de login y autenticación
+## 🚀 Uso de Scripts
 
-## 🚀 Cómo usar los scripts
-
-Todos los scripts deben ejecutarse desde el directorio `scripts` con Node.js:
+Ejecutar desde el directorio `scripts`:
 
 ```bash
-# Cambiar al directorio scripts
 cd scripts
-
-# Ejecutar un script
-node nombre-del-script.js
+node <nombre-script>.js
 ```
 
-### Ejemplos:
+## 📁 Estructura
 
-```bash
-# Verificar credenciales de usuarios
-node verificar-credenciales.js
+- **Scripts JS** - Scripts de Node.js para gestión del sistema
+- **`batch/`** - Scripts batch (.bat) y shell (.sh) para automatización
 
-# Ver todos los usuarios
-node verificar-usuarios.js
+## 📖 Documentación
 
-# Debug del proceso de login
-node debug-login.js
-```
+Para más información sobre el proyecto, consultar la [documentación principal](../docs/README.md).
 
 ## ⚠️ Notas Importantes
 

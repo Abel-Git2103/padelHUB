@@ -1,10 +1,10 @@
 <div class="desktop-layout">
   <!-- Sidebar -->
-  <aside class="sidebar" [class.collapsed]="sidebarColapsado()">
+  <aside class="sidebar" [class.collapsed]="sidebarColapsado()" role="navigation" aria-label="Panel de navegación principal">
     <div class="sidebar-header">
       <div class="logo-section">
         <div class="logo-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <rect x="3" y="4" width="18" height="16" rx="2" fill="#2E7D32" stroke="white" stroke-width="1"/>
             <circle cx="7" cy="12" r="1.5" fill="white"/>
             <circle cx="17" cy="12" r="1.5" fill="white"/>
@@ -18,8 +18,10 @@
         </span>
       </div>
       
-      <button class="sidebar-toggle" (click)="toggleSidebar()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="sidebar-toggle" (click)="toggleSidebar()" 
+              [attr.aria-label]="sidebarColapsado() ? 'Expandir menú de navegación' : 'Contraer menú de navegación'"
+              [attr.aria-expanded]="!sidebarColapsado()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <line x1="3" y1="6" x2="21" y2="6"></line>
           <line x1="3" y1="12" x2="21" y2="12"></line>
           <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -34,8 +36,10 @@
         <button 
           class="nav-item" 
           [class.active]="esRutaActiva('/admin/dashboard')" 
-          (click)="navegarA('/admin/dashboard')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          (click)="navegarA('/admin/dashboard')"
+          aria-label="Ir al dashboard principal"
+          [attr.aria-current]="esRutaActiva('/admin/dashboard') ? 'page' : null">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <rect x="3" y="3" width="7" height="7"></rect>
             <rect x="14" y="3" width="7" height="7"></rect>
             <rect x="14" y="14" width="7" height="7"></rect>
@@ -47,8 +51,12 @@
         <button 
           class="nav-item" 
           [class.active]="esRutaActiva('/admin/usuarios')" 
-          (click)="navegarA('/admin/usuarios')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          (click)="navegarA('/admin/usuarios')"
+          aria-label="Gestionar usuarios del sistema"
+          [attr.aria-current]="esRutaActiva('/admin/usuarios') ? 'page' : null">>
+          aria-label="Gestionar usuarios del sistema"
+          [attr.aria-current]="esRutaActiva('/admin/usuarios') ? 'page' : null">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
             <circle cx="9" cy="7" r="4"></circle>
             <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -60,8 +68,10 @@
         <button 
           class="nav-item" 
           [class.active]="esRutaActiva('/admin/clubes')" 
-          (click)="navegarA('/admin/clubes')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          (click)="navegarA('/admin/clubes')"
+          aria-label="Gestionar clubes de pádel"
+          [attr.aria-current]="esRutaActiva('/admin/clubes') ? 'page' : null">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
             <line x1="16" y1="2" x2="16" y2="6"></line>
             <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -73,8 +83,10 @@
         <button 
           class="nav-item" 
           [class.active]="esRutaActiva('/admin/rankings')" 
-          (click)="navegarA('/admin/rankings')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          (click)="navegarA('/admin/rankings')"
+          aria-label="Ver rankings y clasificaciones"
+          [attr.aria-current]="esRutaActiva('/admin/rankings') ? 'page' : null">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
           </svg>
           <span *ngIf="!sidebarColapsado()">Rankings</span>
@@ -83,8 +95,10 @@
         <button 
           class="nav-item" 
           [class.active]="esRutaActiva('/admin/partidos')" 
-          (click)="navegarA('/admin/partidos')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          (click)="navegarA('/admin/partidos')"
+          aria-label="Administrar partidos y torneos"
+          [attr.aria-current]="esRutaActiva('/admin/partidos') ? 'page' : null">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <circle cx="12" cy="12" r="10"></circle>
             <path d="M12 6v6l4 2"></path>
           </svg>
@@ -98,8 +112,10 @@
         <button 
           class="nav-item" 
           [class.active]="esRutaActiva('/admin/configuracion')" 
-          (click)="navegarA('/admin/configuracion')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          (click)="navegarA('/admin/configuracion')"
+          aria-label="Acceder a la configuración del sistema"
+          [attr.aria-current]="esRutaActiva('/admin/configuracion') ? 'page' : null">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <circle cx="12" cy="12" r="3"></circle>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
           </svg>
@@ -119,8 +135,10 @@
         </div>
       </div>
       
-      <button class="logout-btn" (click)="cerrarSesion()" [title]="sidebarColapsado() ? 'Cerrar sesión' : ''">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="logout-btn" (click)="cerrarSesion()" 
+              [title]="sidebarColapsado() ? 'Cerrar sesión' : ''"
+              aria-label="Cerrar sesión de administrador">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
           <polyline points="16,17 21,12 16,7"></polyline>
           <line x1="21" y1="12" x2="9" y2="12"></line>
@@ -131,11 +149,13 @@
   </aside>
 
   <!-- Contenido principal -->
-  <main class="main-content">
+  <main class="main-content" role="main">
     <!-- Header superior para móvil/tablet -->
     <header class="mobile-header" *ngIf="sidebarColapsado()">
-      <button class="mobile-menu-btn" (click)="toggleSidebar()">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="mobile-menu-btn" (click)="toggleSidebar()"
+              aria-label="Abrir menú de navegación"
+              aria-expanded="false">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <line x1="3" y1="6" x2="21" y2="6"></line>
           <line x1="3" y1="12" x2="21" y2="12"></line>
           <line x1="3" y1="18" x2="21" y2="18"></line>

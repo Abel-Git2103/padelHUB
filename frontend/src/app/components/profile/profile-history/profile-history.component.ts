@@ -68,6 +68,22 @@ import { MatchHistory } from '../../../models/player-stats.model';
                 </div>
               </div>
             </div>
+
+            <!-- Footer del partido con información -->
+            <div class="match-footer">
+              <div class="info-chip">
+                <span class="chip-icon">📍</span>
+                <span class="chip-text">Winner Sports Reus</span>
+              </div>
+              <div class="info-chip">
+                <span class="chip-icon">⏱️</span>
+                <span class="chip-text">{{ formatTime(partido.fecha) }}</span>
+              </div>
+              <div class="info-chip">
+                <span class="chip-icon">🎾</span>
+                <span class="chip-text">{{ partido.resultado === 'victoria' ? 'Victoria' : partido.resultado === 'derrota' ? 'Derrota' : 'Empate' }}</span>
+              </div>
+            </div>
           </div>
         </div>
 

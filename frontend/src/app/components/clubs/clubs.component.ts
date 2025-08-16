@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { ServicioAutenticacion } from '../../services/auth.service';
 import { ServicioClubes } from '../../services/clubes.service';
 import { Club } from '../../models/club.model';
+import { SkeletonLoaderComponent } from '../../shared/components/skeleton-loader/skeleton-loader.component';
 
 @Component({
   selector: 'app-clubs',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SkeletonLoaderComponent],
   template: `
     <div class="contenedor-clubes">
       <!-- Contenido principal -->
@@ -20,9 +21,15 @@ import { Club } from '../../models/club.model';
         </div>
 
         <!-- Estado de carga -->
-        <div class="cargando" *ngIf="cargando()">
-          <div class="spinner"></div>
-          <p>Cargando clubes...</p>
+        <div class="skeleton-container" *ngIf="cargando()">
+          <div class="skeleton-grid">
+            <app-skeleton-loader 
+              *ngFor="let item of [1,2,3,4,5,6]"
+              type="card" 
+              width="100%" 
+              height="200px">
+            </app-skeleton-loader>
+          </div>
         </div>
 
         <!-- Lista de clubes -->
@@ -165,6 +172,16 @@ import { Club } from '../../models/club.model';
     .cargando {
       text-align: center;
       padding: 3rem;
+    }
+
+    .skeleton-container {
+      margin-bottom: 3rem;
+    }
+
+    .skeleton-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
     }
 
     .spinner {

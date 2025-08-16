@@ -11,5 +11,10 @@
     "**/node_modules": true,
     "**/dist": true,
     "**/coverage": true
-  }
+  },
+  "padelhub.mcp.enable": true,
+  "padelhub.mcp.serverPath": "./mcp-server/dist/index.js",
+  "padelhub.mcp.serverArgs": [],
+  "padelhub.mcp.autoStart": true,
+  "padelhub.mcp.logLevel": "info"
 }
