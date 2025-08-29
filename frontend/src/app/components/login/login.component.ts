@@ -1,4 +1,5 @@
-import { Component, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, OnInit, OnDestroy, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,14 +13,16 @@ import { ROLES } from '../../models/roles.constants';
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrls: ['./login.component.scss']
 })
 export class ComponenteLogin implements OnInit, OnDestroy {
   formularioLogin: FormGroup;
   cargando = signal(false);
   error = signal('');
   mostrarContrasena = signal(false);
-  private subscription?: Subscription;
+  private subscription?: Subscription; // Mantener referencia sólo para logging; flujo gestionado por takeUntilDestroyed
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -44,9 +47,7 @@ export class ComponenteLogin implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    // Limpieza automática por takeUntilDestroyed
   }
 
   iniciarSesion() {
@@ -66,7 +67,9 @@ export class ComponenteLogin implements OnInit, OnDestroy {
         recordarme: credenciales.recordarme
       });
 
-      this.subscription = this.servicioAuth.iniciarSesion(credenciales, false).subscribe({
+      this.subscription = this.servicioAuth.iniciarSesion(credenciales, false)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
         next: (respuesta) => {
           console.log('🔑 LOGIN EXITOSO - ANÁLISIS COMPLETO:');
           console.log('   📧 Usuario:', respuesta.user.email);

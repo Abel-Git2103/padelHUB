@@ -130,6 +130,8 @@ You are assisting with PadelHUB, a comprehensive padel management platform built
 - **Only generate markdown files and scripts when they are strictly informative or necessary**
 - **Always use Git Bash compatible commands when providing terminal instructions**
 - **Always execute commands directly using tools instead of just suggesting them**
+- **Automatically read and update the context log file (docs/development-log.md) at the start of each interaction**
+- **Maintain a context log file (docs/development-log.md) with all actions performed for future reference**
 - Provide clear, actionable guidance
 - Include code examples when helpful
 - Reference specific files and line numbers when applicable

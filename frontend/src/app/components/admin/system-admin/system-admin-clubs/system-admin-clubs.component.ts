@@ -13,7 +13,7 @@ import { ToastService } from '../../../../services/toast.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './system-admin-clubs.component.html',
-  styleUrl: './system-admin-clubs.component.scss',
+  styleUrls: ['./system-admin-clubs.component.scss'],
 })
 export class SystemAdminClubsComponent implements OnInit {
   clubes = signal<Club[]>([]);

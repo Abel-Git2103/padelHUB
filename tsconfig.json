@@ -1,15 +1,22 @@
 {
+  "extends": "./config/paths.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@shared/*": ["shared/src/*"],
-      "@backend/*": ["backend/src/*"],
-      "@frontend/*": ["frontend/src/*"]
-    }
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
   },
   "references": [
     { "path": "./frontend" },
     { "path": "./backend" },
-    { "path": "./shared" }
+    { "path": "./shared" },
+    { "path": "./mcp-server" },
+    { "path": "./config" }
   ]
 }

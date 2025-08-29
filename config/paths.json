@@ -1,0 +1,34 @@
+{
+  "baseUrl": ".",
+  "paths": {
+    "@shared/*": ["shared/src/*"],
+    "@backend/*": ["backend/src/*"],
+    "@frontend/*": ["frontend/src/*"],
+    "@mcp/*": ["mcp-server/src/*"],
+    "@config/*": ["config/*"]
+  },
+  "references": [
+    { "path": "frontend" },
+    { "path": "backend" },
+    { "path": "shared" },
+    { "path": "mcp-server" },
+    { "path": "config" }
+  ],
+  "directories": {
+    "root": ".",
+    "frontend": "frontend",
+    "backend": "backend",
+    "shared": "shared",
+    "mcp": "mcp-server",
+    "config": "config",
+    "scripts": "scripts",
+    "docs": "docs"
+  },
+  "files": {
+    "mainPackage": "package.json",
+    "frontendPackage": "frontend/package.json",
+    "backendPackage": "backend/package.json",
+    "sharedPackage": "shared/package.json",
+    "mcpPackage": "mcp-server/package.json"
+  }
+}

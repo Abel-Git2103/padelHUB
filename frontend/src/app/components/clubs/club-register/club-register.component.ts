@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { ServicioClubes } from '../../../services/clubes.service';
 import { ServicioAutenticacion } from '../../../services/auth.service';
-import { BaseComponent } from '../../../shared/base-component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 interface ClubContactForm {
   email: string;
@@ -313,7 +313,7 @@ interface ClubPricingForm {
   `,
   styleUrls: ['./club-register.component.scss']
 })
-export class ClubRegisterComponent extends BaseComponent implements OnInit {
+export class ClubRegisterComponent implements OnInit {
   clubForm!: FormGroup;
   guardando = signal(false);
   mostrarMensajeExito = signal(false);
@@ -324,9 +324,7 @@ export class ClubRegisterComponent extends BaseComponent implements OnInit {
     private servicioClub: ServicioClubes,
     private servicioAuth: ServicioAutenticacion,
     private router: Router
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit() {
     this.checkUserPermissions();

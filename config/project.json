@@ -1,0 +1,46 @@
+{
+  "name": "PadelHUB",
+  "version": "0.0.0",
+  "description": "Plataforma integral para gestión de clubes de pádel, torneos y reservas",
+  "author": "Abel-Git2103",
+  "repository": "https://github.com/Abel-Git2103/padelHUB",
+
+  "project": {
+    "type": "monorepo",
+    "architecture": "hybrid",
+    "technologies": {
+      "frontend": "Angular 20",
+      "backend": "NestJS",
+      "database": "MongoDB",
+      "language": "TypeScript"
+    }
+  },
+
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared",
+    "mcp-server"
+  ],
+
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+
+  "features": {
+    "pwa": true,
+    "mcp": true,
+    "testing": true,
+    "deployment": true
+  },
+
+  "scripts": {
+    "setup": "npm run install:all && npm run build:shared",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build": "npm run build:shared && npm run build:backend && npm run build:frontend",
+    "test": "npm run test:backend && npm run test:frontend",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "clean": "rimraf node_modules frontend/node_modules backend/node_modules shared/node_modules"
+  }
+}

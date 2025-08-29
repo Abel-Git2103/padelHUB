@@ -6,7 +6,7 @@ import { ToastContainerComponent } from './components/shared/toast-container/toa
   selector: 'app-root',
   imports: [RouterOutlet, ToastContainerComponent],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrls: ['./app.scss']
 })
 export class App {
   protected readonly title = signal('padelHUB');

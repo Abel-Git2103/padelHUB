@@ -69,7 +69,79 @@ npm run dev:backend
 - **Backend API**: http://localhost:3000/api
 - **Documentación API**: http://localhost:3000/api/docs
 
-## 📋 Funcionalidades Principales
+## � Documentación de la API
+
+### 🔗 Documentación Interactiva (Swagger)
+La API cuenta con documentación interactiva generada automáticamente con Swagger/OpenAPI:
+
+**URL de Producción**: `http://localhost:3000/api/docs`
+
+### 📋 Características de la Documentación
+- ✅ **Esquemas completos** de datos
+- ✅ **Ejemplos** de requests/responses
+- ✅ **Autenticación integrada** (JWT)
+- ✅ **Pruebas en vivo** de endpoints
+- ✅ **Códigos de estado** documentados
+
+### 📖 Documentación Adicional
+Además de la documentación interactiva, se genera documentación adicional:
+
+```bash
+# Generar documentación completa
+npm run docs:api
+
+# Ver documentación generada
+ls docs/api/
+```
+
+**Archivos generados:**
+- `docs/api/README.md` - Documentación principal
+- `docs/api/auth.md` - Endpoints de autenticación
+- `docs/api/users.md` - Gestión de usuarios
+- `docs/api/clubs.md` - Gestión de clubes
+- `docs/api/authentication.md` - Detalles de auth
+- `docs/api/errors.md` - Códigos de error
+
+### 🔐 Autenticación en la API
+
+#### Obtener Token JWT
+```bash
+curl -X POST http://localhost:3000/api/auth/login \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "email": "usuario@email.com",
+    "password": "password123"
+  }'
+```
+
+#### Usar Token en Requests
+```bash
+curl -X GET http://localhost:3000/api/auth/profile \\
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+### 📋 Endpoints Principales
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| `POST` | `/api/auth/login` | Iniciar sesión |
+| `POST` | `/api/auth/register` | Registrar usuario |
+| `GET` | `/api/usuarios` | Listar usuarios |
+| `POST` | `/api/usuarios` | Crear usuario |
+| `GET` | `/api/clubs` | Listar clubs |
+| `POST` | `/api/clubs` | Crear club |
+
+### 🛠️ Generar Documentación
+
+```bash
+# Generar documentación una vez
+npm run docs:api
+
+# Generar automáticamente al cambiar archivos
+npm run docs:api:watch
+```
+
+## �📋 Funcionalidades Principales
 
 ### ✅ Gestión de Usuarios
 - Registro y autenticación

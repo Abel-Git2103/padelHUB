@@ -4,10 +4,7 @@
     <div class="dashboard-content">
       <!-- Header unificado -->
       <section class="unified-header" *ngIf="usuario()">
-        <div class="header-content">
-          <div class="profile-avatar">
-            {{ obtenerIniciales() }}
-          </div>
+        <div class="header-content no-avatar">
           <div class="welcome-details">
             <h1>¡Hola, {{ obtenerPrimerNombre() }}! 👋</h1>
             <p>Bienvenido de vuelta a tu centro de control del pádel</p>
@@ -16,15 +13,20 @@
       </section>
 
       <!-- Próximos partidos -->
-      <section class="upcoming-matches">
+  <section class="upcoming-matches limited-scroll">
         <h2>Tus próximos partidos</h2>
 
-        <div *ngIf="upcomingMatches().length > 0; else noUpcoming" class="matches-list">
-          <div class="match-card modern" *ngFor="let m of upcomingMatches(); trackBy: trackByUpcomingId">
+  <div *ngIf="upcomingMatches().length > 0; else noUpcoming" class="matches-list" #matchesList [style.max-height.px]="matchesListMaxHeight() || null" role="list" aria-label="Lista de próximos partidos (scroll)" (scroll)="onMatchesScroll()">
+          <!-- Indicador superior (contenido hacia arriba) -->
+          <div class="scroll-hint-top" *ngIf="topIndicatorVisible()" aria-hidden="true" [style.opacity]="topIndicatorOpacity()">
+            <div class="fade-top"></div>
+            <div class="hint-arrow-up">▲</div>
+          </div>
+          <div class="match-card modern" #matchCard *ngFor="let m of upcomingMatches(); trackBy: trackByUpcomingId">
             <!-- Header con degradado azul -->
             <div class="match-header-gradient">
               <div class="match-date">{{ formatDateLong(m.fecha) }}</div>
-              <div class="match-time">{{ formatTime(m.fecha) }}</div>
+              <div class="match-time">{{ formatTimeRange(m.fecha, m.duracion) }}</div>
               <div class="match-location">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"></path>
@@ -66,16 +68,20 @@
               </div>
             </div>
 
-            <!-- Footer con información del partido -->
+            <!-- Footer con información del partido y acciones -->
             <div class="match-footer">
               <div class="match-info-chips">
-                <span class="info-chip duration">{{ m.duracion }}</span>
+                <!-- Eliminado chip de duración -->
                 <span class="info-chip type" [class.torneo]="m.tipo === 'torneo'" [class.partido]="m.tipo === 'partido'">
                   {{ m.tipo === 'torneo' ? 'Torneo' : 'Partido' }}
                 </span>
                 <span class="info-chip match-type" [class.igualado]="m.tipoPartido === 'igualado'" [class.no-igualado]="m.tipoPartido === 'no-igualado'">
                   {{ m.tipoPartido === 'igualado' ? 'Igualado' : 'No igualado' }}
                 </span>
+                <span class="info-chip estado" [ngClass]="{
+                  'pendiente': m.estado === 'pendiente',
+                  'confirmado': m.estado === 'confirmado'
+                }">{{ m.estado | titlecase }}</span>
                 <span class="info-chip rank" *ngIf="m.tipoPartido === 'igualado' && m.rango" [class]="'rank ' + m.rango.toLowerCase()">
                   <span class="rank-emoji">
                     {{ m.rango === 'PLATINO' ? '💎' : 
@@ -86,10 +92,28 @@
                   </span>
                 </span>
               </div>
+              <div class="match-actions">
+                <button type="button" class="action-btn ghost" (click)="verMatch(m)">
+                  <span class="icon" aria-hidden="true">👁️</span>
+                  <span class="label">Ver</span>
+                </button>
+                <button type="button" class="action-btn ghost" (click)="editarMatch(m)">
+                  <span class="icon" aria-hidden="true">✏️</span>
+                  <span class="label">Editar</span>
+                </button>
+                <button type="button" class="action-btn danger" (click)="cancelarMatch(m)">
+                  <span class="icon" aria-hidden="true">✖</span>
+                  <span class="label">Cancelar</span>
+                </button>
+              </div>
             </div>
           </div>
+          <!-- Indicador scroll dentro -->
+          <div class="scroll-hint" *ngIf="indicatorVisible()" aria-hidden="true" [style.opacity]="indicatorOpacity()">
+            <div class="fade-bottom"></div>
+            <div class="hint-arrow">▼</div>
+          </div>
         </div>
-
         <ng-template #noUpcoming>
           <div class="no-upcoming">
             <div class="icon">🎾</div>
@@ -98,7 +122,7 @@
               <p>Crea o apúntate a un partido o torneo para verlo aquí.</p>
             </div>
           </div>
-        </ng-template>
+  </ng-template>
       </section>
 
       <!-- Acciones rápidas -->

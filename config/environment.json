@@ -1,0 +1,57 @@
+{
+  "development": {
+    "ports": {
+      "frontend": 4200,
+      "backend": 3000,
+      "mcp": 3001
+    },
+    "environment": "development",
+    "debug": true,
+    "hotReload": true
+  },
+
+  "production": {
+    "ports": {
+      "frontend": 80,
+      "backend": 3000,
+      "mcp": 3001
+    },
+    "environment": "production",
+    "debug": false,
+    "hotReload": false
+  },
+
+  "testing": {
+    "environment": "test",
+    "debug": true,
+    "coverage": true,
+    "parallel": true
+  },
+
+  "database": {
+    "development": {
+      "host": "localhost",
+      "port": 27017,
+      "database": "padelhub_dev"
+    },
+    "production": {
+      "host": "mongodb://localhost:27017",
+      "database": "padelhub_prod"
+    },
+    "test": {
+      "host": "localhost",
+      "port": 27017,
+      "database": "padelhub_test"
+    }
+  },
+
+  "jwt": {
+    "secret": "your-secret-key",
+    "expiresIn": "24h"
+  },
+
+  "cors": {
+    "origin": ["http://localhost:4200", "http://localhost:3000"],
+    "credentials": true
+  }
+}

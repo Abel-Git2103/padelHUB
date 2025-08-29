@@ -1,7 +1,7 @@
 import { Injectable, signal, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject, throwError, Subject, tap, catchError, takeUntil } from 'rxjs';
+import { Observable, BehaviorSubject, throwError, Subject, tap, catchError } from 'rxjs';
 import {
   Usuario,
   RespuestaAutenticacion,
@@ -22,8 +22,7 @@ export class ServicioAutenticacion implements OnDestroy {
   private sujetoUsuarioActual = new BehaviorSubject<Usuario | null>(null);
   public usuarioActual$ = this.sujetoUsuarioActual.asObservable();
 
-  // Subject para manejar la destrucción de suscripciones
-  private destroy$ = new Subject<void>();
+  // destroy$ eliminado: el servicio no mantiene suscripciones activas propias
 
   // Signals para el estado de autenticación
   public estaAutenticado = signal(false);
@@ -222,10 +221,6 @@ export class ServicioAutenticacion implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Completar el subject para cerrar todas las suscripciones
-    this.destroy$.next();
-    this.destroy$.complete();
-
     // Cerrar el BehaviorSubject
     this.sujetoUsuarioActual.complete();
 

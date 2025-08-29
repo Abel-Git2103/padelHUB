@@ -9,7 +9,7 @@ import { Usuario } from '../../../models/user.model';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './admin-dashboard.component.html',
-  styleUrl: './admin-dashboard.component.scss'
+  styleUrls: ['./admin-dashboard.component.scss']
 })
 export class AdminDashboardComponent implements OnInit {
   usuario = signal<Usuario | null>(null);

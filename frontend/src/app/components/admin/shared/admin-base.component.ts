@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { ServicioAutenticacion } from '../../../services/auth.service';
 import { AdminPermissionsService } from '../../../services/admin-permissions.service';
 import { Usuario } from '../../../models/user.model';
-import { Subscription } from 'rxjs';
 
 /**
  * Componente base para todos los componentes de administración
@@ -18,10 +18,11 @@ export abstract class AdminBaseComponent implements OnInit, OnDestroy {
   protected enrutador = inject(Router);
   protected servicioAuth = inject(ServicioAutenticacion);
   protected adminPermissions = inject(AdminPermissionsService);
+  protected destroyRef = inject(DestroyRef);
   
   // Estado del usuario
   protected usuario = signal<Usuario | null>(null);
-  protected subscripcionUsuario?: Subscription;
+  // Eliminada subscripción manual; usamos takeUntilDestroyed
   
   // Computados para tipos de admin - delegando al AuthService
   protected esAdminClub = computed(() => this.servicioAuth.esAdminClub());
@@ -60,10 +61,7 @@ export abstract class AdminBaseComponent implements OnInit, OnDestroy {
     this.onInit();
   }
 
-  ngOnDestroy(): void {
-    this.subscripcionUsuario?.unsubscribe();
-    this.onDestroy();
-  }
+  ngOnDestroy(): void { this.onDestroy(); }
 
   /**
    * Métodos que deben implementar las clases derivadas
@@ -75,14 +73,14 @@ export abstract class AdminBaseComponent implements OnInit, OnDestroy {
    * Inicializar estado del usuario
    */
   private inicializarUsuario(): void {
-    this.subscripcionUsuario = this.servicioAuth.usuarioActual$.subscribe(
-      usuario => {
+    this.servicioAuth.usuarioActual$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(usuario => {
         this.usuario.set(usuario);
         if (usuario && !this.esAdmin()) {
           this.enrutador.navigate(['/jugador/tablero']);
         }
-      }
-    );
+      });
   }
 
   /**

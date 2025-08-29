@@ -34,20 +34,7 @@
   gap: var(--spacing-xl);
 }
 
-.profile-avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: var(--border-radius-full);
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-on-primary);
-  font-size: var(--font-size-2xl);
-  font-weight: 700;
-  box-shadow: var(--shadow-2);
-  flex-shrink: 0;
-}
+.header-content.no-avatar { gap: var(--spacing-md); }
 
 .welcome-details {
   flex: 1;
@@ -149,11 +136,25 @@
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-1);
-  padding: var(--spacing-xl);
+  padding: var(--spacing-xl) var(--spacing-lg);
   max-width: 90vw;
   width: 100%;
   margin: 0 auto;
 }
+
+/* Variante con scroll limitado a ~2 tarjetas visibles */
+.upcoming-matches.limited-scroll .matches-list {
+  overflow-y: auto;
+  /* Ocultar scrollbar manteniendo scroll funcional */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge antiguo */
+  transition: max-height .15s ease;
+  position: relative;
+}
+/* WebKit */
+.upcoming-matches.limited-scroll .matches-list::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
+/* Conservamos overlay inferior existente como indicador de scroll */
 
 .upcoming-matches h2 {
   font-size: var(--font-size-2xl);
@@ -165,8 +166,77 @@
 .matches-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  /* Gap más amplio entre tarjetas para mayor separación visual */
+  gap: 18px;
 }
+
+/* Evitar que las tarjetas se "aplasten" al limitar la altura del contenedor: queremos overflow-scroll */
+.matches-list > .match-card.modern { flex: 0 0 auto; }
+
+/* Indicador scroll inferior fijo (sticky) */
+.scroll-hint {
+  position: sticky;
+  bottom: 0;
+  left: 0; right: 0;
+  height: 0; /* No altera el flujo */
+  pointer-events: none;
+  z-index: 5;
+  transition: opacity .25s ease;
+}
+
+/* Indicador superior fijo (sticky) */
+.scroll-hint-top {
+  position: sticky;
+  top: 0;
+  left: 0; right: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 5;
+  transition: opacity .25s ease;
+}
+
+.scroll-hint-top .fade-top {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 56px;
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.9) 45%, rgba(255,255,255,0) 100%);
+}
+
+.scroll-hint-top .hint-arrow-up {
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  transform: translateX(-50%);
+  font-size: 16px;
+  color: #047857;
+  text-shadow: 0 1px 2px rgba(0,0,0,.15);
+  animation: bounceArrowUp 1.6s ease-in-out infinite, fadeInHint .4s ease;
+  opacity: .9;
+}
+
+@keyframes bounceArrowUp { 0%,100% { transform: translate(-50%,0);} 50% { transform: translate(-50%,-4px);} }
+
+.scroll-hint .fade-bottom {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 56px;
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 55%, #ffffff 100%);
+}
+
+.scroll-hint .hint-arrow {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  font-size: 16px;
+  color: #047857;
+  text-shadow: 0 1px 2px rgba(0,0,0,.15);
+  animation: bounceArrow 1.6s ease-in-out infinite, fadeInHint .4s ease;
+  opacity: .9;
+}
+
+@keyframes bounceArrow { 0%,100% { transform: translateY(0);} 50% { transform: translateY(4px);} }
+@keyframes fadeInHint { from { opacity:0; } to { opacity:1; } }
 
 .match-card.upcoming {
   background: var(--background-primary);
@@ -325,6 +395,14 @@
   border-color: #dc2626;
 }
 
+/* Chips de estado */
+.info-chip.estado { font-weight:700; }
+.info-chip.estado.pendiente { background:#fef3c7; color:#92400e; border-color:#fbbf24; }
+.info-chip.estado.confirmado { background:#d1fae5; color:#065f46; border-color:#10b981; }
+.info-chip.estado.en-curso { background:#dbeafe; color:#1e3a8a; border-color:#3b82f6; animation:pulseEstado 1.8s ease-in-out infinite; }
+.info-chip.estado.cancelado { background:#fee2e2; color:#991b1b; border-color:#fca5a5; text-decoration:line-through; }
+@keyframes pulseEstado { 0%,100%{ box-shadow:0 0 0 0 rgba(59,130,246,.4);} 50%{ box-shadow:0 0 0 4px rgba(59,130,246,0);} }
+
 
 
 /* Responsive Design */
@@ -343,11 +421,7 @@
     font-size: var(--font-size-base);
   }
   
-  .profile-avatar {
-    width: 70px;
-    height: 70px;
-    font-size: var(--font-size-xl);
-  }
+  .header-content.no-avatar { text-align: center; }
   
   .match-item {
     align-items: flex-start;
@@ -377,11 +451,7 @@
     font-size: var(--font-size-sm);
   }
   
-  .profile-avatar {
-    width: 60px;
-    height: 60px;
-    font-size: var(--font-size-lg);
-  }
+  .header-content.no-avatar { text-align: center; }
   
   .main-navigation {
     gap: 0;
@@ -413,47 +483,49 @@
   overflow: hidden;
   box-shadow: 0 3px 15px rgba(16, 185, 129, 0.08);
   border: 1px solid rgba(187, 247, 208, 0.5);
-  margin-bottom: 16px;
+  /* margin-bottom eliminado: usamos gap en el contenedor para medir consistentemente */
 }
 
 .match-header-gradient {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
   text-align: center;
-  padding: 12px 16px 10px 16px;
+  /* Más alto y un poco menos de padding horizontal */
+  padding: 14px 14px 12px 14px;
   position: relative;
 }
 
 .match-date {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   text-transform: capitalize;
 }
 
 .match-time {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .match-location {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   opacity: 0.9;
 }
 
 .match-players-area {
   position: relative;
-  padding: 14px 16px;
+  /* Más vertical y algo menos horizontal */
+  padding: 16px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  min-height: 70px;
+  gap: 14px;
+  min-height: 78px;
 }
 
 .team-vertical {
@@ -518,8 +590,8 @@
 }
 
 .player-avatar-compact {
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
@@ -527,16 +599,16 @@
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 11px;
-  margin-bottom: 3px;
+  font-size: 12px;
+  margin-bottom: 4px;
 }
 
 .player-name-compact {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 600;
   color: #374151;
   text-align: center;
-  max-width: 55px;
+  max-width: 64px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -568,33 +640,87 @@
 .match-footer {
   background: #f0fdf4;
   border-top: 1px solid #bbf7d0;
-  padding: 10px 8px;
+  /* Menos horizontal, más aire vertical */
+  padding: 12px 12px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* algo más de separación */
 }
+
+/* Acciones del partido */
+.match-actions {
+  display: flex;
+  gap: 6px; /* igualar con chips */
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 2px;
+}
+
+.action-btn {
+  border: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .3px;
+  padding: 8px 12px;
+  line-height: 1;
+  border-radius: 8px;
+  background: white;
+  color: #065f46;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08), 0 0 0 1px rgba(16,185,129,0.25);
+  transition: background .2s ease, box-shadow .2s ease, transform .15s ease;
+}
+
+.action-btn .icon { font-size: 14px; }
+
+.action-btn:hover {
+  background: #ecfdf5;
+  box-shadow: 0 2px 4px rgba(16,185,129,0.25);
+}
+
+.action-btn:active { transform: translateY(1px); }
+
+.action-btn.ghost {
+  background: rgba(255,255,255,0.6);
+  box-shadow: 0 0 0 1px rgba(16,185,129,0.3);
+}
+
+.action-btn.ghost:hover { background: #d1fae5; }
+
+.action-btn.danger {
+  background: #fee2e2;
+  color: #991b1b;
+  box-shadow: 0 0 0 1px #fecaca;
+}
+
+.action-btn.danger:hover { background: #fecaca; }
 
 .match-info-chips {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   justify-content: center;
+  width: 100%;
+  row-gap: 6px; /* chips más respirados */
 }
 
 .info-chip {
-  padding: 4px 10px;
+  padding: 6px 12px;
   border-radius: 999px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   border: 1px solid transparent;
-  height: 24px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.info-chip.duration {
-  background: #065f46;
-  color: white;
-  border-color: #10b981;
-  font-weight: 600;
 }
 
 .info-chip.type.torneo {
@@ -634,9 +760,9 @@
   align-items: center;
   justify-content: center;
   width: auto;
-  min-width: 32px;
-  height: 24px;
-  padding: 4px 8px;
+  min-width: 36px;
+  height: 28px;
+  padding: 4px 10px;
 }
 
 .rank-emoji {

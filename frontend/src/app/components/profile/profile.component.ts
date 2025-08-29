@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -312,7 +313,7 @@ import { TipoRango } from '../../models/rango.model';
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
+  // Eliminado Subject manual; usamos takeUntilDestroyed en pipes
 
   playerProfile: PlayerProfile | null = null;
   activeTab: 'stats' | 'history' | 'achievements' | 'settings' = 'stats';
@@ -330,6 +331,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     { id: 'settings' as const, label: 'Configuración', icon: 'fas fa-cog' },
   ];
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private playerProfileService: PlayerProfileService,
     private authService: ServicioAutenticacion,
@@ -339,14 +342,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Obtener el usuario actual
     this.authService.usuarioActual$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((user: Usuario | null) => {
         this.currentUserId = user?.id || null;
         this.checkIfOwnProfile();
       });
 
     // Obtener el ID del usuario del perfil desde la ruta
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+  this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       this.userId = params['id'] || this.currentUserId;
       this.checkIfOwnProfile();
       this.loadPlayerProfile();
@@ -354,7 +357,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     // Obtener pestaña activa de query params
     this.route.queryParams
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((queryParams) => {
         if (queryParams['tab'] && this.isValidTab(queryParams['tab'])) {
           this.activeTab = queryParams['tab'];
@@ -363,8 +366,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    // Limpieza automática gestionada por takeUntilDestroyed
   }
 
   private checkIfOwnProfile(): void {

@@ -1,9 +1,8 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit, OnDestroy, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ServicioAutenticacion } from '../../services/auth.service';
-import { takeUntil } from 'rxjs';
-import { BaseComponent } from '../../shared/base-component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-debug',
@@ -66,7 +65,7 @@ import { BaseComponent } from '../../shared/base-component';
     </div>
   `
 })
-export class DebugComponent extends BaseComponent implements OnInit {
+export class DebugComponent implements OnInit, OnDestroy {
   estaAutenticado = signal(false);
   usuarioActual = signal<any>(null);
   rutaActual = signal('');
@@ -74,12 +73,12 @@ export class DebugComponent extends BaseComponent implements OnInit {
   datosUsuario = signal('');
   logs = signal('');
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private servicioAuth: ServicioAutenticacion,
     private router: Router
-  ) {
-    super(); // Llamar al constructor de BaseComponent
-  }
+  ) {}
 
   ngOnInit() {
     this.actualizarEstado();
@@ -87,15 +86,13 @@ export class DebugComponent extends BaseComponent implements OnInit {
     
     // Suscribirse a cambios en la ruta con takeUntil para evitar memory leaks
     this.router.events.pipe(
-      takeUntil(this.destroy$)
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe(() => {
       this.rutaActual.set(this.router.url);
     });
   }
-
-  override ngOnDestroy() {
-    this.agregarLog('DebugComponent destruido - suscripciones cerradas');
-    super.ngOnDestroy(); // Llamar al ngOnDestroy de BaseComponent
+  ngOnDestroy() {
+    this.agregarLog('DebugComponent destruido');
   }
 
   actualizarEstado() {
@@ -155,10 +152,10 @@ export class DebugComponent extends BaseComponent implements OnInit {
       password: 'password123'
     };
 
-    this.servicioAuth.iniciarSesion(credencialesAdminSistema, false).pipe(
-      takeUntil(this.destroy$)
-    ).subscribe({
-      next: (respuesta) => {
+    this.servicioAuth.iniciarSesion(credencialesAdminSistema, false)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+      next: (respuesta: any) => {
         this.agregarLog(`✅ Login exitoso como ${respuesta.user.rol}: ${respuesta.user.email}`);
         this.agregarLog('💾 Guardando datos en localStorage (sin navegación automática)...');
         this.actualizarEstado();
@@ -202,10 +199,10 @@ export class DebugComponent extends BaseComponent implements OnInit {
       password: 'password123'
     };
 
-    this.servicioAuth.iniciarSesion(credencialesAdminClub, false).pipe(
-      takeUntil(this.destroy$)
-    ).subscribe({
-      next: (respuesta) => {
+    this.servicioAuth.iniciarSesion(credencialesAdminClub, false)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+      next: (respuesta: any) => {
         this.agregarLog(`✅ Login exitoso como ${respuesta.user.rol}: ${respuesta.user.email}`);
         this.agregarLog('💾 Guardando datos en localStorage (sin navegación automática)...');
         this.actualizarEstado();
@@ -249,10 +246,10 @@ export class DebugComponent extends BaseComponent implements OnInit {
       password: 'password123'
     };
 
-    this.servicioAuth.iniciarSesion(credencialesJugador, false).pipe(
-      takeUntil(this.destroy$)
-    ).subscribe({
-      next: (respuesta) => {
+    this.servicioAuth.iniciarSesion(credencialesJugador, false)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+      next: (respuesta: any) => {
         this.agregarLog(`✅ Login exitoso como ${respuesta.user.rol}: ${respuesta.user.email}`);
         this.agregarLog('💾 Guardando datos en localStorage (sin navegación automática)...');
         this.actualizarEstado();

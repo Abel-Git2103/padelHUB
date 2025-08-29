@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { ServicioClubes } from '../../../services/clubes.service';
 import { ServicioAutenticacion } from '../../../services/auth.service';
-import { BaseComponent } from '../../../shared/base-component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Club } from '../../../models/club.model';
 
 @Component({
@@ -306,7 +306,7 @@ import { Club } from '../../../models/club.model';
   `,
   styleUrls: ['../club-register/club-register.component.scss']
 })
-export class ClubEditComponent extends BaseComponent implements OnInit {
+export class ClubEditComponent implements OnInit {
   clubForm!: FormGroup;
   club = signal<Club | null>(null);
   cargandoclub = signal(true);
@@ -321,9 +321,7 @@ export class ClubEditComponent extends BaseComponent implements OnInit {
     private servicioClub: ServicioClubes,
     private servicioAuth: ServicioAutenticacion,
     private router: Router
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit() {
     this.checkUserPermissions();

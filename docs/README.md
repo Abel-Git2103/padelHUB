@@ -13,6 +13,7 @@ Esta carpeta contiene toda la documentación técnica y de arquitectura del proy
 
 ### 📋 General
 - **`resumen.md`** - Resumen ejecutivo del proyecto
+- **`development-log.md`** - Log cronológico de desarrollo y cambios realizados
 
 ## 🔗 Enlaces Relacionados
 

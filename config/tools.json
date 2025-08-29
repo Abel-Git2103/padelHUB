@@ -1,0 +1,66 @@
+{
+  "scripts": {
+    "categories": {
+      "setup": [
+        "install:all",
+        "build:shared",
+        "setup:database"
+      ],
+      "development": [
+        "dev",
+        "dev:frontend",
+        "dev:backend",
+        "dev:mcp"
+      ],
+      "build": [
+        "build",
+        "build:frontend",
+        "build:backend",
+        "build:shared",
+        "build:mcp"
+      ],
+      "test": [
+        "test",
+        "test:frontend",
+        "test:backend",
+        "test:e2e"
+      ],
+      "deployment": [
+        "deploy:staging",
+        "deploy:production",
+        "docker:build",
+        "docker:push"
+      ]
+    },
+
+    "automation": {
+      "userCreation": "scripts/crear-usuario-prueba.js",
+      "userVerification": "scripts/verificar-usuario.js",
+      "clubVerification": "scripts/verificar-clubes.js",
+      "batchScripts": "scripts/batch/"
+    }
+  },
+
+  "tools": {
+    "bundleAnalyzer": "frontend/tools/analysis/bundle-analyzer.js",
+    "codeMetrics": "tools/analysis/",
+    "mcpTester": "mcp-server/test-mcp.js"
+  },
+
+  "mcp": {
+    "server": {
+      "command": "node",
+      "args": ["mcp-server/dist/index.js"],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "config": "claude_desktop_config.json"
+  },
+
+  "docker": {
+    "compose": "docker-compose.yml",
+    "frontend": "frontend/Dockerfile",
+    "backend": "backend/Dockerfile"
+  }
+}

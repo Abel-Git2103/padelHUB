@@ -1,0 +1,22 @@
+# Config directory specific ignores
+*.tmp
+*.temp
+*.log
+.cache/
+dist/
+node_modules/
+
+# Environment specific files
+*.local.json
+*.dev.json
+*.prod.json
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db

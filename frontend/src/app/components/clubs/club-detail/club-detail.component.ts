@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { Club } from '../../../models/club.model';
 import { ServicioClubes } from '../../../services/clubes.service';
 import { ServicioAutenticacion } from '../../../services/auth.service';
-import { BaseComponent } from '../../../shared/base-component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-club-detail',
@@ -244,7 +244,7 @@ import { BaseComponent } from '../../../shared/base-component';
   `,
   styleUrls: ['./club-detail.component.scss']
 })
-export class ClubDetailComponent extends BaseComponent implements OnInit {
+export class ClubDetailComponent implements OnInit {
   club = signal<Club | null>(null);
   cargando = signal(true);
   error = signal<string | null>(null);
@@ -254,9 +254,7 @@ export class ClubDetailComponent extends BaseComponent implements OnInit {
     private router: Router,
     private servicioClub: ServicioClubes,
     private servicioAuth: ServicioAutenticacion
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit() {
     this.route.params.subscribe(params => {

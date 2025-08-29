@@ -6,13 +6,14 @@ import { ServicioAutenticacion } from '../../services/auth.service';
 import { ServicioClubes } from '../../services/clubes.service';
 import { Club } from '../../models/club.model';
 import { RANGOS_INFO } from '../../models/rango.model';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrls: ['./register.component.scss']
 })
 export class ComponenteRegistro implements OnInit {
   formularioRegistro: FormGroup;
@@ -76,7 +77,8 @@ export class ComponenteRegistro implements OnInit {
           rangoActual: this.formularioRegistro.value.rangoActual
         };
 
-        await this.servicioAuth.registrarse(datosRegistro).toPromise();
+  // toPromise() está deprecado; usar firstValueFrom
+  await firstValueFrom(this.servicioAuth.registrarse(datosRegistro));
         this.enrutador.navigate(['/tablero']);
       } catch (error) {
         console.error('Error en registro:', error);

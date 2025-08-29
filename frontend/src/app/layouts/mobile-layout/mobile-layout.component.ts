@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { ServicioAutenticacion } from '../../services/auth.service';
@@ -11,14 +12,16 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule, RouterOutlet],
   templateUrl: './mobile-layout.component.html',
-  styleUrl: './mobile-layout.component.scss'
+  styleUrls: ['./mobile-layout.component.scss']
 })
 export class MobileLayoutComponent implements OnInit, OnDestroy {
   usuario = signal<Usuario | null>(null);
   rutaActiva = signal<string>('');
   obtenerInfoRango = obtenerInfoRango;
   
-  private subscripcionUsuario?: Subscription;
+  private subscripcionUsuario?: Subscription; // Mantener por compatibilidad; se migrará a patrón sincrónico
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private servicioAuth: ServicioAutenticacion,
@@ -30,11 +33,13 @@ export class MobileLayoutComponent implements OnInit, OnDestroy {
     this.usuario.set(usuarioActual);
     
     // Solo suscribirse una vez para evitar múltiples actualizaciones
-    this.subscripcionUsuario = this.servicioAuth.usuarioActual$.subscribe(usuario => {
-      if (usuario !== this.usuario()) {
-        this.usuario.set(usuario);
-      }
-    });
+    this.servicioAuth.usuarioActual$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(usuario => {
+        if (usuario !== this.usuario()) {
+          this.usuario.set(usuario);
+        }
+      });
 
     // Detectar ruta activa solo una vez
     this.rutaActiva.set(this.enrutador.url);
@@ -42,9 +47,7 @@ export class MobileLayoutComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     // Limpiar suscripciones para evitar memory leaks
-    if (this.subscripcionUsuario) {
-      this.subscripcionUsuario.unsubscribe();
-    }
+  // Ya manejado por takeUntilDestroyed
   }
 
   obtenerIniciales(): string {
