@@ -1,40 +1,37 @@
-# Estudio de Mercado para Tienda Física de Tartas de Queso
+### Simplified Market Study for Café and Gourmet Cheesecakes in Tarragona
 
-## 1. Análisis de Mercado
-- **Descripción del mercado:**
-  - Tamaño del mercado:
-  - Tendencias del mercado:
-  - Oportunidades:
+#### Budget Overview
+- **Total Budget**: 20,000€
 
-## 2. Análisis de Competencia
-- **Competidores principales:**
-  - Nombre:
-  - Ubicación:
-  - Fortalezas:
-  - Debilidades:
+#### Product Focus
+- **Cheesecakes**: Whole and portions
+- **Beverages**: Coffee, soft drinks, water, and juices
 
-## 3. Perfil de Cliente
-- **Segmento de mercado objetivo:**
-  - Demografía:
-  - Comportamiento:
-  - Necesidades:
+#### Market Analysis
+1. **Target Audience**: 
+   - Local residents, tourists, and cheesecake enthusiasts.
+   - Age range: 18-45 years, focusing on young professionals and families.
 
-## 4. Ubicación
-- **Posibles ubicaciones:**
-  - Dirección:
-  - Ventajas del lugar:
-  - Desventajas del lugar:
+2. **Location Analysis**: 
+   - Tarragona: A city with a growing food scene and increasing interest in gourmet products.
+   - High foot traffic areas: Near universities, parks, and tourist attractions.
 
-## 5. Viabilidad Económica
-- **Costos iniciales:**
-  - Alquiler:
-  - Renovaciones:
-  - Equipamiento:
-  - Inventario:
-- **Proyección de ingresos:**
-  - Ventas estimadas:
-  - Punto de equilibrio:
+3. **Competitor Analysis**: 
+   - Identify local cafes and dessert shops offering similar products. 
+   - Analyze their pricing, product range, and customer reviews.
 
----
+#### Marketing Strategy
+- **Social Media Promotion**: Use platforms like Instagram and Facebook to showcase products. 
+- **Local Partnerships**: Collaborate with events and local businesses to promote cheesecakes.
 
-> **Nota:** Completa cada sección con la información relevante para realizar un análisis exhaustivo de la viabilidad de la tienda.
+#### Financial Projections
+- **Initial Investment Breakdown**:
+   - Product development: 5,000€
+   - Marketing: 3,000€
+   - Equipment and Supplies: 7,000€
+   - Operating Costs: 5,000€
+
+- **Expected Revenue**: Based on market analysis, project revenue for the first year.
+
+#### Conclusion
+- Focus on quality and differentiation through gourmet offerings and exceptional customer service. The budget allows for a strong market entry strategy.
