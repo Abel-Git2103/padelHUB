@@ -1,37 +1,35 @@
-### Simplified Market Study for Café and Gourmet Cheesecakes in Tarragona
+# Plan de Negocios para Café y Cheesecakes
 
-#### Budget Overview
-- **Total Budget**: 20,000€
+## Resumen Ejecutivo
+Este plan de negocio tiene como objetivo establecer un café especializado en cheesecakes y bebidas. Se prevé un presupuesto total de 20,000€ para iniciar operaciones y asegurar un crecimiento sostenible en el mercado local.
 
-#### Product Focus
-- **Cheesecakes**: Whole and portions
-- **Beverages**: Coffee, soft drinks, water, and juices
+## Productos Ofrecidos
+1. **Cheesecakes**: Variedades clásicas y gourmet, incluyendo:
+   - Cheesecake de fresa
+   - Cheesecake de chocolate
+   - Cheesecake de mango
 
-#### Market Analysis
-1. **Target Audience**: 
-   - Local residents, tourists, and cheesecake enthusiasts.
-   - Age range: 18-45 years, focusing on young professionals and families.
+2. **Bebidas**: Una selección de bebidas que complementan nuestros postres:
+   - Café (espresso, capuchino, latte)
+   - Refrescos
+   - Agua mineral
+   - Jugos naturales (naranja, manzana, piña)
 
-2. **Location Analysis**: 
-   - Tarragona: A city with a growing food scene and increasing interest in gourmet products.
-   - High foot traffic areas: Near universities, parks, and tourist attractions.
+## Análisis del Mercado
+El mercado de cafeterías y postres está en constante crecimiento. La demanda por productos artesanales y de calidad es alta, especialmente en el segmento de los cheesecakes. Se proyecta atraer tanto a clientes locales como a turistas.
 
-3. **Competitor Analysis**: 
-   - Identify local cafes and dessert shops offering similar products. 
-   - Analyze their pricing, product range, and customer reviews.
+## Estrategia de Marketing
+Para atraer clientes utilizaremos:
+- Redes sociales para promocionar nuestros productos.
+- Ofertas especiales y degustaciones.
+- Colaboraciones con influencers locales.
 
-#### Marketing Strategy
-- **Social Media Promotion**: Use platforms like Instagram and Facebook to showcase products. 
-- **Local Partnerships**: Collaborate with events and local businesses to promote cheesecakes.
+## Presupuesto
+El presupuesto de 20,000€ se destinará a:
+- Alquiler del local: 8,000€
+- Equipamiento (hornos, utensilios, muebles): 7,000€
+- Marketing y publicidad: 3,000€
+- Materia prima inicial: 2,000€
 
-#### Financial Projections
-- **Initial Investment Breakdown**:
-   - Product development: 5,000€
-   - Marketing: 3,000€
-   - Equipment and Supplies: 7,000€
-   - Operating Costs: 5,000€
-
-- **Expected Revenue**: Based on market analysis, project revenue for the first year.
-
-#### Conclusion
-- Focus on quality and differentiation through gourmet offerings and exceptional customer service. The budget allows for a strong market entry strategy.
+## Conclusión
+Con una inversión inicial de 20,000€, este negocio tiene el potencial de ser rentable y atraer una clientela fiel, ofreciendo productos de alta calidad y un ambiente acogedor.
