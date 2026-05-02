@@ -1,11 +1,13 @@
 {
-  "baseUrl": ".",
-  "paths": {
-    "@shared/*": ["shared/src/*"],
-    "@backend/*": ["backend/src/*"],
-    "@frontend/*": ["frontend/src/*"],
-    "@mcp/*": ["mcp-server/src/*"],
-    "@config/*": ["config/*"]
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["shared/src/*"],
+      "@backend/*": ["backend/src/*"],
+      "@frontend/*": ["frontend/src/*"],
+      "@mcp/*": ["mcp-server/src/*"],
+      "@config/*": ["config/*"]
+    }
   },
   "references": [
     { "path": "frontend" },

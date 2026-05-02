@@ -12,6 +12,8 @@
     "servidor:prod": "npm run install:all && npm run build:shared && npm run build:backend && cd backend && npm run start:prod",
     "servidor:setup": "npm run install:all && npm run build:shared && npm run build:backend",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:mcp:browser": "playwright-mcp",
+    "dev:mcp:figma": "supercharged-figma-mcp --local --relay-host 127.0.0.1 --relay-port 8888",
     "dev:frontend": "cd frontend && npm run start",
     "dev:backend": "cd backend && npm run start:dev",
     "dev:mcp": "cd mcp-server && npm run dev",
@@ -43,8 +45,10 @@
     "docs:api:watch": "nodemon --exec \"npm run docs:api\" --ext js,ts --ignore dist/"
   },
   "devDependencies": {
+    "@playwright/mcp": "^0.0.73",
     "concurrently": "^8.2.2",
     "rimraf": "^5.0.5",
+    "supercharged-figma-mcp": "^1.0.9",
     "typescript": "~5.8.2"
   },
   "engines": {
